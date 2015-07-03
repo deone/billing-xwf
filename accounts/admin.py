@@ -1,3 +1,8 @@
 from django.contrib import admin
+from .models import Radcheck
 
-# Register your models here.
+from .forms import RadcheckAdminForm
+
+@admin.register(Radcheck)
+class RadcheckAdmin(admin.ModelAdmin):
+    pass
