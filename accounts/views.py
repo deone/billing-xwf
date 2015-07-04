@@ -1,15 +1,15 @@
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 
-from .forms import createAccountForm
+from .forms import CreateAccountForm
 
 def index(request):
     if request.method == 'POST':
-        form = createAccountForm(request.POST)
+        form = CreateAccountForm(request.POST)
         if form.is_valid():
-            pass
+            form.save()
     else:
-        form = createAccountForm()
+        form = CreateAccountForm()
   
     context = {'form': form}
     return render(request, 'accounts/index.html', context)
