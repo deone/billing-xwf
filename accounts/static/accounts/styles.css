@@ -1,0 +1,13 @@
+body {
+  background-image: 
+}
+
+form {
+  margin: 0 auto;
+  width: 30%;
+  margin-top: 15%;
+}
+
+form label {
+  display: none;
+}

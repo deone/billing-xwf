@@ -5,9 +5,12 @@ from django import forms
 from .models import Radcheck
 
 class CreateAccountForm(forms.Form):
-    username = forms.CharField(label='Username', max_length=100)
-    password = forms.CharField(label='Password', max_length=100, widget=forms.PasswordInput)
-    confirm_password = forms.CharField(label='Confirm Password', max_length=100, widget=forms.PasswordInput)
+    username = forms.CharField(label='Username', max_length=100, 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}))
+    password = forms.CharField(label='Password', max_length=100, 
+        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
+    confirm_password = forms.CharField(label='Confirm Password', max_length=100, 
+      widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm Password'}))
 
     def clean(self):
         cleaned_data = super(CreateAccountForm, self).clean()
