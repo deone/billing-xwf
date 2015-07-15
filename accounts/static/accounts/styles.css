@@ -1,5 +1,5 @@
 body {
-  background-image: 
+  background: url('images/create_bg.jpg') no-repeat;
 }
 
 form {
@@ -10,4 +10,9 @@ form {
 
 form label {
   display: none;
+}
+
+form a {
+  display: block;
+  text-align: right;
 }

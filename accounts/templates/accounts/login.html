@@ -1,15 +1,27 @@
 <html>
   <head>
-    <title>Login</title>
-  </head>
-  <body>
-    <h2>Internet Access Login</h2>  
-      <form method=POST action="{{login_url}}">
-        <input type="hidden" name="success_url" value="{{success_url}}" />
-        Username: <input type ="text" name="username" />
-        Password: <input type ="text" name="password" />
-        <input type="submit" value="Login" />
-      </form>
+    <title>Spectra Wireless - Login</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'accounts/styles.css' %}">
+  </head> 
+  <body id="login">
+    <form method="post" action="{{login_url}}">
+      <img src="{% static 'accounts/images/logo.png' %}">
+      <input type="hidden" name="success_url" value="{{success_url}}" />
+
+      <div class="form-group">
+        <label for="">Username</label>
+        <input type ="text" name="username" class="form-control" placeholder="Username">
+      </div>
+
+      <div class="form-group">
+        <label for="">Password</label>
+        <input type ="password" name="password" class="form-control" placeholder="Password">
+      </div>
+
+      <input class="btn btn-default" type="submit" value="Login">
       <a href="/">Create Account</a>
+    </form>
   </body>
 </html>
