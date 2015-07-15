@@ -13,3 +13,6 @@ def index(request):
   
     context = {'form': form}
     return render(request, 'accounts/index.html', context)
+
+def login(request):
+    return render(request, 'accounts/login.html')
