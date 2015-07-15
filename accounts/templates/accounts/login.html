@@ -1,0 +1,14 @@
+<html>
+  <head>
+    <title>Login</title>
+  </head>
+  <body>
+    <h2>Internet Access Login</h2>  
+      <form method=POST action="<? urldecode(GET['login_url']) ?>">
+        <input type="hidden" name="http://google.com" value="<? urldecode(GET['continue_url']) ?>" />
+        Username: <input type ="text" name="username" />
+        Password: <input type ="text" name="password" />
+        <input type="submit" value="Login" />
+      </form>
+  </body>
+</html>
