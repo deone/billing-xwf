@@ -16,8 +16,12 @@ def index(request):
 
 def login(request):
     if request.method == 'GET':
-        context = {
-         'login_url': request.GET['login_url'],
-         'continue_url': request.GET['continue_url']
-        }
+        if 'login_url' in request.GET:
+            context = {
+              'login_url': request.GET['login_url'],
+              'continue_url': request.GET['continue_url']
+            }
+        else:
+            context = {}
+
     return render(request, 'accounts/login.html', context)
