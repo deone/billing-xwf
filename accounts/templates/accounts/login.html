@@ -4,8 +4,8 @@
   </head>
   <body>
     <h2>Internet Access Login</h2>  
-      <form method=POST action="<? urldecode(GET['login_url']) ?>">
-        <input type="hidden" name="http://google.com" value="<? urldecode(GET['continue_url']) ?>" />
+      <form method=POST action="{{login_url}}">
+        <input type="hidden" name="success_url" value="{{success_url}}" />
         Username: <input type ="text" name="username" />
         Password: <input type ="text" name="password" />
         <input type="submit" value="Login" />
