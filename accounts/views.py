@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
 from .forms import CreateAccountForm
 
@@ -15,13 +16,21 @@ def index(request):
             user.last_name = form.cleaned_data['last_name']
             # user.phone_number = form.cleaned_data['phone_number']
             user.save()
-
             # Save username and password in RADIUS radcheck.
             form.save()
+
             # We need to call login here so that our dashboard can have user's details.
-            new_user = True
-            # return redirect('dashboard', new_user)
-            return redirect('accounts:dashboard')
+            authenticated_user = authenticate(
+                username=user.username,
+                password=form.cleaned_data['password']
+            )
+
+            if authenticated_user is not None:
+                if user.is_active:
+                    auth_login(request, authenticated_user)
+                    # new_user = True
+                    # return redirect('dashboard', new_user)
+                    return redirect('accounts:dashboard')
     else:
         form = CreateAccountForm()
   
@@ -52,3 +61,7 @@ def dashboard(request):
 
     context = {}
     return render(request, 'accounts/dashboard.html', context)
+
+def logout(request):
+    auth_logout(request)
+    return redirect('index')
