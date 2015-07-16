@@ -5,8 +5,16 @@ from django import forms
 from .models import Radcheck
 
 class CreateAccountForm(forms.Form):
+    first_name = forms.CharField(label='First Name', max_length=100, 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'}))
+    last_name = forms.CharField(label='Last Name', max_length=100, 
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'}))
+    # We should figure out user's country code somehow, later.
+    # phone_number = forms.RegexField(regex=r'^\+?1?\d{9,15}$', label='Phone Number',
+        # error_messages = {"invalid": "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."}, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. +233567823341'}))
     email = forms.EmailField(label='Email Address', max_length=100, 
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email Address'}))
+    # We need to ensure strong passwords later.
     password = forms.CharField(label='Password', max_length=100, 
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
     confirm_password = forms.CharField(label='Confirm Password', max_length=100, 
