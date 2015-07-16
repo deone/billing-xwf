@@ -5,8 +5,8 @@ from django import forms
 from .models import Radcheck
 
 class CreateAccountForm(forms.Form):
-    username = forms.CharField(label='Username', max_length=100, 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Username'}))
+    email = forms.EmailField(label='Email Address', max_length=100, 
+        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email Address'}))
     password = forms.CharField(label='Password', max_length=100, 
         widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
     confirm_password = forms.CharField(label='Confirm Password', max_length=100, 
@@ -26,7 +26,8 @@ class CreateAccountForm(forms.Form):
         m = hashlib.md5()
         byte_encode = bytes(data['password'], 'utf-8')
         m.update(byte_encode)
-        Radcheck.objects.create(username=data['username'],
+        Radcheck.objects.create(username=data['email'],
                                 attribute='MD5-Password',
                                 op=':=',
                                 value=m.hexdigest())
+        return True
