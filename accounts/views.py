@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
 
-from .forms import CreateAccountForm
+from .forms import CreateAccountForm, LoginForm
 
 def index(request):
     if request.method == 'POST':
@@ -39,14 +39,17 @@ def index(request):
     return render(request, 'accounts/index.html', context)
 
 def login(request):
+    context = {
+        'form': LoginForm()
+    }
     if request.method == 'GET':
-        if 'login_url' in request.GET:
-            context = {
+        if request.GET:
+            context.update({
               'login_url': request.GET['login_url'],
               'continue_url': request.GET['continue_url']
-            }
-        else:
-            context = {}
+            })
+    else:
+        pass
 
     return render(request, 'accounts/login.html', context)
 
