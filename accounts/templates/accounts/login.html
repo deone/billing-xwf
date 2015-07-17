@@ -1,28 +1,5 @@
-<html>
-  <head>
-    <title>Spectra Wireless - Login</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
-    {% load staticfiles %}
-    <link rel="stylesheet" type="text/css" href="{% static 'accounts/styles.css' %}">
-  </head> 
-  <body>
-    <form method="post" action="{{login_url}}">
-      {% csrf_token %}
-      <img src="{% static 'accounts/images/logo.png' %}">
-      <input type="hidden" name="success_url" value="{{continue_url}}" />
-
-      <div class="form-group">
-        {{ form.email.errors }}
-        {{ form.email }}
-      </div>
-
-      <div class="form-group">
-        {{ form.password.errors }}
-        {{ form.password }}
-      </div>
-
-      <input class="btn btn-default" type="submit" value="Login">
-      <a href="{% url 'index' %}">Create Account</a>
-    </form>
-  </body>
-</html>
+<form method="post" action="{% url 'accounts:login' %}">
+  {% csrf_token %}
+  {{form}}
+  <input class="btn btn-default" type="submit" value="Login">
+</form>
