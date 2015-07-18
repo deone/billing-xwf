@@ -5,7 +5,8 @@ from . import views
 
 urlpatterns = [
     # url(r'^$', views.index, name='index'),
-    url(r'^login/$', auth_views.login, {'template_name': 'accounts/login.html'}, name='login'),
+    # url(r'^login/$', auth_views.login, {'template_name': 'accounts/login.html', 'authentication_form': LoginForm}, name='login'),
+    url(r'^login/$', views.login, name='login'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
     url(r'^password_change/$', auth_views.password_change, name='password_change'),
     url(r'^password_change/done/$', auth_views.password_change_done, name='password_change_done'),
