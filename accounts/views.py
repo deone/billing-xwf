@@ -1,9 +1,10 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login as auth_login, logout as auth_logout
+from django.contrib.auth import logout as auth_logout
 from django.conf import settings
 
 from .forms import CreateAccountForm, LoginForm
+from .helpers import *
 
 def index(request):
     if request.method == 'POST':
@@ -11,7 +12,7 @@ def index(request):
         if form.is_valid():
             # Create user in Django
             user = User.objects.create_user(
-                form.cleaned_data['email'], form.cleaned_data['email'], form.cleaned_data['password']
+                form.cleaned_data['username'], form.cleaned_data['username'], form.cleaned_data['password']
             )
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
@@ -31,53 +32,49 @@ def index(request):
 
     return render(request, 'accounts/index.html', context)
 
-def auth_and_login(request, username, password):
-    user = authenticate(username=username, password=password)
-    if user is not None:
-        if user.is_active:
-            auth_login(request, user)
-            return True
-    else:
-        return False
-
 def login(request):
     if request.method == 'POST':
+        parts = request.POST['login_url'].split('?')
+        login_url = parts[0]
+        auth_string = parts[1].split('&')[0]
+        logout_url = login_url[:-5] + 'logout?' + auth_string
+
         form = LoginForm(request.POST)
+
         if form.is_valid():
-            email = request.POST['email']
+            email = request.POST['username']
             password = request.POST['password']
 
             auth = auth_and_login(request, email, password)
 
             if auth:
+                if not settings.SERV_PKG:
+                    # Go and buy service package at dashboard.
+                    # return redirect(settings.LOGIN_REDIRECT_URL)
+                    pass
+                    # After buying package, do Meraki auth (automatically?? - can we have user who 
+                    # just buys package without intentions of browsing?) 
+                    # and redirect to dashboard displaying message in session.
+                else:
+                    # User has service package, let's attempt Meraki authentication
+                    # After successful Meraki auth, user is redirected to dashboard with
+                    # message that he is connected and can end his browsing session
+                    # by clicking logout_url. logout_url is stored in Session and retrieved
+                    # to construct logout link.
+                    meraki_auth(request, email, password, logout_url)
+                
                 return redirect(settings.LOGIN_REDIRECT_URL)
-        else:
-            context = {'form': form}
+
+        context = {'form': form}
     else:
+        context = {'form': LoginForm()}
         if request.GET:
-            print(request.GET)
-            context = {
-              'form': LoginForm(),
+            context.update({
               'login_url': request.GET['login_url'],
               'continue_url': request.GET['continue_url']
-            }
+            })
 
     return render(request, 'accounts/login.html', context)
-
-    """if auth:
-        # Now that we've logged in, we need to check whether user has valid service package
-        # before attempting a Meraki authentication.
-        # Here's a stub to check service package
-        if settings.SERV_PKG:
-            # User has service package, we can now auth at Meraki
-            print("true")
-        else:
-            # User doesn't have a service package, he has to buy one
-            pass
-    else:
-        # Display error on user form
-        pass"""
-
 
 def dashboard(request):
     # Let's remember to use User methods here and in the template, instead of attributes.
@@ -89,4 +86,9 @@ def dashboard(request):
         context = {}"""
 
     context = {}
+    if 'auth_message' in request.session:
+        context.update({'auth_message': request.session['auth_message']})
+        if 'logout_url' in request.session:
+            context.update({'logout_url': request.session['logout_url']})
+
     return render(request, 'accounts/dashboard.html', context)

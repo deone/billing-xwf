@@ -1,2 +1,4 @@
 {{ user }}
-<a href="{% url 'accounts:logout' %}">Logout</a>
+{{ auth_message }}
+<a href="{{ logout_url }}">End Browsing Session</a>
+<a href="{% url 'accounts:logout' %}">Logout of Dashboard</a>
