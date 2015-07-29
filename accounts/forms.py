@@ -5,7 +5,8 @@ from django import forms
 from .models import Radcheck
 
 class Common(forms.Form):
-    email = forms.EmailField(label='Email Address', max_length=100, 
+    # Using EmailField for username is intentional. Username must always be an email address.
+    username = forms.EmailField(label='Email Address', max_length=100, 
         widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email Address'}))
     # We need to ensure strong passwords later.
     password = forms.CharField(label='Password', max_length=100, 
