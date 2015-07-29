@@ -37,7 +37,7 @@ def login(request):
         parts = request.POST['login_url'].split('?')
         login_url = parts[0]
         auth_string = parts[1].split('&')[0]
-        logout_url = login_url[:-5] + 'logout?' + auth_string
+        logout_url = login_url[:-5] + 'logout/?' + auth_string
 
         form = LoginForm(request.POST)
 

@@ -37,7 +37,7 @@ class CreateAccountForm(Common):
         m = hashlib.md5()
         byte_encode = bytes(data['password'], 'utf-8')
         m.update(byte_encode)
-        Radcheck.objects.create(username=data['email'],
+        Radcheck.objects.create(username=data['username'],
                                 attribute='MD5-Password',
                                 op=':=',
                                 value=m.hexdigest())
