@@ -3,13 +3,13 @@
     <title>Spectra Wireless - Create Account</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     {% load staticfiles %}
-    <link rel="stylesheet" type="text/css" href="{% static 'accounts/styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
   </head>
 
   <body>
     <form action="" method="post">
       {% csrf_token %}
-      <img src="{% static 'accounts/images/logo.png' %}">
+      <img src="{% static 'images/spectra_logo.png' %}">
       {{ form.non_field_errors }}
 
       <div class="form-group">
