@@ -21,7 +21,7 @@ class CreateAccountForm(Common):
     country = forms.ChoiceField(label='Country', choices=Subscriber.COUNTRY_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control'}))
     phone_number = forms.RegexField(regex=r'^\+?1?\d{9,15}$', label='Phone Number', max_length=15,
-        error_messages = {"invalid": "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."}, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. +233567823341'}))
+        error_messages = {"invalid": "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."}, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. 0567823341'}))
     confirm_password = forms.CharField(label='Confirm Password', max_length=100, 
       widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm Password'}))
 
