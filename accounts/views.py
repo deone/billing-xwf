@@ -4,6 +4,7 @@ from django.contrib.auth import logout as auth_logout
 from django.conf import settings
 
 from .forms import CreateAccountForm, LoginForm
+from .models import Subscriber
 from .helpers import *
 
 def index(request):
@@ -16,8 +17,11 @@ def index(request):
             )
             user.first_name = form.cleaned_data['first_name']
             user.last_name = form.cleaned_data['last_name']
-            # user.phone_number = form.cleaned_data['phone_number']
             user.save()
+
+            # Save phone_number in Subscriber.
+            Subscriber.objects.create(user=user, phone_number=form.cleaned_data['phone_number'])
+
             # Save username and password in RADIUS radcheck.
             form.save()
 

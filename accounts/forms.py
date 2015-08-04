@@ -18,8 +18,8 @@ class CreateAccountForm(Common):
     last_name = forms.CharField(label='Last Name', max_length=100, 
         widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'}))
     # We should figure out user's country code somehow, later.
-    # phone_number = forms.RegexField(regex=r'^\+?1?\d{9,15}$', label='Phone Number',
-        # error_messages = {"invalid": "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."}, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. +233567823341'}))
+    phone_number = forms.RegexField(regex=r'^\+?1?\d{9,15}$', label='Phone Number', max_length=15,
+        error_messages = {"invalid": "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."}, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. +233567823341'}))
     confirm_password = forms.CharField(label='Confirm Password', max_length=100, 
       widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm Password'}))
 
