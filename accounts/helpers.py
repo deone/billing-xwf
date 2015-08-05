@@ -1,5 +1,6 @@
 from django.contrib.auth import authenticate, login as auth_login
 
+import hashlib
 import requests
 
 def auth_and_login(request, username, password):
@@ -26,3 +27,10 @@ def meraki_auth(request, email, password, logout_url):
         request.session['logout_url'] = logout_url
 
     return
+
+def md5_password(password):
+    m = hashlib.md5()
+    byte_encode = bytes(password, 'utf-8')
+    m.update(byte_encode)
+
+    return m.hexdigest()

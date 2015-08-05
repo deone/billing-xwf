@@ -5,7 +5,7 @@ from django.conf import settings
 
 from .forms import CreateAccountForm, LoginForm
 from .models import Subscriber
-from .helpers import *
+from .helpers import auth_and_login, meraki_auth
 
 def index(request):
     if request.method == 'POST':

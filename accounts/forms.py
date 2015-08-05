@@ -1,8 +1,9 @@
-import hashlib
 
 from django import forms
+from django.contrib.auth.forms import SetPasswordForm
 
 from .models import *
+from .helpers import md5_password
 
 class Common(forms.Form):
     # Using EmailField for username is intentional. Username must always be an email address.
@@ -35,15 +36,19 @@ class CreateAccountForm(Common):
                 raise forms.ValidationError("Passwords do not match.")
 
     def save(self):
-        data = self.cleaned_data
-        m = hashlib.md5()
-        byte_encode = bytes(data['password'], 'utf-8')
-        m.update(byte_encode)
         Radcheck.objects.create(username=data['username'],
                                 attribute='MD5-Password',
                                 op=':=',
-                                value=m.hexdigest())
+                                value=md5_password(self.cleaned_data['password']))
         return True
+
+class ResetPasswordForm(SetPasswordForm):
+
+  def save(self):
+      user = super(ResetPasswordForm, self).save()
+      subscriber = Radcheck.objects.get(username=user.username)
+      subscriber.value = md5_password(self.cleaned_data['new_password1'])
+      subscriber.save()
 
 class LoginForm(Common):
     pass
