@@ -112,4 +112,11 @@ STATICFILES_DIRS = (
 
 LOGIN_REDIRECT_URL = '/accounts/dashboard/'
 
+DEFAULT_FROM_EMAIL = 'test@example.com'
+
+EMAIL_HOST = 'smtp.webfaction.com'
+EMAIL_PORT = 25
+EMAIL_HOST_USER = 'deone'
+EMAIL_HOST_PASSWORD = 'maIl@48_'
+
 from .user_settings import *
