@@ -8,23 +8,23 @@ from .helpers import md5_password
 class Common(forms.Form):
     # Using EmailField for username is intentional. Username must always be an email address.
     username = forms.EmailField(label='Email Address', max_length=100, 
-        widget=forms.EmailInput(attrs={'class': 'form-control', 'placeholder': 'Email Address'}))
+        widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
     # We need to ensure strong passwords later.
     password = forms.CharField(label='Password', max_length=100, 
-        widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Password'}))
+        widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
 
 class CreateAccountForm(Common):
     first_name = forms.CharField(label='First Name', max_length=100, 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'First Name'}))
+        widget=forms.TextInput(attrs={'class': 'mdl-textfield__input', 'pattern': '[A-Z,a-z, ]*'}))
     last_name = forms.CharField(label='Last Name', max_length=100, 
-        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Last Name'}))
+        widget=forms.TextInput(attrs={'class': 'mdl-textfield__input', 'pattern': '[A-Z,a-z, ]*'}))
+    confirm_password = forms.CharField(label='Confirm Password', max_length=100, 
+      widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
     # We should figure out user's country code somehow, later.
     country = forms.ChoiceField(label='Country', choices=Subscriber.COUNTRY_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control'}))
     phone_number = forms.RegexField(regex=r'^\+?1?\d{9,15}$', label='Phone Number', max_length=15,
-        error_messages = {"invalid": "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."}, widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'e.g. 0567823341'}))
-    confirm_password = forms.CharField(label='Confirm Password', max_length=100, 
-      widget=forms.PasswordInput(attrs={'class': 'form-control', 'placeholder': 'Confirm Password'}))
+        error_messages = {"invalid": "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."}, widget=forms.TextInput(attrs={'class': 'mdl-textfield__input'}))
 
     def clean(self):
         cleaned_data = super(CreateAccountForm, self).clean()

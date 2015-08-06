@@ -1,8 +1,7 @@
 body {
-  background: url('../images/create_bg.jpg') no-repeat;
+  color: gray;
 }
-
-form {
+/* form {
   margin: 0 auto;
   width: 30%;
   margin-top: 5%;
@@ -15,4 +14,20 @@ form label {
 form a {
   display: block;
   text-align: right;
+} */
+
+.layout-transparent {
+  /* background: url('../images/create_bg.jpg') center / cover; */
+}
+.layout-transparent .mdl-layout__header,
+.layout-transparent .mdl-layout__drawer-button {
+  /* This background is dark, so we set text to white. Use 87% black instead if
+     your background is light. */
+  color: gray;
+}
+.auth-form-container {
+  text-align: center;
+}
+.auth-form-container button {
+  margin-left: 11em;
 }
