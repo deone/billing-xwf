@@ -46,6 +46,14 @@ form,
 form input {
   font: 300 16px "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
+form select {
+  width: 74%;
+  margin: 2em 0 1em 3.3em;
+  font: inherit;
+  height: 30px;
+  display: block;
+  border:1px solid #ccc;
+}
 .errorlist {
   font-size: 10px;
   font-weight: 300;

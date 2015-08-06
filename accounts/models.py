@@ -29,6 +29,7 @@ class Subscriber(models.Model):
     GABON = 'GAB'
 
     COUNTRY_CHOICES = (
+        ('', 'Select Country'),
         (GHANA, 'Ghana'),
         (NIGERIA, 'Nigeria'),
         (IVORY_COAST, "Cote d'Ivoire"),
