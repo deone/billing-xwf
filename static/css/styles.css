@@ -55,3 +55,6 @@ form input {
   text-align: right;
   color: red;
 }
+.mdl-textfield__error {
+  display: block;
+}
