@@ -30,11 +30,12 @@ form a {
   text-align: center;
 }
 .auth-form-container button {
-  margin-left: 11em;
+  margin-left: 12em;
 }
 input[type='text'],
 input[type='password'],
-input[type='email'] {
+input[type='email'],
+input[type='number'] {
   border-bottom: solid 1px #fff;
 }
 .auth-form-container h4 {

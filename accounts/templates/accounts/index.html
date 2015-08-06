@@ -27,33 +27,43 @@
         {{ form.first_name.errors }}
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
           {{ form.first_name }}
-          <label class="mdl-textfield__label" for="id_first_name">First Name</label>
+          <label class="mdl-textfield__label" for="id_first_name">
+            {{ form.first_name.label }}
+          </label>
           <span class="mdl-textfield__error">Names can not contain numbers!</span>
         </div>
 
         {{ form.last_name.errors }}
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
           {{ form.last_name }}
-          <label class="mdl-textfield__label" for="id_last_name">Last Name</label>
+          <label class="mdl-textfield__label" for="id_last_name">
+            {{ form.last_name.label }}
+          </label>
           <span class="mdl-textfield__error">Names can not contain numbers!</span>
         </div>
 
         {{ form.username.errors }}
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
           {{ form.username }}
-          <label class="mdl-textfield__label" for="id_username">Email Address</label>
+          <label class="mdl-textfield__label" for="id_username">
+            {{ form.username.label }}
+          </label>
         </div>
 
         {{ form.password.errors }}
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
           {{ form.password }}
-          <label class="mdl-textfield__label" for="id_password">Password</label>
+          <label class="mdl-textfield__label" for="id_password">
+            {{ form.password.label }}
+          </label>
         </div>
 
         {{ form.confirm_password.errors }}
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
           {{ form.confirm_password }}
-          <label class="mdl-textfield__label" for="id_confirm_password">Confirm Password</label>
+          <label class="mdl-textfield__label" for="id_confirm_password">
+            {{ form.confirm_password.label }}
+          </label>
         </div>
 
         <div class="form-group">
@@ -64,7 +74,9 @@
         {{ form.phone_number.errors }}
         <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
           {{ form.phone_number }}
-          <label class="mdl-textfield__label" for="id_phone_number">Phone Number</label>
+          <label class="mdl-textfield__label" for="id_phone_number">
+            {{ form.phone_number.label }}
+          </label>
         </div>
 
         <button type="submit" 

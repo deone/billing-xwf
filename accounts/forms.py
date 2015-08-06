@@ -20,11 +20,8 @@ class CreateAccountForm(Common):
         widget=forms.TextInput(attrs={'class': 'mdl-textfield__input', 'pattern': '[A-Z,a-z, ]*'}))
     confirm_password = forms.CharField(label='Confirm Password', max_length=100, 
       widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
-    # We should figure out user's country code somehow, later.
-    country = forms.ChoiceField(label='Country', choices=Subscriber.COUNTRY_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-control'}))
-    phone_number = forms.RegexField(regex=r'^\+?1?\d{9,15}$', label='Phone Number', max_length=15,
-        error_messages = {"invalid": "Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed."}, widget=forms.TextInput(attrs={'class': 'mdl-textfield__input'}))
+    country = forms.ChoiceField(label='Country', choices=Subscriber.COUNTRY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
+    phone_number = forms.IntegerField(label='Phone Number', widget=forms.NumberInput(attrs={'class': 'mdl-textfield__input'}))
 
     def clean(self):
         cleaned_data = super(CreateAccountForm, self).clean()
