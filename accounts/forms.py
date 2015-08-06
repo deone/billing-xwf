@@ -7,18 +7,18 @@ from .helpers import md5_password
 
 class Common(forms.Form):
     # Using EmailField for username is intentional. Username must always be an email address.
-    username = forms.EmailField(label='Email Address', max_length=100, 
+    username = forms.EmailField(label='Email Address', max_length=50, 
         widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
     # We need to ensure strong passwords later.
-    password = forms.CharField(label='Password', max_length=100, 
+    password = forms.CharField(label='Password', max_length=20, 
         widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
 
 class CreateAccountForm(Common):
-    first_name = forms.CharField(label='First Name', max_length=100, 
+    first_name = forms.CharField(label='First Name', max_length=20, 
         widget=forms.TextInput(attrs={'class': 'mdl-textfield__input', 'pattern': '[A-Z,a-z, ]*'}))
-    last_name = forms.CharField(label='Last Name', max_length=100, 
+    last_name = forms.CharField(label='Last Name', max_length=20, 
         widget=forms.TextInput(attrs={'class': 'mdl-textfield__input', 'pattern': '[A-Z,a-z, ]*'}))
-    confirm_password = forms.CharField(label='Confirm Password', max_length=100, 
+    confirm_password = forms.CharField(label='Confirm Password', max_length=20, 
       widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
     country = forms.ChoiceField(label='Country', choices=Subscriber.COUNTRY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     phone_number = forms.IntegerField(label='Phone Number', widget=forms.NumberInput(attrs={'class': 'mdl-textfield__input'}))
