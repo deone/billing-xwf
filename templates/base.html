@@ -10,6 +10,11 @@
   </head>
 
   <body>
-    {% block app_body %}{% endblock %}
+    <div class="layout-transparent mdl-layout mdl-js-layout">
+    {% block app_body %}
+      {% block header %}{% endblock %}
+      {% block main %}{% endblock %}
+    {% endblock %}
+    </div>
   </body>
 </html>
