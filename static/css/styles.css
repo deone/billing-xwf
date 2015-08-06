@@ -1,5 +1,6 @@
 body {
   color: gray;
+  font: 300 16px/22px "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 /* form {
   margin: 0 auto;
@@ -39,4 +40,18 @@ input[type='email'] {
 .auth-form-container h4 {
   text-align: left;
   margin-left: 2.2em;
+}
+form,
+form input {
+  font: 300 16px "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+.errorlist {
+  font-size: 10px;
+  font-weight: 300;
+  margin: 0;
+  padding: 0;
+  margin-right: 5.2em;
+  list-style: none;
+  text-align: right;
+  color: red;
 }
