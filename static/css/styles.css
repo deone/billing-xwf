@@ -17,7 +17,7 @@ form a {
 } */
 
 .layout-transparent {
-  /* background: url('../images/create_bg.jpg') center / cover; */
+  background: url('../images/create_bg.jpg') center / cover;
 }
 .layout-transparent .mdl-layout__header,
 .layout-transparent .mdl-layout__drawer-button {
@@ -30,5 +30,13 @@ form a {
 }
 .auth-form-container button {
   margin-left: 11em;
-  margin-top: 2em;
+}
+input[type='text'],
+input[type='password'],
+input[type='email'] {
+  border-bottom: solid 1px #fff;
+}
+.auth-form-container h4 {
+  text-align: left;
+  margin-left: 2.2em;
 }
