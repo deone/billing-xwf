@@ -40,16 +40,17 @@ class CreateAccountForm(Common):
         return True
 
 class ResetPasswordForm(SetPasswordForm):
+    new_password1 = forms.CharField(label='New Password', widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
+    new_password2 = forms.CharField(label='Confirm New Password', widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
 
-  def save(self):
-      user = super(ResetPasswordForm, self).save()
-      subscriber = Radcheck.objects.get(username=user.username)
-      subscriber.value = md5_password(self.cleaned_data['new_password1'])
-      subscriber.save()
+    def save(self):
+        user = super(ResetPasswordForm, self).save()
+        subscriber = Radcheck.objects.get(username=user.username)
+        subscriber.value = md5_password(self.cleaned_data['new_password1'])
+        subscriber.save()
 
 class PasswordResetEmailForm(PasswordResetForm):
-    email = forms.EmailField(label='Email Address', max_length=50,
-        widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
+    email = forms.EmailField(label='Email Address', max_length=50, widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
 
 class LoginForm(Common):
     pass

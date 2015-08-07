@@ -10,6 +10,8 @@
 </div>
 <form method="post" action="">
   {% csrf_token %}
+  {{ form.non_field_errors }}
+
   <input type="hidden" name="login_url" value="{{login_url}}" />
   <input type="hidden" name="success_url" value="{{continue_url}}" />
 
