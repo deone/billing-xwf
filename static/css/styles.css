@@ -1,9 +1,4 @@
 body {
-  color: gray;
-}
-body,
-form,
-form input {
   font: 300 16px/22px "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .layout-transparent {
@@ -18,9 +13,9 @@ form input {
 .auth-form-container {
   text-align: center;
 }
-.auth-form-container h4 {
+.form-heading {
   text-align: left;
-  margin-left: 2.2em;
+  margin-left: 3.3em;
 }
 .form-actions {
   text-align: right;
@@ -32,6 +27,9 @@ form input {
 }
 .form-actions p {
   margin-bottom: 0;
+}
+input {
+  font: inherit;
 }
 input[type='text'],
 input[type='password'],

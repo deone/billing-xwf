@@ -5,7 +5,9 @@
 {% block title %}Log In{% endblock %}
 
 {% block auth_form %}
-<h4>Log In</h4>
+<div class="form-heading">
+  <h4>Log In</h4>
+</div>
 <form method="post" action="">
   {% csrf_token %}
   <input type="hidden" name="login_url" value="{{login_url}}" />
