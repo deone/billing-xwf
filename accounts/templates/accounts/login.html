@@ -1,28 +1,39 @@
-{% extends 'base.html' %}
+{% extends 'accounts/index.html' %}
 
 {% load staticfiles %}
 
 {% block title %}Log In{% endblock %}
 
-{% block app_body %}
+{% block auth_form %}
+<h4>Log In</h4>
 <form method="post" action="">
   {% csrf_token %}
-  <img src="{% static 'images/spectra_logo.png' %}">
   <input type="hidden" name="login_url" value="{{login_url}}" />
   <input type="hidden" name="success_url" value="{{continue_url}}" />
 
-  <div class="form-group">
-    {{ form.username.errors }}
+  {{ form.username.errors }}
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
     {{ form.username }}
+    <label class="mdl-textfield__label" for="id_username">
+      {{ form.username.label }}
+    </label>
   </div>
 
-  <div class="form-group">
-    {{ form.password.errors }}
+  {{ form.password.errors }}
+  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
     {{ form.password }}
+    <label class="mdl-textfield__label" for="id_password">
+      {{ form.password.label }}
+    </label>
   </div>
 
-  <input class="btn btn-default" type="submit" value="Login">
-  <a href="{% url 'index' %}">Create Account</a>
-  <a href="{% url 'accounts:password_reset' %}">Forgot Password?</a>
+  <div class="form-actions">
+    <button type="submit"
+      class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+        Log In
+    </button>
+    <p><a href="{% url 'accounts:password_reset' %}">Forgot Password?</a></p>
+    <p><a href="{% url 'index' %}">Create Account</a></p>
+  </div>
 </form>
 {% endblock %}
