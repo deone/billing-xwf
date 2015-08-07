@@ -1,6 +1,6 @@
 
 from django import forms
-from django.contrib.auth.forms import SetPasswordForm
+from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm
 
 from .models import *
 from .helpers import md5_password
@@ -46,6 +46,10 @@ class ResetPasswordForm(SetPasswordForm):
       subscriber = Radcheck.objects.get(username=user.username)
       subscriber.value = md5_password(self.cleaned_data['new_password1'])
       subscriber.save()
+
+class PasswordResetEmailForm(PasswordResetForm):
+    email = forms.EmailField(label='Email Address', max_length=50,
+        widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
 
 class LoginForm(Common):
     pass
