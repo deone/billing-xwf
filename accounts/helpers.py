@@ -28,7 +28,6 @@ def meraki_auth(request, email, password, logout_url):
 
 def md5_password(password):
     m = hashlib.md5()
-    byte_encode = bytes(password, 'utf-8')
-    m.update(byte_encode)
+    m.update(password)
 
     return m.hexdigest()
