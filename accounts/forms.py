@@ -33,7 +33,7 @@ class CreateAccountForm(Common):
                 raise forms.ValidationError("Passwords do not match.")
 
     def save(self):
-        Radcheck.objects.create(username=data['username'],
+        Radcheck.objects.create(username=self.cleaned_data['username'],
                                 attribute='MD5-Password',
                                 op=':=',
                                 value=md5_password(self.cleaned_data['password']))
