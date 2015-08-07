@@ -5,30 +5,36 @@
 {% block title %}Log In{% endblock %}
 
 {% block auth_form %}
-<div class="form-heading">
-  <h4>Log In</h4>
-</div>
 <form method="post" action="">
   {% csrf_token %}
+
+  <div class="form-heading">
+    <h4>Log In</h4>
+  </div>
+
   {{ form.non_field_errors }}
 
   <input type="hidden" name="login_url" value="{{login_url}}" />
   <input type="hidden" name="success_url" value="{{continue_url}}" />
 
-  {{ form.username.errors }}
-  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-    {{ form.username }}
-    <label class="mdl-textfield__label" for="id_username">
-      {{ form.username.label }}
-    </label>
+  <div>
+    {{ form.username.errors }}
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+      {{ form.username }}
+      <label class="mdl-textfield__label" for="id_username">
+        {{ form.username.label }}
+      </label>
+    </div>
   </div>
 
-  {{ form.password.errors }}
-  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-    {{ form.password }}
-    <label class="mdl-textfield__label" for="id_password">
-      {{ form.password.label }}
-    </label>
+  <div>
+    {{ form.password.errors }}
+    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+      {{ form.password }}
+      <label class="mdl-textfield__label" for="id_password">
+        {{ form.password.label }}
+      </label>
+    </div>
   </div>
 
   <div class="form-actions">
