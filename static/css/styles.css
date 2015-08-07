@@ -1,5 +1,9 @@
 body {
   color: gray;
+}
+body,
+form,
+form input {
   font: 300 16px/22px "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 .layout-transparent {
@@ -13,6 +17,10 @@ body {
 }
 .auth-form-container {
   text-align: center;
+}
+.auth-form-container h4 {
+  text-align: left;
+  margin-left: 2.2em;
 }
 .form-actions {
   text-align: right;
@@ -30,14 +38,6 @@ input[type='password'],
 input[type='email'],
 input[type='number'] {
   border-bottom: solid 1px #fff;
-}
-.auth-form-container h4 {
-  text-align: left;
-  margin-left: 2.2em;
-}
-form,
-form input {
-  font: 300 16px "Roboto", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 form select {
   width: 74%;
