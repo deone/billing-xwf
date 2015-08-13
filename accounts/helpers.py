@@ -17,7 +17,7 @@ def meraki_auth(request, email, password, logout_url):
     payload = {'username': email, 'password': password, 'success_url': 'http://154.117.0.11/accounts/dashboard/'}
     try:
         r = requests.post(request.POST['login_url'], data=payload)
-        print r
+        print r.text
     except Exception as e:
         key, value = e.args
         print key, value
