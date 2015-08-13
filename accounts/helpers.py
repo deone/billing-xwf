@@ -22,10 +22,11 @@ def meraki_auth(request, email, password, logout_url):
         print key, value
         request.session['auth_message'] = value
     else:
-        print r.text
         request.session['auth_message'] = "You are successfully logged in."
         request.session['logout_url'] = logout_url
 
+    print "Something"
+    print r.text
     return
 
 def md5_password(password):
