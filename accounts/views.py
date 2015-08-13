@@ -45,10 +45,8 @@ def index(request):
 
 def login(request):
     if request.method == 'POST':
-        parts = request.POST['login_url'].split('?')
-        login_url = parts[0]
-        auth_string = parts[1].split('&')[0]
-        logout_url = login_url[:-5] + 'logout/?' + auth_string
+        login_url = request.POST['login_url']
+        success_url = request.POST['success_url']
 
         form = LoginForm(request.POST)
 
@@ -72,7 +70,7 @@ def login(request):
                     # message that he is connected and can end his browsing session
                     # by clicking logout_url. logout_url is stored in Session and retrieved
                     # to construct logout link.
-                    meraki_auth(request, email, password, logout_url)
+                    meraki_auth(request, email, password, success_url)
                 
                 return redirect(settings.LOGIN_REDIRECT_URL)
 
@@ -82,7 +80,7 @@ def login(request):
         if request.GET:
             context.update({
               'login_url': request.GET['login_url'],
-              'continue_url': request.GET['continue_url']
+              'success_url': 'http://154.117.0.10:3000/accounts/dashboard/',
             })
         else:
             raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.")

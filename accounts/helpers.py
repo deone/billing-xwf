@@ -12,9 +12,9 @@ def auth_and_login(request, username, password):
     else:
         return False
 
-def meraki_auth(request, email, password, logout_url):
+def meraki_auth(request, email, password, success_url):
     """ Attempt authenticating with Meraki. Set message in Session. """
-    payload = {'username': email, 'password': password, 'success_url': 'http://154.117.0.10/accounts/dashboard/'}
+    payload = {'username': email, 'password': password, 'success_url': success_url}
     print payload
     try:
         r = requests.post(request.POST['login_url'], data=payload)
@@ -24,7 +24,7 @@ def meraki_auth(request, email, password, logout_url):
         request.session['auth_message'] = value
     else:
         request.session['auth_message'] = "You are successfully logged in."
-        request.session['logout_url'] = logout_url
+        # request.session['logout_url'] = logout_url
 
     print "Something"
     print r.text
