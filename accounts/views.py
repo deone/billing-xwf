@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth import logout as auth_logout
 from django.conf import settings
+from django.http import Http404
 
 from .forms import CreateAccountForm, LoginForm
 from .models import Subscriber
@@ -83,6 +84,8 @@ def login(request):
               'login_url': request.GET['login_url'],
               'continue_url': request.GET['continue_url']
             })
+        else:
+            raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.")
 
     return render(request, 'accounts/login.html', context)
 
