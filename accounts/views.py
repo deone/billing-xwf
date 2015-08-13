@@ -96,10 +96,8 @@ def dashboard(request):
     else:
         context = {}"""
 
-    context = {}
+    context = {'logout_url': request.GET['logout_url']}
     if 'auth_message' in request.session:
         context.update({'auth_message': request.session['auth_message']})
-        if 'logout_url' in request.session:
-            context.update({'logout_url': request.session['logout_url']})
 
     return render(request, 'accounts/dashboard.html', context)
