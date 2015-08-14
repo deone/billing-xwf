@@ -18,8 +18,7 @@ def meraki_auth(request, email, password, success_url):
     try:
         r = requests.post(request.POST['login_url'], data=payload)
     except Exception as e:
-        key, value = e.args
-        request.session['auth_message'] = value
+        print "Error", e
     else:
         request.session['auth_message'] = "You are successfully logged in."
 

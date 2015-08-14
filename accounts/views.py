@@ -80,6 +80,7 @@ def login(request):
         if request.GET:
             context.update({
               'login_url': request.GET['login_url'],
+              # This shouldn't be hardcoded.
               'success_url': 'http://154.117.0.10:3000/accounts/dashboard/',
             })
         else:
@@ -96,7 +97,8 @@ def dashboard(request):
     else:
         context = {}"""
 
-    context = {'logout_url': request.GET['logout_url']}
+    context = {}
+
     if 'auth_message' in request.session:
         context.update({'auth_message': request.session['auth_message']})
 
