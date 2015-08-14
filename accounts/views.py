@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
 from django.conf import settings
 from django.http import Http404
@@ -77,7 +78,7 @@ def login(request):
         context = {'form': form}
     else:
         context = {'form': LoginForm()}
-        if request.GET:
+        if 'login_url' in request.GET:
             context.update({
               'login_url': request.GET['login_url'],
               # This shouldn't be hardcoded.
@@ -88,6 +89,7 @@ def login(request):
 
     return render(request, 'accounts/login.html', context)
 
+@login_required
 def dashboard(request):
     # Let's remember to use User methods here and in the template, instead of attributes.
     """
