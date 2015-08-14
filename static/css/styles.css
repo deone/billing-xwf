@@ -24,13 +24,9 @@ form {
 .form-actions p {
   margin-bottom: 0;
 }
-input {
-  font: inherit;
-}
-input[type='text'],
-input[type='password'],
-input[type='email'],
-input[type='number'] {
+.mdl-textfield__input {
+  display: block;
+  width: 100%;
   border-bottom: solid 1px #fff;
 }
 select {
@@ -42,13 +38,6 @@ select {
   display: block;
   border:1px solid #ccc;
 }
-/* input {
-  display: block;
-  width: 100%;
-}
-select {
-  width: 100%;
-} */
 .errorlist {
   font-size: 10px;
   font-weight: 300;
