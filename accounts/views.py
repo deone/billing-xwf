@@ -49,8 +49,7 @@ def captive(request):
     if 'login_url' in request.GET:
         context.update({
           'login_url': request.GET['login_url'],
-          # This shouldn't be hardcoded.
-          'success_url': 'http://154.117.0.10:3000/accounts/dashboard/',
+          'success_url': settings.SUCCESS_URL,
         })
     else:
         raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.")
@@ -100,8 +99,7 @@ def login(request):
         if 'login_url' in request.GET:
             context.update({
               'login_url': request.GET['login_url'],
-              # This shouldn't be hardcoded.
-              'success_url': 'http://154.117.0.10:3000/accounts/dashboard/',
+              'success_url': settings.SUCCESS_URL,
             })
         else:
             raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.")
