@@ -5,7 +5,7 @@
 {% block title %}Log In{% endblock %}
 
 {% block auth_form %}
-<form method="post" action="">
+<form method="post" action="{{ login_url }}">
 
   {% csrf_token %}
 
@@ -15,7 +15,6 @@
 
   {{ form.non_field_errors }}
 
-  <input type="hidden" name="login_url" value="{{ login_url }}">
   <input type="hidden" name="success_url" value="{{ success_url }}">
 
   <div>

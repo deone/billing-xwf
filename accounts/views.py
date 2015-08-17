@@ -44,6 +44,25 @@ def index(request):
 
     return render(request, 'accounts/index.html', context)
 
+def captive(request):
+    context = {'form': LoginForm()}
+    if 'login_url' in request.GET:
+        context.update({
+          'login_url': request.GET['login_url'],
+          # This shouldn't be hardcoded.
+          'success_url': 'http://154.117.0.10:3000/accounts/dashboard/',
+        })
+    else:
+        raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.")
+
+    return render(request, 'accounts/login.html', context) 
+
+def success(request):
+    if logout_url in request.GET:
+        context = {'logout_url': request.GET['logout_url']}
+
+    return render(request, 'accounts/index.html', context)
+
 def login(request):
     if request.method == 'POST':
         login_url = request.POST['login_url']
