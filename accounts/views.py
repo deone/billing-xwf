@@ -57,7 +57,8 @@ def captive(request):
     return render(request, 'accounts/login.html', context) 
 
 def success(request):
-    if logout_url in request.GET:
+    if 'logout_url' in request.GET:
+        print 'True'
         context = {'logout_url': request.GET['logout_url']}
 
     return render(request, 'accounts/index.html', context)
