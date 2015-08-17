@@ -20,6 +20,8 @@ from accounts import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^captive/$', views.captive, name='captive'),
+    url(r'^success/$', views.success, name='success'),
     url(r'^accounts/', include('accounts.urls', namespace="accounts")),
     url(r'^admin/', include(admin.site.urls)),
 ]
