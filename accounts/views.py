@@ -61,7 +61,7 @@ def success(request):
         print 'True'
         context = {'logout_url': request.GET['logout_url']}
 
-    return render(request, 'accounts/index.html', context)
+    return render(request, 'accounts/success.html', context)
 
 def login(request):
     if request.method == 'POST':
