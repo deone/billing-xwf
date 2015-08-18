@@ -37,7 +37,7 @@ def index(request):
             last_name = form.cleaned_data['last_name']
             country = form.cleaned_data['country']
             country_code = Subscriber.COUNTRY_CODES_MAP[country]
-            phone_number = country_code + str(form.cleaned_data['phone_number'])
+            phone_number = country_code + form.cleaned_data['phone_number'][1:]
 
             # Create user in Django
             user = User.objects.create_user(username, username, password)

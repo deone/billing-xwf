@@ -16,7 +16,7 @@ class CreateAccountForm(forms.Form):
     confirm_password = forms.CharField(label='Confirm Password', max_length=20, 
       widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
     country = forms.ChoiceField(label='Country', choices=Subscriber.COUNTRY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
-    phone_number = forms.IntegerField(label='Phone Number', widget=forms.NumberInput(attrs={'class': 'mdl-textfield__input'}))
+    phone_number = forms.CharField(label='Phone Number', widget=forms.NumberInput(attrs={'class': 'mdl-textfield__input'}))
 
     def clean(self):
         cleaned_data = super(CreateAccountForm, self).clean()
