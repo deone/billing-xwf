@@ -7,7 +7,25 @@ from django.http import Http404
 
 from .forms import CreateAccountForm, LoginForm
 from .models import Subscriber
-from .helpers import auth_and_login, meraki_auth
+from .helpers import auth_and_login
+
+def captive(request):
+    context = {'form': LoginForm()}
+    if 'login_url' in request.GET:
+        context.update({
+          'login_url': request.GET['login_url'],
+          'success_url': settings.SUCCESS_URL,
+        })
+    else:
+        raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.")
+
+    return render(request, 'accounts/login.html', context)
+
+def success(request):
+    if 'logout_url' in request.GET:
+        context = {'logout_url': request.GET['logout_url']}
+
+    return render(request, 'accounts/success.html', context)
 
 def index(request):
     if request.method == 'POST':
@@ -43,68 +61,6 @@ def index(request):
     context = {'form': form}
 
     return render(request, 'accounts/index.html', context)
-
-def captive(request):
-    context = {'form': LoginForm()}
-    if 'login_url' in request.GET:
-        context.update({
-          'login_url': request.GET['login_url'],
-          'success_url': settings.SUCCESS_URL,
-        })
-    else:
-        raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.")
-
-    return render(request, 'accounts/login.html', context) 
-
-def success(request):
-    if 'logout_url' in request.GET:
-        context = {'logout_url': request.GET['logout_url']}
-
-    return render(request, 'accounts/success.html', context)
-
-def login(request):
-    if request.method == 'POST':
-        login_url = request.POST['login_url']
-        success_url = request.POST['success_url']
-
-        form = LoginForm(request.POST)
-
-        if form.is_valid():
-            email = request.POST['username']
-            password = request.POST['password']
-
-            auth = auth_and_login(request, email, password)
-
-            if auth:
-                if not settings.SERV_PKG:
-                    # Go and buy service package at dashboard.
-                    # return redirect(settings.LOGIN_REDIRECT_URL)
-                    pass
-                    # After buying package, do Meraki auth (automatically?? - can we have user who 
-                    # just buys package without intentions of browsing?) 
-                    # and redirect to dashboard displaying message in session.
-                else:
-                    # User has service package, let's attempt Meraki authentication
-                    # After successful Meraki auth, user is redirected to dashboard with
-                    # message that he is connected and can end his browsing session
-                    # by clicking logout_url. logout_url is stored in Session and retrieved
-                    # to construct logout link.
-                    meraki_auth(request, email, password, success_url)
-                
-                return redirect(settings.LOGIN_REDIRECT_URL)
-
-        context = {'form': form}
-    else:
-        context = {'form': LoginForm()}
-        if 'login_url' in request.GET:
-            context.update({
-              'login_url': request.GET['login_url'],
-              'success_url': settings.SUCCESS_URL,
-            })
-        else:
-            raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.")
-
-    return render(request, 'accounts/login.html', context)
 
 @login_required
 def dashboard(request):

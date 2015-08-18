@@ -12,18 +12,6 @@ def auth_and_login(request, username, password):
     else:
         return False
 
-def meraki_auth(request, email, password, success_url):
-    """ Attempt authenticating with Meraki. Set message in Session. """
-    payload = {'username': email, 'password': password, 'success_url': success_url}
-    try:
-        r = requests.post(request.POST['login_url'], data=payload)
-    except Exception as e:
-        print "Error", e
-    else:
-        request.session['auth_message'] = "You are successfully logged in."
-
-    return
-
 def md5_password(password):
     m = hashlib.md5()
     m.update(password)
