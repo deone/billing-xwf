@@ -36,7 +36,14 @@ class AccountsViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Log In')
         self.assertTrue(isinstance(response.context['form'], LoginForm))
+        self.assertTrue('login_url' in response.context)
+        self.assertTrue('success_url' in response.context)
 
     def test_captive_without_get_params(self):
         response = self.client.get(reverse('captive'))
         self.assertEqual(response.status_code, 404)
+
+    def test_success(self):
+        # We need to test this with GET params too
+        response = self.client.get(reverse('success'))
+        self.assertEqual(response.status_code, 200)

@@ -24,6 +24,8 @@ def captive(request):
 def success(request):
     if 'logout_url' in request.GET:
         context = {'logout_url': request.GET['logout_url']}
+    else:
+        context = {}
 
     return render(request, 'accounts/success.html', context)
 
