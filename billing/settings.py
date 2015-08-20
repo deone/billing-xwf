@@ -121,4 +121,6 @@ EMAIL_HOST_PASSWORD = 'maIl@48_'
 
 SUCCESS_URL = "http://154.117.0.10:3000/success/"
 
+LOGIN_URL = 'accounts:login'
+
 from .user_settings import *

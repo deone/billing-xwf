@@ -1,5 +1,6 @@
 from django.test import TestCase
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from .forms import CreateAccountForm
 
@@ -15,7 +16,7 @@ class AccountsViewTests(TestCase):
     def test_dashboard_view_without_authentication(self):
         response = self.client.get(reverse('accounts:dashboard'))
         self.assertRedirects(response, ''.join(
-          [reverse('accounts:login'), '?next=', reverse('accounts:dashboard')]
+          [settings.LOGIN_URL, '?next=', reverse('accounts:dashboard')]
         ))
 
     def test_captive(TestCase):
