@@ -110,7 +110,7 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
-LOGIN_REDIRECT_URL = '/accounts/dashboard/'
+LOGIN_REDIRECT_URL = 'accounts:dashboard'
 
 DEFAULT_FROM_EMAIL = 'test@example.com'
 
