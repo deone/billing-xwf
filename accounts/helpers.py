@@ -1,7 +1,6 @@
 from django.contrib.auth import authenticate, login as auth_login
 
 import hashlib
-import requests
 
 def auth_and_login(request, username, password):
     user = authenticate(username=username, password=password)

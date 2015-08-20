@@ -74,7 +74,4 @@ def dashboard(request):
 
     context = {}
 
-    if 'auth_message' in request.session:
-        context.update({'auth_message': request.session['auth_message']})
-
     return render(request, 'accounts/dashboard.html', context)
