@@ -14,4 +14,9 @@ class AccountsViewTests(TestCase):
 
     def test_dashboard_view_without_authentication(self):
         response = self.client.get(reverse('accounts:dashboard'))
-        self.assertRedirects(response, ''.join([reverse('accounts:login'), '?next=/accounts/dashboard/']))
+        self.assertRedirects(response, ''.join(
+          [reverse('accounts:login'), '?next=', reverse('accounts:dashboard')]
+        ))
+
+    def test_captive(TestCase):
+        pass
