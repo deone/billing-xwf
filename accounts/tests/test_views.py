@@ -3,21 +3,42 @@ from django.test import Client
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.auth.models import User
+from django.contrib.sessions.middleware import SessionMiddleware
 
+from ..models import Subscriber
 from ..helpers import auth_and_login
 from ..forms import CreateAccountForm, LoginForm
+from ..views import index
 
 class AccountsViewTests(TestCase):
     def setUp(self):
-        # self.factory = RequestFactory()
+        self.factory = RequestFactory()
+        self.middleware = SessionMiddleware()
         self.user = User.objects.create_user('a@a.com', 'a@a.com', '12345')
 
-    def test_index(self):
+    def test_index_get(self):
         response = self.client.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Create Account')
         self.assertTemplateUsed(response, 'accounts/index.html')
         self.assertTrue(isinstance(response.context['form'], CreateAccountForm))
+
+    def test_index_post(self):
+        request = self.factory.post(reverse('index'),
+            data={
+              'username': 'b@b.com',
+              'password': '12345',
+              'first_name': 'Ola',
+              'last_name': 'Ade',
+              'confirm_password': '12345',
+              'country': 'GHA',
+              'phone_number': '0542751610'
+              })
+        self.middleware.process_request(request)
+        request.session.save()
+
+        response = index(request)
+        self.assertTrue(response.status_code, 302)
 
     def test_dashboard_without_authentication(self):
         response = self.client.get(reverse('accounts:dashboard'))
