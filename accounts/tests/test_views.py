@@ -1,12 +1,9 @@
-from django.test import TestCase, RequestFactory
-from django.test import Client
+from django.test import TestCase, RequestFactory, Client
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sessions.middleware import SessionMiddleware
 
-from ..models import Subscriber
-from ..helpers import auth_and_login
 from ..forms import CreateAccountForm, LoginForm
 from ..views import index
 
@@ -37,7 +34,9 @@ class AccountsViewTests(TestCase):
         self.middleware.process_request(request)
         request.session.save()
 
+        # When request.method == 'POST', we use CreateAccountForm and auth_and_login. Test these.
         response = index(request)
+
         self.assertTrue(response.status_code, 302)
 
     def test_dashboard_without_authentication(self):
