@@ -4,8 +4,8 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.auth.models import User
 
-from .helpers import auth_and_login
-from .forms import CreateAccountForm, LoginForm
+from ..helpers import auth_and_login
+from ..forms import CreateAccountForm, LoginForm
 
 class AccountsViewTests(TestCase):
     def setUp(self):
@@ -44,6 +44,11 @@ class AccountsViewTests(TestCase):
         self.assertEqual(response.status_code, 404)
 
     def test_success(self):
-        # We need to test this with GET params too
+        get_params = "?logout_url=https%3A%2F%2Fn110.network-auth.com%2Fsplash%2Flogout%3Fkey%3DMM7n9oxmBMVzgXgqkvAbLsLTh2cP7lcZdnhrqPRdHlIqzFHCNSRkxoiKzMGmTDQw7dGd092BdPfUs"
+        response = self.client.get(''.join([reverse('success'), get_params]))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('logout_url' in response.context)
+
+    def test_success_without_get_params(self):
         response = self.client.get(reverse('success'))
         self.assertEqual(response.status_code, 200)
