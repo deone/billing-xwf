@@ -8,7 +8,7 @@ from ..helpers import auth_and_login
 from ..forms import CreateAccountForm, LoginForm
 from ..views import index
 
-class AccountsViewTests(TestCase):
+class AccountsViewsTests(TestCase):
     def setUp(self):
         self.c = Client()
         self.factory = RequestFactory()
