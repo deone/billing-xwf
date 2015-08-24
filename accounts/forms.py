@@ -25,7 +25,7 @@ class CreateAccountForm(forms.Form):
 
         if password and confirm_password:
             if password != confirm_password:
-                raise forms.ValidationError("Passwords do not match.")
+                raise forms.ValidationError("Passwords do not match.", code="password_mismatch")
 
     def save(self):
         Radcheck.objects.create(username=self.cleaned_data['username'],
