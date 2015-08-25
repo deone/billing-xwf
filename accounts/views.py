@@ -2,8 +2,14 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.sites.shortcuts import get_current_site
 from django.conf import settings
+from django.core.mail import send_mail
+from django.core.urlresolvers import reverse
 from django.http import Http404
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 
 from .forms import CreateAccountForm, LoginForm
 from .models import Subscriber
@@ -53,6 +59,15 @@ def index(request):
             # Save username and password in RADIUS radcheck.
             form.save()
 
+            # Build verification link and send email here
+            current_site = get_current_site(request)
+            site_name = current_site.name
+            domain = current_site.domain
+            uid = urlsafe_base64_encode(force_bytes(user.pk))
+            token = default_token_generator.make_token(user)
+            verification_link = "http://%s%s" % (domain, reverse('accounts:verify_email', kwargs={'uidb64': uid, 'token': token}))
+            send_mail('Verify Email', verification_link, settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=False)
+
             # We need to call login here so that our dashboard can have user's details.
             auth = auth_and_login(request, user.username, form.cleaned_data['password'])
             if auth:
@@ -77,3 +92,7 @@ def dashboard(request):
     context = {}
 
     return render(request, 'accounts/dashboard.html', context)
+
+@login_required
+def verify_email(request, uid64=None, token=None):
+    assert uid64 is not None and token is not None
