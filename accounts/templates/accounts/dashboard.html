@@ -1,3 +1,5 @@
 {{ user }}
-{{ auth_message }}
-<a href="{% url 'accounts:logout' %}">Logout of Dashboard</a>
+{% if not verified %}
+  <p>Please verify your account. Can't find verification mail? <a href="#">Resend</a>.</p>
+{% endif %}
+<p><a href="{% url 'accounts:logout' %}">Logout of Dashboard</a></p>

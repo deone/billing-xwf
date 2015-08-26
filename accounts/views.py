@@ -4,6 +4,9 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
 from django.conf import settings
 from django.http import Http404
+from django.utils import timezone
+from django.utils.encoding import force_text
+from django.utils.http import urlsafe_base64_decode
 
 from .forms import CreateAccountForm, LoginForm
 from .models import Subscriber
@@ -81,9 +84,27 @@ def dashboard(request):
         context = {}"""
 
     context = {}
+    if not request.user.subscriber.email_verified:
+        context = {'verified': False}
 
     return render(request, 'accounts/dashboard.html', context)
 
-@login_required
-def verify_email(request, uid64=None, token=None):
-    assert uid64 is not None and token is not None
+def verify_email(request, uidb64=None, token=None):
+    assert uidb64 is not None and token is not None
+    try:
+        uid = force_text(urlsafe_base64_decode(uidb64))
+        user = User.objects.get(pk=uid)
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+
+    a, b = token.split('-')
+
+    if user is not None and len(b) == 20:
+        subscriber = user.subscriber
+        subscriber.email_verified = True
+        subscriber.date_verified = timezone.now()
+        subscriber.save()
+
+        return redirect('accounts:dashboard')
+    else:
+        raise Http404("Verification link incorrect.")
