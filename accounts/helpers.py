@@ -25,12 +25,6 @@ def md5_password(password):
 
     return m.hexdigest()
 
-def send_email(request, user):
-    verification_link = "http://%s%s" % (domain,
-        reverse('accounts:verify_email', kwargs={'uidb64': uid, 'token': token}))
-    send_mail('Verify Email', verification_link,
-        settings.DEFAULT_FROM_EMAIL, [user.email], fail_silently=False)
-
 def make_context(request, user):
     current_site = get_current_site(request)
 
