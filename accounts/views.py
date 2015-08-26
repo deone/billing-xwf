@@ -53,8 +53,11 @@ def index(request):
             # Save username and password in RADIUS radcheck.
             form.save()
 
-            # Build verification link and send email here
-            send_verification_mail(request, user)
+            # Send verification mail here
+            subject_template = 'accounts/verification_subject.txt'
+            email_template = 'accounts/verification_email.html'
+
+            send_verification_mail(request, user, subject_template, email_template)
 
             # We need to call login here so that our dashboard can have user's details.
             auth = auth_and_login(request, user.username, form.cleaned_data['password'])
