@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.utils import timezone
 
-from ..helpers import auth_and_login
+from ..helpers import auth_and_login, make_context
 from ..forms import CreateAccountForm, LoginForm
 from ..views import index
 from ..models import Subscriber
@@ -48,6 +48,7 @@ class AccountsViewsTests(TestCase):
 
     def test_dashboard_login_redirect(self):
         response = self.client.get(reverse('accounts:dashboard'))
+        self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, ''.join(
           [reverse(settings.LOGIN_URL), '?next=', reverse('accounts:dashboard')]
         ))
@@ -55,7 +56,7 @@ class AccountsViewsTests(TestCase):
     def test_dashboard_with_valid_verified_user(self):
         self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
         response = self.c.get(reverse('accounts:dashboard'))
-        self.assertEquals(response.status_code, 200)
+        self.assertEqual(response.status_code, 200)
         self.assertTrue('verified' in response.context)
 
     def test_login(self):
@@ -69,7 +70,7 @@ class AccountsViewsTests(TestCase):
     def test_auth_and_login_fail(self):
         request = self.factory.get(reverse('accounts:login'))
         response = auth_and_login(request, 'b@b.com', '1234')
-        self.assertEquals(response, False)
+        self.assertEqual(response, False)
 
     def test_captive(self):
         get_params = "?login_url=https%3A%2F%2Fn110.network-auth.com%2Fsplash%2Flogin%3Fmauth%3DMMzZUJGqtrsmvkKw6ktCkcNsuBgluav4m2vgE4p-nFliz6lOzP99ntPzZAjvJ_Yit73ZfWwRDIzoEAwzZSuErRpQwdfD0vVA3XjsLLlK8UNiucySNAij7FEqEAF9osnXpWioNcUpyn7BYW8pP5C-wdZAQpLAWS-lv4UTivlfTUn92n4RxMaWG52Q%26continue_url%3Dhttps%253A%252F%252Fn110.network-auth.com%252Fsplash%252Fconnected%253Fhide_terms%253Dtrue&continue_url=https%3A%2F%2Fn110.network-auth.com%2Fsplash%2Fconnected%3Fhide_terms%3Dtrue&ap_mac=00%3A18%3A0a%3Af2%3Ade%3A20&ap_name=Djungle+HQ+02&ap_tags=office-accra+recently-added&client_mac=4c%3A8d%3A79%3Ad7%3A6b%3A28&client_ip=192.168.2.65"
@@ -95,4 +96,25 @@ class AccountsViewsTests(TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_verify_email(self):
-        pass
+        self.subscriber.email_verified = False
+        self.subscriber.date_verified = None
+        self.subscriber.save()
+
+        request = self.factory.get(reverse('index'))
+        context = make_context(request, self.user)
+
+        response = self.client.get(reverse('accounts:verify_email',
+          kwargs={'uidb64':context['uid'], 'token': context['token']}))
+
+        subscriber = Subscriber.objects.get(pk=self.subscriber.pk)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, reverse('accounts:dashboard'),
+            status_code=302, target_status_code=302)
+        self.assertEqual(subscriber.email_verified, True)
+        self.assertNotEqual(subscriber.date_verified, None)
+
+    def test_verify_email_404(self):
+        response = self.client.get(reverse('accounts:verify_email',
+          kwargs={'uidb64':'Ng', 'token': '44l-013ea9fff05d175d1ccb'}))
+        self.assertEqual(response.status_code, 404)
