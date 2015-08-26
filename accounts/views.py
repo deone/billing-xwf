@@ -84,8 +84,8 @@ def dashboard(request):
         context = {}"""
 
     context = {}
-    if not request.user.subscriber.email_verified:
-        context = {'verified': False}
+    if request.user.subscriber.email_verified:
+        context = {'verified': True}
 
     return render(request, 'accounts/dashboard.html', context)
 
