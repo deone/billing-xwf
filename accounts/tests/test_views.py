@@ -3,10 +3,12 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.contrib.sessions.middleware import SessionMiddleware
+from django.utils import timezone
 
 from ..helpers import auth_and_login
 from ..forms import CreateAccountForm, LoginForm
 from ..views import index
+from ..models import Subscriber
 
 class AccountsViewsTests(TestCase):
     def setUp(self):
@@ -14,6 +16,10 @@ class AccountsViewsTests(TestCase):
         self.factory = RequestFactory()
         self.middleware = SessionMiddleware()
         self.user = User.objects.create_user('a@a.com', 'a@a.com', '12345')
+        country = 'GHA'
+        self.subscriber = Subscriber.objects.create(user=self.user,
+            country=country, phone_number=Subscriber.COUNTRY_CODES_MAP[country] + '542751610',
+            email_verified=True, date_verified=timezone.now())
 
     def test_index_get(self):
         response = self.client.get(reverse('index'))
@@ -36,16 +42,21 @@ class AccountsViewsTests(TestCase):
         self.middleware.process_request(request)
         request.session.save()
 
-        # When request.method == 'POST', we use CreateAccountForm and auth_and_login. Test these.
         response = index(request)
 
         self.assertTrue(response.status_code, 302)
 
-    def test_dashboard(self):
+    def test_dashboard_login_redirect(self):
         response = self.client.get(reverse('accounts:dashboard'))
         self.assertRedirects(response, ''.join(
           [reverse(settings.LOGIN_URL), '?next=', reverse('accounts:dashboard')]
         ))
+
+    def test_dashboard_with_valid_verified_user(self):
+        self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
+        response = self.c.get(reverse('accounts:dashboard'))
+        self.assertEquals(response.status_code, 200)
+        self.assertTrue('verified' in response.context)
 
     def test_login(self):
         response = self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
@@ -82,3 +93,6 @@ class AccountsViewsTests(TestCase):
     def test_success_without_get_params(self):
         response = self.client.get(reverse('success'))
         self.assertEqual(response.status_code, 200)
+
+    def test_verify_email(self):
+        pass
