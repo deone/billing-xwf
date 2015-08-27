@@ -7,7 +7,7 @@ from django.utils import timezone
 
 from ..helpers import auth_and_login, make_context
 from ..forms import CreateAccountForm, LoginForm
-from ..views import index
+from ..views import index, resend_mail
 from ..models import Subscriber
 
 class AccountsViewsTests(TestCase):
@@ -118,3 +118,9 @@ class AccountsViewsTests(TestCase):
         response = self.client.get(reverse('accounts:verify_email',
           kwargs={'uidb64':'Ng', 'token': '44l-013ea9fff05d175d1ccb'}))
         self.assertEqual(response.status_code, 404)
+
+    def test_resend_mail(self):
+        request = self.factory.get(reverse('index'))
+        request.user = self.user
+        response = resend_mail(request)
+        self.assertEqual(response.status_code, 302)
