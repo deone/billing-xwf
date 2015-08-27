@@ -1,5 +1,5 @@
 {{ user }}
 {% if not verified %}
-  <p>Please verify your account. Can't find verification mail? <a href="#">Resend</a>.</p>
+  <p>Please verify your account. Can't find verification mail? <a href="{% url 'resend_mail' %}">Resend</a>.</p>
 {% endif %}
 <p><a href="{% url 'accounts:logout' %}">Logout of Dashboard</a></p>

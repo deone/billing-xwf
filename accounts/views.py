@@ -106,5 +106,7 @@ def verify_email(request, uidb64=None, token=None):
     else:
         raise Http404("Verification link incorrect.")
 
+@login_required
 def resend_mail(request):
-    pass
+    send_verification_mail(request, request.user)
+    return redirect('accounts:dashboard')
