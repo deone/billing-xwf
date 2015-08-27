@@ -36,11 +36,13 @@ def make_context(request, user):
         'protocol': 'http',
     }
 
-def send_verification_mail(request, user, subject_template_name, email_template_name):
+def send_verification_mail(request, user):
     context = make_context(request, user)
-    subject = loader.render_to_string(subject_template_name, context)
+    subject_template = 'accounts/verification_subject.txt'
+    email_template = 'accounts/verification_email.html'
+    subject = loader.render_to_string(subject_template, context)
     subject = ''.join(subject.splitlines())
-    body = loader.render_to_string(email_template_name, context)
+    body = loader.render_to_string(email_template, context)
 
     email_message = EmailMultiAlternatives(subject, body, settings.DEFAULT_FROM_EMAIL, [user.email])
 

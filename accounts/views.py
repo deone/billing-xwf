@@ -56,11 +56,8 @@ def index(request):
             # Save username and password in RADIUS radcheck.
             form.save()
 
-            # Send verification mail here
-            subject_template = 'accounts/verification_subject.txt'
-            email_template = 'accounts/verification_email.html'
-
-            send_verification_mail(request, user, subject_template, email_template)
+            # Send verification mail here - we might need to wrap this in a try - except block
+            send_verification_mail(request, user)
 
             # We need to call login here so that our dashboard can have user's details.
             auth = auth_and_login(request, user.username, form.cleaned_data['password'])
@@ -108,3 +105,6 @@ def verify_email(request, uidb64=None, token=None):
         return redirect('accounts:dashboard')
     else:
         raise Http404("Verification link incorrect.")
+
+def resend_mail(request):
+    pass
