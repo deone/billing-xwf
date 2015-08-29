@@ -8,12 +8,8 @@ class SubscriberInline(admin.StackedInline):
     can_delete = False
     verbose_name_plural = 'subscribers'
 
-@admin.register(Radcheck)
-class RadcheckAdmin(admin.ModelAdmin):
-    pass
-
 class UserAdmin(UserAdmin):
     inlines = (SubscriberInline, )
 
 admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
+# admin.site.register(User, UserAdmin)
