@@ -109,6 +109,16 @@ class Radcheck(models.Model):
     def __str__(self):
         return self.username
 
+class GroupAccount(models.Model):
+    name = models.CharField(max_length=50)
+    max_user_quantity = models.IntegerField()
+
+    class Meta:
+      verbose_name = "Group Account"
+
+    def __str__(self):
+        return self.name
+
 class Subscriber(models.Model):
     GHANA = 'GHA'
     NIGERIA = 'NGA'
@@ -140,6 +150,7 @@ class Subscriber(models.Model):
     }
 
     user = models.OneToOneField(User)
+    group = models.ForeignKey(GroupAccount, null=True)
     country = models.CharField(max_length=3, choices=COUNTRY_CHOICES, default=GHANA)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     phone_number = models.CharField(validators=[phone_regex], max_length=15) # validators should be a list
@@ -160,6 +171,7 @@ class AccessPoint(models.Model):
     )
 
     name = models.CharField(max_length=30)
+    group = models.ForeignKey(GroupAccount, null=True)
     mac_address = models.CharField(max_length=17)
     status = models.CharField(max_length=3, choices=STATUS_CHOICES, default=PRIVATE)
 
