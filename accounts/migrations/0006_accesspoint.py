@@ -17,7 +17,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=30)),
                 ('mac_address', models.CharField(max_length=17)),
-                ('status', models.BooleanField(default=False)),
+                ('status', models.CharField(default=b'PRV', max_length=3, choices=[(b'', b'Select Status'), (b'PRV', b'Private'), (b'PUB', b'Public')])),
             ],
         ),
     ]
