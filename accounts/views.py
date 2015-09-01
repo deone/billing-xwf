@@ -14,6 +14,12 @@ from .helpers import auth_and_login, send_verification_mail
 
 def captive(request):
     context = {'form': LoginForm()}
+
+    if 'error_message' in request.GET:
+        context.update({
+            'error_message': request.GET['error_message']
+        })
+
     if 'login_url' in request.GET:
         context.update({
           'login_url': request.GET['login_url'],
