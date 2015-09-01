@@ -5,7 +5,7 @@ from django import forms
 
 from .models import *
 
-help_text = """Required. 100 characters or fewer. Letters, digits and @/./+/-/_ only."""
+help_text = "Required. 100 characters or fewer. Letters, digits and @/./+/-/_ only."
 
 class SubscriberInline(admin.StackedInline):
     model = Subscriber
