@@ -149,7 +149,19 @@ class Subscriber(models.Model):
     def __str__(self):
         return self.user.username
 
-""" class AccessPoint(models.Model):
-    name = models.CharField()
+class AccessPoint(models.Model):
+    PRIVATE = 'PRV'
+    PUBLIC = 'PUB'
+
+    STATUS_CHOICES = (
+        ('', 'Select Status'),
+        (PRIVATE, 'Private'),
+        (PUBLIC, 'Public'),
+    )
+
+    name = models.CharField(max_length=30)
     mac_address = models.CharField(max_length=17)
-    status = models.BooleanField() """
+    status = models.CharField(max_length=3, choices=STATUS_CHOICES, default=PRIVATE)
+
+    def __str__(self):
+        return self.name
