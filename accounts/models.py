@@ -180,14 +180,17 @@ class AccessPoint(models.Model):
 
     def allows(self, user):
         try:
-            getattr(user, 'group')
+            getattr(user.subscriber, 'group')
         except AttributeError:
             if self.status == 'PUB':
                 return True
             else:
                 return False
         else:
-            pass
+            if self.group == user.subscriber.group or self.status == 'PUB':
+                return True
+            else:
+                return False
 
     def __str__(self):
         return self.name
