@@ -51,8 +51,6 @@ class AccountsUserAdmin(UserAdmin):
 class AccessPointAdminForm(forms.ModelForm):
 
     def clean(self):
-        if self.cleaned_data['status'] == 'PRV' and self.cleaned_data['group'] == None:
-            raise forms.ValidationError("Private Access Points must belong to a group.")
         if self.cleaned_data['group'] is not None and self.cleaned_data['status'] == 'PUB':
             raise forms.ValidationError("Group Access Points cannot be public.")
 
