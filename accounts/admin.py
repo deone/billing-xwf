@@ -48,8 +48,21 @@ class AccountsUserAdmin(UserAdmin):
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )
 
+class AccessPointAdminForm(forms.ModelForm):
+
+    def clean(self):
+        if self.cleaned_data['status'] == 'PRV' and self.cleaned_data['group'] == None:
+            raise forms.ValidationError("Private Access Points must belong to a group.")
+        if self.cleaned_data['group'] is not None and self.cleaned_data['status'] == 'PUB':
+            raise forms.ValidationError("Group Access Points cannot be public.")
+
+        return self.cleaned_data
+
+class AccessPointAdmin(admin.ModelAdmin):
+    form = AccessPointAdminForm
+
 admin.site.unregister(User)
 admin.site.unregister(Group)
 admin.site.register(User, AccountsUserAdmin)
 admin.site.register(GroupAccount)
-admin.site.register(AccessPoint)
+admin.site.register(AccessPoint, AccessPointAdmin)
