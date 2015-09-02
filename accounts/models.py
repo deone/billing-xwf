@@ -179,18 +179,15 @@ class AccessPoint(models.Model):
         verbose_name = "Access Point"
 
     def allows(self, user):
-        try:
-            getattr(user.subscriber, 'group')
-        except AttributeError:
-            if self.status == 'PUB':
-                return True
-            else:
-                return False
+        if self.status == 'PUB':
+            return True # AP is public, all users can connect
         else:
-            if self.group == user.subscriber.group or self.status == 'PUB':
-                return True
-            else:
-                return False
+            if user.subscriber.group is not None and self.group is not None: # This ensures we return False even if AP doesn't belong to a group
+                if user.subscriber.group == self.group:
+                    return True # Users in same group as AP can connect
+                else:
+                    return False # Users in other groups can not connect to this AP
+            return False # AP is private, only users who belong to AP group can connect
 
     def __str__(self):
         return self.name
