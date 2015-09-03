@@ -50,11 +50,16 @@ class AccountsUserAdmin(UserAdmin):
 
 class AccessPointAdminForm(forms.ModelForm):
 
+    class Meta:
+        model = AccessPoint
+        fields = ('name', 'group', 'mac_address', 'status')
+
     def clean(self):
-        if self.cleaned_data['group'] is not None and self.cleaned_data['status'] == 'PUB':
+        cleaned_data = super(AccessPointAdminForm, self).clean()
+        if cleaned_data['group'] is not None and cleaned_data['status'] == 'PUB':
             raise forms.ValidationError("Group Access Points cannot be public.")
 
-        return self.cleaned_data
+        return cleaned_data
 
 class AccessPointAdmin(admin.ModelAdmin):
     form = AccessPointAdminForm
