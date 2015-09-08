@@ -12,6 +12,10 @@ help_text = "Required. 100 characters or fewer. Letters, digits and @/./+/-/_ on
 
 class SubscriberAdminForm(forms.ModelForm):
 
+    class Meta:
+        model = Subscriber
+        exclude = ()
+
     def save(self, commit=True):
         subscriber = super(SubscriberAdminForm, self).save(commit=False)
         country_code = Subscriber.COUNTRY_CODES_MAP[subscriber.country]
