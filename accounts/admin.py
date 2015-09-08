@@ -15,14 +15,16 @@ class SubscriberAdminForm(forms.ModelForm):
     def save(self, commit=True):
         subscriber = super(SubscriberAdminForm, self).save(commit=False)
         country_code = Subscriber.COUNTRY_CODES_MAP[subscriber.country]
+
         if not subscriber.phone_number.startswith(country_code):
             subscriber.phone_number = country_code + subscriber.phone_number[1:]
-        subscriber.user.email = subscriber.user.username
-        subscriber.user.save()
-        subscriber.save()
 
-        if not subscriber.email_verified:
+            subscriber.user.email = subscriber.user.username
+            subscriber.user.save()
+
             send_verification_mail(subscriber.user)
+
+        subscriber.save()
 
         return subscriber
 
