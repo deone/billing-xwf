@@ -6,11 +6,24 @@ from django.utils.translation import ugettext_lazy as _
 from django import forms
 
 from .models import *
+from .helpers import send_verification_mail
 
 help_text = "Required. 100 characters or fewer. Letters, digits and @/./+/-/_ only."
 
+class SubscriberAdminForm(forms.ModelForm):
+
+    def save(self, commit=True):
+        subscriber = super(SubscriberAdminForm, self).save(commit=False)
+        country_code = Subscriber.COUNTRY_CODES_MAP[subscriber.country]
+        if not subscriber.phone_number.startswith(country_code):
+            subscriber.phone_number = country_code + subscriber.phone_number[1:]
+        # We need to send verification mail here.
+        # send_verification_mail(request, request.user)
+        subscriber.save()
+
 class SubscriberInline(admin.StackedInline):
     model = Subscriber
+    form = SubscriberAdminForm
     can_delete = False
     verbose_name_plural = 'subscribers'
 
