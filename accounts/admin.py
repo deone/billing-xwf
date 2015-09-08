@@ -17,9 +17,11 @@ class SubscriberAdminForm(forms.ModelForm):
         country_code = Subscriber.COUNTRY_CODES_MAP[subscriber.country]
         if not subscriber.phone_number.startswith(country_code):
             subscriber.phone_number = country_code + subscriber.phone_number[1:]
-        # We need to send verification mail here.
-        # send_verification_mail(request, request.user)
         subscriber.save()
+        return subscriber
+
+        # subscriber = super(SubscriberAdminForm, self).save(commit)
+        # subscriber.save()
 
 class SubscriberInline(admin.StackedInline):
     model = Subscriber
