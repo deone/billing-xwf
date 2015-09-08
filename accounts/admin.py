@@ -17,11 +17,14 @@ class SubscriberAdminForm(forms.ModelForm):
         country_code = Subscriber.COUNTRY_CODES_MAP[subscriber.country]
         if not subscriber.phone_number.startswith(country_code):
             subscriber.phone_number = country_code + subscriber.phone_number[1:]
+        subscriber.user.email = subscriber.user.username
+        subscriber.user.save()
         subscriber.save()
-        return subscriber
 
-        # subscriber = super(SubscriberAdminForm, self).save(commit)
-        # subscriber.save()
+        if not subscriber.email_verified:
+            send_verification_mail(subscriber.user)
+
+        return subscriber
 
 class SubscriberInline(admin.StackedInline):
     model = Subscriber
@@ -58,7 +61,7 @@ class AccountsUserAdmin(UserAdmin):
     
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
-        (_('Personal info'), {'fields': ('first_name', 'last_name', 'email')}),
+        (_('Personal info'), {'fields': ('first_name', 'last_name')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     )

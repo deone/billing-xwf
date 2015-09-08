@@ -63,7 +63,7 @@ def index(request):
             form.save()
 
             # Send verification mail here - we might need to wrap this in a try - except block
-            send_verification_mail(request, user)
+            send_verification_mail(user)
 
             # We need to call login here so that our dashboard can have user's details.
             auth = auth_and_login(request, user.username, form.cleaned_data['password'])
