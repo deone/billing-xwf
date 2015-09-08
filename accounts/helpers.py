@@ -1,6 +1,6 @@
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.tokens import default_token_generator
-from django.contrib.sites.shortcuts import get_current_site
+from django.contrib.sites.models import Site
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.core.mail import EmailMultiAlternatives
@@ -25,8 +25,8 @@ def md5_password(password):
 
     return m.hexdigest()
 
-def make_context(request, user):
-    current_site = get_current_site(request)
+def make_context(user):
+    current_site = Site.objects.get_current()
 
     return {
         'domain': current_site.domain,
@@ -36,8 +36,8 @@ def make_context(request, user):
         'protocol': 'http',
     }
 
-def send_verification_mail(request, user):
-    context = make_context(request, user)
+def send_verification_mail(user):
+    context = make_context(user)
     subject_template = 'accounts/verification_subject.txt'
     email_template = 'accounts/verification_email.html'
     subject = loader.render_to_string(subject_template, context)
