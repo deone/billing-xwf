@@ -38,6 +38,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'accounts',
 )
 
@@ -123,5 +124,7 @@ EMAIL_HOST_PASSWORD = 'maIl@48_'
 SUCCESS_URL = "http://154.117.0.10:3000/success/"
 
 LOGIN_URL = 'accounts:login'
+
+SITE_ID = 1
 
 from .user_settings import *
