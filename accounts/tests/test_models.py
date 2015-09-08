@@ -14,13 +14,13 @@ class AccountsModelsTests(TestCase):
         country_code = Subscriber.COUNTRY_CODES_MAP[self.country]
         phone_number = country_code + '8029299274'
         subscriber = Subscriber.objects.create(user=self.user, country=self.country, phone_number=phone_number)
-        self.assertEquals(subscriber.__str__(), 'a@a.com')
+        self.assertEqual(subscriber.__str__(), 'a@a.com')
 
     def test_radcheck(self):
         entry = Radcheck.objects.create(
             username=self.user.username, attribute='MD5-Password', op=':=', value=md5_password('12345')
         )
-        self.assertEquals(entry.__str__(), 'a@a.com')
+        self.assertEqual(entry.__str__(), 'a@a.com')
 
 class GroupAccountTests(TestCase):
 
@@ -28,7 +28,7 @@ class GroupAccountTests(TestCase):
         self.group = GroupAccount.objects.create(name='CUG', max_user_quantity=10)
 
     def test__str__(self):
-        self.assertEquals(self.group.__str__(), 'CUG')
+        self.assertEqual(self.group.__str__(), 'CUG')
 
 class AccessPointTests(TestCase):
 
@@ -41,7 +41,7 @@ class AccessPointTests(TestCase):
         Subscriber.objects.create(user=self.user, country='GHA', phone_number='+233542751610')
 
     def test__str__(self):
-        self.assertEquals(self.ap.__str__(), 'Djungle HQ 02')
+        self.assertEqual(self.ap.__str__(), 'Djungle HQ 02')
 
     def test_allows_ap_private(self):
         self.assertFalse(self.ap.allows(self.user))
