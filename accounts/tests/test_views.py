@@ -107,7 +107,7 @@ class AccountsViewsTests(TestCase):
         self.subscriber.save()
 
         request = self.factory.get(reverse('index'))
-        context = make_context(request, self.user)
+        context = make_context(self.user)
 
         response = self.client.get(reverse('accounts:verify_email',
           kwargs={'uidb64':context['uid'], 'token': context['token']}))

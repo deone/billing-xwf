@@ -114,5 +114,5 @@ def verify_email(request, uidb64=None, token=None):
 
 @login_required
 def resend_mail(request):
-    send_verification_mail(request, request.user)
+    send_verification_mail(request.user)
     return redirect('accounts:dashboard')
