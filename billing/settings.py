@@ -120,7 +120,7 @@ DEFAULT_FROM_EMAIL = 'test@example.com'
 EMAIL_HOST = 'smtp.webfaction.com'
 EMAIL_PORT = 25
 EMAIL_HOST_USER = 'deone'
-EMAIL_HOST_PASSWORD = 'maIl@48_'
+EMAIL_HOST_PASSWORD = 't3dftSuNMIU0'
 
 SUCCESS_URL = "http://154.117.0.10:3000/success/"
 
