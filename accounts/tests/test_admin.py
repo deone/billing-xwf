@@ -5,12 +5,15 @@ from django.contrib.auth.models import User
 from ..models import GroupAccount
 from ..admin import AccountsUserCreationForm, AccountsUserChangeForm, AccessPointAdminForm, SubscriberAdminForm
 
+from packages.models import Package
+
 class AdminFormsTest(TestCase):
 
     def setUp(self):
         self.help_text = "Required. 100 characters or fewer. Letters, digits and @/./+/-/_ only."
         self.user = User.objects.create(username='b@b.com', password='12345')
-        self.ga = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
+        self.package = Package.objects.create(package_type='Daily', volume='3', speed='1.5')
+        self.ga = GroupAccount.objects.create(name='CUG', package=self.package, max_no_of_users=10)
     
     def test_accounts_user_creation_form(self):
         a = AccountsUserCreationForm()

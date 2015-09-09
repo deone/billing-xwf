@@ -9,6 +9,7 @@ import django.core.validators
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('packages', '0001_initial'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
@@ -31,6 +32,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('name', models.CharField(max_length=50)),
                 ('max_no_of_users', models.IntegerField(verbose_name=b'Max. No. of users')),
+                ('package', models.ForeignKey(to='packages.Package')),
             ],
             options={
                 'verbose_name': 'Group Account',
