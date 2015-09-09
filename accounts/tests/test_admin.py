@@ -10,7 +10,7 @@ class AdminFormsTest(TestCase):
     def setUp(self):
         self.help_text = "Required. 100 characters or fewer. Letters, digits and @/./+/-/_ only."
         self.user = User.objects.create(username='b@b.com', password='12345')
-        self.ga = GroupAccount.objects.create(name='CUG', max_user_quantity=10)
+        self.ga = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
     
     def test_accounts_user_creation_form(self):
         a = AccountsUserCreationForm()
