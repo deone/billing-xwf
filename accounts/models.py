@@ -111,7 +111,7 @@ class Radcheck(models.Model):
 
 class GroupAccount(models.Model):
     name = models.CharField(max_length=50)
-    max_user_quantity = models.IntegerField()
+    max_no_of_users = models.IntegerField(verbose_name="Max. No. of users")
 
     class Meta:
       verbose_name = "Group Account"
