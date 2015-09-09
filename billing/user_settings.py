@@ -16,3 +16,9 @@ VOLUME_CHOICES = (
     ('25', '25GB'),
     ('Unlimited', 'Unlimited'),
 )
+
+PACKAGE_TYPES = (
+    ('Daily', 'Daily'),
+    ('Weekly', 'Weekly'),
+    ('Monthly', 'Monthly'),
+)
