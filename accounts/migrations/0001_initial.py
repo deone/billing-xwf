@@ -14,6 +14,29 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
+            name='AccessPoint',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=30)),
+                ('mac_address', models.CharField(max_length=17)),
+                ('status', models.CharField(default=b'PRV', max_length=3, choices=[(b'', b'Select Status'), (b'PRV', b'Private'), (b'PUB', b'Public')])),
+            ],
+            options={
+                'verbose_name': 'Access Point',
+            },
+        ),
+        migrations.CreateModel(
+            name='GroupAccount',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('name', models.CharField(max_length=50)),
+                ('max_no_of_users', models.IntegerField(verbose_name=b'Max. No. of users')),
+            ],
+            options={
+                'verbose_name': 'Group Account',
+            },
+        ),
+        migrations.CreateModel(
             name='Nas',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
@@ -144,9 +167,18 @@ class Migration(migrations.Migration):
             name='Subscriber',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('is_group_admin', models.BooleanField(default=False, help_text=b'Designates whether this user can create other users in the same group.', verbose_name=b'Group Admin Status')),
                 ('country', models.CharField(default=b'GHA', max_length=3, choices=[(b'', b'Select Country'), (b'GHA', b'Ghana'), (b'NGA', b'Nigeria'), (b'CIV', b"Cote d'Ivoire"), (b'COD', b'Congo DR'), (b'CMR', b'Cameroun'), (b'AGO', b'Angola'), (b'GAB', b'Gabon')])),
-                ('phone_number', models.CharField(blank=True, max_length=15, validators=[django.core.validators.RegexValidator(regex=b'^\\+?1?\\d{9,15}$', message=b"Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")])),
+                ('phone_number', models.CharField(max_length=15, validators=[django.core.validators.RegexValidator(regex=b'^\\+?1?\\d{9,15}$', message=b"Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")])),
+                ('email_verified', models.BooleanField(default=False, help_text=b'Designates whether this user has confirmed they own specified email address.')),
+                ('date_verified', models.DateTimeField(null=True, blank=True)),
+                ('group', models.ForeignKey(blank=True, to='accounts.GroupAccount', null=True)),
                 ('user', models.OneToOneField(to=settings.AUTH_USER_MODEL)),
             ],
+        ),
+        migrations.AddField(
+            model_name='accesspoint',
+            name='group',
+            field=models.ForeignKey(blank=True, to='accounts.GroupAccount', null=True),
         ),
     ]

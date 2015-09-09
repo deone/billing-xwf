@@ -11,7 +11,7 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Packages',
+            name='Package',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('package_type', models.CharField(max_length=7, choices=[(b'Daily', b'Daily'), (b'Weekly', b'Weekly'), (b'Monthly', b'Monthly')])),
