@@ -4,8 +4,6 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
 
-from packages.models import Package
-
 class Nas(models.Model):
     nasname = models.CharField(max_length=128)
     shortname = models.CharField(max_length=32, blank=True, null=True)
@@ -113,7 +111,6 @@ class Radcheck(models.Model):
 
 class GroupAccount(models.Model):
     name = models.CharField(max_length=50)
-    package = models.ForeignKey(Package)
     max_no_of_users = models.IntegerField(verbose_name="Max. No. of users")
 
     class Meta:
