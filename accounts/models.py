@@ -20,7 +20,7 @@ class Nas(models.Model):
         db_table = 'nas'
 
 class Radacct(models.Model):
-    radacctid = models.BigIntegerField(primary_key=True)
+    # radacctid = models.BigIntegerField(primary_key=True)
     acctsessionid = models.CharField(max_length=64)
     acctuniqueid = models.CharField(unique=True, max_length=32)
     username = models.CharField(max_length=64)

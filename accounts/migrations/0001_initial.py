@@ -58,7 +58,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Radacct',
             fields=[
-                ('radacctid', models.BigIntegerField(serialize=False, primary_key=True)),
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('acctsessionid', models.CharField(max_length=64)),
                 ('acctuniqueid', models.CharField(unique=True, max_length=32)),
                 ('username', models.CharField(max_length=64)),
