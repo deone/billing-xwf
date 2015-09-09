@@ -152,11 +152,11 @@ class Subscriber(models.Model):
     user = models.OneToOneField(User)
     group = models.ForeignKey(GroupAccount, null=True, blank=True)
     is_group_admin = models.BooleanField(default=False, verbose_name="Group Admin Status",
-        help_text="Designates whether the user can create other users in the same group")
+        help_text="Designates whether this user can create other users in the same group.")
     country = models.CharField(max_length=3, choices=COUNTRY_CHOICES, default=GHANA)
     phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
     phone_number = models.CharField(validators=[phone_regex], max_length=15) # validators should be a list
-    email_verified = models.BooleanField(default=False)
+    email_verified = models.BooleanField(default=False, help_text="Designates whether this user has confirmed they own specified email address.")
     date_verified = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
