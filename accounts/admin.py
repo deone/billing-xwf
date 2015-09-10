@@ -55,6 +55,14 @@ class SubscriberAdminForm(forms.ModelForm):
         model = Subscriber
         exclude = ()
 
+    def clean(self):
+        cleaned_data = super(SubscriberAdminForm, self).clean()
+
+        if cleaned_data['group'] is None or cleaned_data['is_group_admin'] is False:
+            raise forms.ValidationError("You must set the group and group admin status of this user.")
+
+        return cleaned_data
+
     def save(self, commit=True):
         subscriber = super(SubscriberAdminForm, self).save(commit=False)
         country_code = Subscriber.COUNTRY_CODES_MAP[subscriber.country]
@@ -65,7 +73,7 @@ class SubscriberAdminForm(forms.ModelForm):
             subscriber.user.email = subscriber.user.username
             subscriber.user.save()
 
-            send_verification_mail(subscriber.user)
+            # send_verification_mail(subscriber.user)
 
         subscriber.save()
 
@@ -104,12 +112,13 @@ class AccountsUserAdmin(UserAdmin):
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
     ) """
     
+    """
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         (_('Personal info'), {'fields': ('first_name', 'last_name')}),
         (_('Permissions'), {'fields': ('is_active', 'is_staff', 'is_superuser')}),
         (_('Important dates'), {'fields': ('last_login', 'date_joined')}),
-    )
+    ) """
 
 class AccessPointAdminForm(forms.ModelForm):
 
