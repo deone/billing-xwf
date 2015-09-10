@@ -38,8 +38,9 @@ class GroupAccountAdminForm(forms.ModelForm):
             if not group_account.package_start_time:
                 group_account.package_start_time = now
 
-            if now > group_account.package_stop_time:
-                group_account.package_stop_time = now + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[group_account.package.package_type])
+            if not group_account.package_stop_time:
+                package_period = timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[group_account.package.package_type])
+                group_account.package_stop_time = group_account.package_start_time + package_period
 
         group_account.save()
 
