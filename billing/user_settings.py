@@ -17,8 +17,18 @@ VOLUME_CHOICES = (
     ('Unlimited', 'Unlimited'),
 )
 
+DAILY = 'Daily'
+WEEKLY = 'Weekly'
+MONTHLY = 'Monthly'
+
 PACKAGE_TYPES = (
-    ('Daily', 'Daily'),
-    ('Weekly', 'Weekly'),
-    ('Monthly', 'Monthly'),
+    (DAILY, 'Daily'),
+    (WEEKLY, 'Weekly'),
+    (MONTHLY, 'Monthly'),
 )
+
+PACKAGE_TYPES_HOURS_MAP = {
+    DAILY: 1 * 24,
+    WEEKLY: 7 * 24,
+    MONTHLY: 30 * 24
+}

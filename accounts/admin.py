@@ -3,12 +3,50 @@ from django.contrib.auth.admin import UserAdmin
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django.contrib.auth.models import User, Group
 from django.utils.translation import ugettext_lazy as _
+from django.utils import timezone
+from django.conf import settings
 from django import forms
 
 from .models import *
 from .helpers import send_verification_mail
 
+from datetime import timedelta
+
 help_text = "Required. 100 characters or fewer. Letters, digits and @/./+/-/_ only."
+
+class GroupAccountAdminForm(forms.ModelForm):
+
+    class Meta:
+        model = GroupAccount
+        exclude = ()
+
+    def clean(self):
+        cleaned_data = super(GroupAccountAdminForm, self).clean()
+
+        if not cleaned_data['package_status']:
+            group_account = GroupAccount.objects.get(name__exact=cleaned_data['name'])
+            if group_account.package_start_time:
+                raise forms.ValidationError("You cannot switch off a package.")
+
+        return cleaned_data
+
+    def save(self, commit=True):
+        group_account = super(GroupAccountAdminForm, self).save(commit=False)
+
+        if group_account.package_status:
+            now = timezone.now()
+            if not group_account.package_start_time:
+                group_account.package_start_time = now
+
+            if now > group_account.package_stop_time:
+                group_account.package_stop_time = now + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[group_account.package.package_type])
+
+        group_account.save()
+
+        return group_account
+
+class GroupAccountAdmin(admin.ModelAdmin):
+    form = GroupAccountAdminForm
 
 class SubscriberAdminForm(forms.ModelForm):
 
@@ -91,5 +129,5 @@ class AccessPointAdmin(admin.ModelAdmin):
 admin.site.unregister(User)
 admin.site.unregister(Group)
 admin.site.register(User, AccountsUserAdmin)
-admin.site.register(GroupAccount)
+admin.site.register(GroupAccount, GroupAccountAdmin)
 admin.site.register(AccessPoint, AccessPointAdmin)
