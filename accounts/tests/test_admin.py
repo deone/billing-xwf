@@ -5,7 +5,7 @@ from django.utils import timezone
 from django.conf import settings
 
 from ..models import GroupAccount
-from ..admin import AccountsUserCreationForm, AccountsUserChangeForm, AccessPointAdminForm, SubscriberAdminForm, GroupAccountAdminForm
+from ..admin import AccountsUserCreationForm, AccountsUserChangeForm, AccessPointAdminForm, SubscriberAdminForm
 
 from packages.models import Package
 
@@ -27,8 +27,7 @@ class GroupAccountRelatedTests(TestCase):
     def setUp(self):
         self.user = User.objects.create(username='b@b.com', password='12345')
         self.package = Package.objects.create(package_type='Daily', volume='3', speed='1.5')
-        self.ga = GroupAccount.objects.create(name='CUG', package=self.package,
-            max_no_of_users=10, package_start_time=timezone.now(), package_status=True)
+        self.ga = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
 
     def test_access_point_admin_form_invalid(self):
         form = AccessPointAdminForm({'name': 'HQ', 'group': self.ga.pk, 'mac_address': '00:18:0A:F2:DE:20', 'status': 'PUB'})
@@ -55,15 +54,3 @@ class GroupAccountRelatedTests(TestCase):
         subscriber = form.save()
         self.assertEqual(subscriber.phone_number, '+233542751610')
         self.assertEqual(subscriber.user.email, 'b@b.com')
-
-    def test_group_account_admin_form_invalid(self):
-        form  = GroupAccountAdminForm({'package_status': False, 'name': 'CUG', 'max_no_of_users': 50, 'package': self.package.pk})
-        self.assertFalse(form.is_valid())
-
-    def test_group_account_admin_form_valid(self):
-        data = {'package_status': True, 'name': 'LUG', 'max_no_of_users': 50, 'package': self.package.pk}
-        form  = GroupAccountAdminForm(data)
-        self.assertTrue(form.is_valid())
-        form.save()
-        ga = GroupAccount.objects.get(name__exact=data['name'])
-        self.assertEqual((ga.package_stop_time - ga.package_start_time).days, settings.PACKAGE_TYPES_HOURS_MAP[self.package.package_type] / 24)

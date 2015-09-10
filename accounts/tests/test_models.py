@@ -28,7 +28,7 @@ class GroupAccountTests(TestCase):
 
     def setUp(self):
         self.package = Package.objects.create(package_type='Daily', volume='3', speed='1.5')
-        self.group = GroupAccount.objects.create(name='CUG', package=self.package, max_no_of_users=10)
+        self.group = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
 
     def test__str__(self):
         self.assertEqual(self.group.__str__(), 'CUG')
@@ -37,8 +37,8 @@ class AccessPointTests(TestCase):
 
     def setUp(self):
         self.package = Package.objects.create(package_type='Daily', volume='3', speed='1.5')
-        self.group1 = GroupAccount.objects.create(name='CUG', package=self.package, max_no_of_users=10)
-        self.group2 = GroupAccount.objects.create(name='LUG', package=self.package, max_no_of_users=10)
+        self.group1 = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
+        self.group2 = GroupAccount.objects.create(name='LUG', max_no_of_users=10)
         self.ap = AccessPoint.objects.create(name='Djungle HQ 02', mac_address='00:18:0A:F2:DE:20')
         self.user = User.objects.create_user('a@a.com', 'a@a.com', '12345')
 
