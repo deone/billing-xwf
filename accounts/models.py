@@ -113,11 +113,7 @@ class Radcheck(models.Model):
 
 class GroupAccount(models.Model):
     name = models.CharField(max_length=50)
-    package = models.ForeignKey(Package)
     max_no_of_users = models.IntegerField(verbose_name="Max. No. of users")
-    package_status = models.BooleanField(default=False)
-    package_start_time = models.DateTimeField(null=True, blank=True, editable=False)
-    package_stop_time = models.DateTimeField(null=True, blank=True, editable=False)
 
     class Meta:
       verbose_name = "Group Account"
