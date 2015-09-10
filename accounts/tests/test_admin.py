@@ -1,9 +1,10 @@
 from django import forms
 from django.test import TestCase
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 from ..models import GroupAccount
-from ..admin import AccountsUserCreationForm, AccountsUserChangeForm, AccessPointAdminForm, SubscriberAdminForm
+from ..admin import AccountsUserCreationForm, AccountsUserChangeForm, AccessPointAdminForm, SubscriberAdminForm, GroupAccountAdminForm
 
 from packages.models import Package
 
@@ -13,7 +14,8 @@ class AdminFormsTest(TestCase):
         self.help_text = "Required. 100 characters or fewer. Letters, digits and @/./+/-/_ only."
         self.user = User.objects.create(username='b@b.com', password='12345')
         self.package = Package.objects.create(package_type='Daily', volume='3', speed='1.5')
-        self.ga = GroupAccount.objects.create(name='CUG', package=self.package, max_no_of_users=10)
+        self.ga = GroupAccount.objects.create(name='CUG', package=self.package,
+            max_no_of_users=10, package_start_time=timezone.now(), package_status=True)
     
     def test_accounts_user_creation_form(self):
         a = AccountsUserCreationForm()
@@ -48,3 +50,7 @@ class AdminFormsTest(TestCase):
         subscriber = form.save()
         self.assertEqual(subscriber.phone_number, '+233542751610')
         self.assertEqual(subscriber.user.email, 'b@b.com')
+
+    def test_group_account_admin_form_invalid(self):
+        form  = GroupAccountAdminForm({'package_status': False, 'name': 'CUG', 'max_no_of_users': 10, 'package': self.package})
+        self.assertFalse(form.is_valid())
