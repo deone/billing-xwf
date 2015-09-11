@@ -14,11 +14,11 @@ class AdminFormsTest(TestCase):
     def setUp(self):
         self.help_text = "Required. 100 characters or fewer. Letters, digits and @/./+/-/_ only."
     
-    def test_accounts_user_creation_form(self):
+    def test_AccountsUserCreationForm(self):
         a = AccountsUserCreationForm()
         self.assertEqual(a.fields['username'].help_text, self.help_text)
 
-    def test_accounts_user_change_form(self):
+    def test_AccountsUserChangeForm(self):
         a = AccountsUserChangeForm()
         self.assertEqual(a.fields['username'].help_text, self.help_text)
 
@@ -29,19 +29,19 @@ class GroupAccountRelatedTests(TestCase):
         self.package = Package.objects.create(package_type='Daily', volume='3', speed='1.5')
         self.ga = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
 
-    def test_access_point_admin_form_invalid(self):
+    def test_AccessPointAdminForm_invalid(self):
         form = AccessPointAdminForm({'name': 'HQ', 'group': self.ga.pk, 'mac_address': '00:18:0A:F2:DE:20', 'status': 'PUB'})
         self.assertFalse(form.is_valid())
         # print form.is_valid()
         # with self.assertRaises(forms.ValidationError):
             # form.clean()
 
-    def test_access_point_admin_form_valid(self):
+    def test_AccessPointAdminForm_valid(self):
         form = AccessPointAdminForm({'name': 'HQ', 'group': self.ga.pk, 'mac_address': '00:18:0A:F2:DE:20', 'status': 'PRV'})
         self.assertTrue(form.is_valid())
         # print form.clean()
 
-    def test_subscriber_admin_form_invalid(self):
+    def test_SubscriberAdminForm_invalid(self):
         form = SubscriberAdminForm({
           'phone_number': '0542751610',
           'group': self.ga.pk,
@@ -53,7 +53,7 @@ class GroupAccountRelatedTests(TestCase):
           'id': None})
         self.assertFalse(form.is_valid())
 
-    def test_subscriber_admin_form_valid(self):
+    def test_SubscriberAdminForm_save(self):
         form = SubscriberAdminForm({
           'phone_number': '0542751610',
           'group': self.ga.pk,
