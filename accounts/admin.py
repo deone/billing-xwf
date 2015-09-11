@@ -8,7 +8,7 @@ from django.conf import settings
 from django import forms
 
 from .models import *
-from .helpers import send_verification_mail
+from .helpers import send_verification_mail, md5_password
 
 from datetime import timedelta
 
@@ -32,13 +32,14 @@ class SubscriberAdminForm(forms.ModelForm):
         subscriber = super(SubscriberAdminForm, self).save(commit=False)
         country_code = Subscriber.COUNTRY_CODES_MAP[subscriber.country]
 
-        if not subscriber.phone_number.startswith(country_code):
-            subscriber.phone_number = country_code + subscriber.phone_number[1:]
+        if subscriber.phone_number:
+            if not subscriber.phone_number.startswith(country_code):
+                subscriber.phone_number = country_code + subscriber.phone_number[1:]
 
-            subscriber.user.email = subscriber.user.username
-            subscriber.user.save()
+                # subscriber.user.email = subscriber.user.username
+                # subscriber.user.save()
 
-            send_verification_mail(subscriber.user)
+                # send_verification_mail(subscriber.user)
 
         subscriber.save()
 
@@ -54,7 +55,25 @@ class AccountsUserCreationForm(UserCreationForm):
 
     def __init__(self, *args, **kwargs):
         super(AccountsUserCreationForm, self).__init__(*args, **kwargs)
+        self.fields['username'].label = "Email Address"
         self.fields['username'].help_text = help_text
+
+    def save(self, commit=True):
+        user = super(AccountsUserCreationForm, self).save(commit=False)
+        user.email = user.username
+        user.save()
+
+        Subscriber.objects.create(user=user)
+
+        md5 = md5_password(self.cleaned_data['password1'])
+        Radcheck.objects.create(username=self.cleaned_data['username'],
+                                attribute='MD5-Password',
+                                op=':=',
+                                value=md5)
+
+        send_verification_mail(user)
+
+        return user
 
 class AccountsUserChangeForm(UserChangeForm):
 
