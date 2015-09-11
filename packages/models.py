@@ -1,5 +1,6 @@
 from django.db import models
 from django.conf import settings
+from django.utils import timezone
 
 from accounts.models import GroupAccount
 
@@ -27,5 +28,5 @@ class GroupPackageSubscription(models.Model):
     def __str__(self):
         return "%s %s %s" % (self.group.name, self.package.package_type, self.stop)
 
-    def is_valid(self):
-        pass
+    def is_valid(self, now=timezone.now()):
+        return self.stop - now
