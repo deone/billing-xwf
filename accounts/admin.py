@@ -32,14 +32,13 @@ class SubscriberAdminForm(forms.ModelForm):
         subscriber = super(SubscriberAdminForm, self).save(commit=False)
         country_code = Subscriber.COUNTRY_CODES_MAP[subscriber.country]
 
-        if self.cleaned_data['phone_number']:
-            if not subscriber.phone_number.startswith(country_code):
-                subscriber.phone_number = country_code + subscriber.phone_number[1:]
+        if not subscriber.phone_number.startswith(country_code):
+            subscriber.phone_number = country_code + subscriber.phone_number[1:]
 
-                # subscriber.user.email = subscriber.user.username
-                # subscriber.user.save()
+            # subscriber.user.email = subscriber.user.username
+            # subscriber.user.save()
 
-                # send_verification_mail(subscriber.user)
+            # send_verification_mail(subscriber.user)
 
         subscriber.save()
 
