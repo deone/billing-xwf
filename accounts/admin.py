@@ -62,8 +62,6 @@ class AccountsUserCreationForm(UserCreationForm):
         user.email = user.username
         user.save()
 
-        Subscriber.objects.create(user=user)
-
         md5 = md5_password(self.cleaned_data['password1'])
         Radcheck.objects.create(username=self.cleaned_data['username'],
                                 attribute='MD5-Password',
@@ -78,6 +76,7 @@ class AccountsUserChangeForm(UserChangeForm):
 
     def __init__(self, *args, **kwargs):
         super(AccountsUserChangeForm, self).__init__(*args, **kwargs)
+        self.fields['username'].label = "Email Address"
         self.fields['username'].help_text = help_text
 
 class AccountsUserAdmin(UserAdmin):
