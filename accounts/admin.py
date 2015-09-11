@@ -38,7 +38,7 @@ class SubscriberAdminForm(forms.ModelForm):
             subscriber.user.email = subscriber.user.username
             subscriber.user.save()
 
-            # send_verification_mail(subscriber.user)
+            send_verification_mail(subscriber.user)
 
         subscriber.save()
 

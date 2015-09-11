@@ -29,4 +29,4 @@ class GroupPackageSubscription(models.Model):
         return "%s %s %s" % (self.group.name, self.package.package_type, self.stop.strftime('%B %d %Y, %I:%M%p'))
 
     def is_valid(self, now=timezone.now()):
-        return self.stop - now
+        return self.stop > now

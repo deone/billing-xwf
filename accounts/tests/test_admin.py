@@ -41,7 +41,19 @@ class GroupAccountRelatedTests(TestCase):
         self.assertTrue(form.is_valid())
         # print form.clean()
 
-    def test_subscriber_admin_form(self):
+    def test_subscriber_admin_form_invalid(self):
+        form = SubscriberAdminForm({
+          'phone_number': '0542751610',
+          'group': self.ga.pk,
+          'is_group_admin': False,
+          'country': 'GHA',
+          'date_verified': None,
+          'user': self.user.pk,
+          'email_verified': False,
+          'id': None})
+        self.assertFalse(form.is_valid())
+
+    def test_subscriber_admin_form_valid(self):
         form = SubscriberAdminForm({
           'phone_number': '0542751610',
           'group': self.ga.pk,
@@ -51,6 +63,7 @@ class GroupAccountRelatedTests(TestCase):
           'user': self.user.pk,
           'email_verified': False,
           'id': None})
+        self.assertTrue(form.is_valid())
         subscriber = form.save()
         self.assertEqual(subscriber.phone_number, '+233542751610')
         self.assertEqual(subscriber.user.email, 'b@b.com')

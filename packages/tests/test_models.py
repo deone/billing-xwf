@@ -19,3 +19,6 @@ class PackagesModelsTests(TestCase):
 
     def test_gps__str__(self):
         self.assertEqual(self.gps.__str__(), 'CUG Daily ' + self.gps.stop.strftime('%B %d %Y, %I:%M%p'))
+
+    def test_gps_is_valid(self):
+        self.assertEqual(self.gps.is_valid(), True)
