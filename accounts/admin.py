@@ -10,8 +10,6 @@ from django import forms
 from .models import *
 from .helpers import send_verification_mail, md5_password
 
-from datetime import timedelta
-
 help_text = "Required. 100 characters or fewer. Letters, digits and @/./+/-/_ only."
 
 class SubscriberAdminForm(forms.ModelForm):
