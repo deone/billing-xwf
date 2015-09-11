@@ -32,7 +32,7 @@ class SubscriberAdminForm(forms.ModelForm):
         subscriber = super(SubscriberAdminForm, self).save(commit=False)
         country_code = Subscriber.COUNTRY_CODES_MAP[subscriber.country]
 
-        if subscriber.phone_number:
+        if self.cleaned_data['phone_number']:
             if not subscriber.phone_number.startswith(country_code):
                 subscriber.phone_number = country_code + subscriber.phone_number[1:]
 
