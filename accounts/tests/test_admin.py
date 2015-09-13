@@ -66,4 +66,3 @@ class GroupAccountRelatedTests(TestCase):
         self.assertTrue(form.is_valid())
         subscriber = form.save()
         self.assertEqual(subscriber.phone_number, '+233542751610')
-        self.assertEqual(subscriber.user.email, 'b@b.com')

@@ -102,8 +102,6 @@ class Radcheck(models.Model):
     value = models.CharField(max_length=253)
 
     class Meta:
-        # For tests involving models with managed=False, it’s up to you to
-        # ensure the correct tables are created as part of the test setup.
         db_table = 'radcheck'
 
     def __str__(self):

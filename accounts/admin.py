@@ -33,11 +33,6 @@ class SubscriberAdminForm(forms.ModelForm):
         if not subscriber.phone_number.startswith(country_code):
             subscriber.phone_number = country_code + subscriber.phone_number[1:]
 
-            # subscriber.user.email = subscriber.user.username
-            # subscriber.user.save()
-
-            # send_verification_mail(subscriber.user)
-
         subscriber.save()
 
         return subscriber
