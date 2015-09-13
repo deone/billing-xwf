@@ -28,11 +28,26 @@ class CreateAccountForm(forms.Form):
                 raise forms.ValidationError("Passwords do not match.", code="password_mismatch")
 
     def save(self):
-        Radcheck.objects.create(username=self.cleaned_data['username'],
+        username = self.cleaned_data['username']
+        password = self.cleaned_data['password']
+        first_name = self.cleaned_data['first_name']
+        last_name = self.cleaned_data['last_name']
+        country = self.cleaned_data['country']
+        country_code = Subscriber.COUNTRY_CODES_MAP[country]
+        phone_number = country_code + self.cleaned_data['phone_number'][1:]
+
+        user = User.objects.create_user(username, username, password)
+        user.first_name = first_name
+        user.last_name = last_name
+        user.save()
+
+        Subscriber.objects.create(user=user, country=country, phone_number=phone_number)
+
+        Radcheck.objects.create(username=username,
                                 attribute='MD5-Password',
                                 op=':=',
-                                value=md5_password(self.cleaned_data['password']))
-        return True
+                                value=md5_password(password))
+        return user
 
 class ResetPasswordForm(SetPasswordForm):
     new_password1 = forms.CharField(label='New Password', widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))

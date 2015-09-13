@@ -42,25 +42,7 @@ def index(request):
     if request.method == 'POST':
         form = CreateAccountForm(request.POST)
         if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
-            first_name = form.cleaned_data['first_name']
-            last_name = form.cleaned_data['last_name']
-            country = form.cleaned_data['country']
-            country_code = Subscriber.COUNTRY_CODES_MAP[country]
-            phone_number = country_code + form.cleaned_data['phone_number'][1:]
-
-            # Create user in Django
-            user = User.objects.create_user(username, username, password)
-            user.first_name = first_name
-            user.last_name = last_name
-            user.save()
-
-            # Save phone_number in Subscriber.
-            Subscriber.objects.create(user=user, country=country, phone_number=phone_number)
-
-            # Save username and password in RADIUS radcheck.
-            form.save()
+            user = form.save()
 
             # Send verification mail here - we might need to wrap this in a try - except block
             # send_verification_mail(user)
