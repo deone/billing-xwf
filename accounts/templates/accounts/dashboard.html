@@ -2,4 +2,8 @@
 {% if not verified %}
   <p>Please verify your account. Can't find verification mail? <a href="{% url 'resend_mail' %}">Resend</a>.</p>
 {% endif %}
+{% if request.user.subscriber.is_group_admin %}
+  <p>Create User</p>
+  {{ form.as_ul }}
+{% endif %}
 <p><a href="{% url 'accounts:logout' %}">Logout of Dashboard</a></p>
