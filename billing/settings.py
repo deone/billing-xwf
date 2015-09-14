@@ -117,10 +117,10 @@ LOGIN_REDIRECT_URL = 'accounts:dashboard'
 
 DEFAULT_FROM_EMAIL = 'test@example.com'
 
-EMAIL_HOST = 'smtp.webfaction.com'
+EMAIL_HOST = '74.55.86.74'
 EMAIL_PORT = 25
 EMAIL_HOST_USER = 'deone'
-EMAIL_HOST_PASSWORD = 't3dftSuNMIU0'
+EMAIL_HOST_PASSWORD = '@dune369'
 
 SUCCESS_URL = "http://154.117.0.10:3000/success/"
 
