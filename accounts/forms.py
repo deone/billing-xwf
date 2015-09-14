@@ -45,11 +45,12 @@ class CreateAccountForm(forms.Form):
         user.last_name = last_name
         user.save()
 
-        if self.user and self.user.subscriber.is_group_admin:
-            Subscriber.objects.create(user=user, group=self.user.subscriber.group,
-                country=country, phone_number=phone_number)
-        else:
-            Subscriber.objects.create(user=user, country=country, phone_number=phone_number)
+        if not self.user.is_anonymous():
+            if self.user.subscriber and self.user.subscriber.is_group_admin:
+                Subscriber.objects.create(user=user, group=self.user.subscriber.group,
+                    country=country, phone_number=phone_number)
+            else:
+                Subscriber.objects.create(user=user, country=country, phone_number=phone_number)
 
         Radcheck.objects.create(username=username,
                                 attribute='MD5-Password',

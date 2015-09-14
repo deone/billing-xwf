@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
 from django.conf import settings
@@ -40,7 +40,7 @@ def success(request):
 
 def index(request):
     if request.method == 'POST':
-        form = CreateAccountForm(request.POST, user=request.user)
+        form = CreateAccountForm(request.POST, user=AnonymousUser())
         if form.is_valid():
             user = form.save()
 
@@ -81,6 +81,8 @@ def dashboard(request):
 
         if request.user.subscriber.is_group_admin:
             form = CreateAccountForm(user=request.user)
+        else:
+            form = None
 
     if form:
         context.update({'form': form})
