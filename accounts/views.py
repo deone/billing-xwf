@@ -40,7 +40,7 @@ def success(request):
 
 def index(request):
     if request.method == 'POST':
-        form = CreateAccountForm(request.POST)
+        form = CreateAccountForm(request.POST, user=request.user)
         if form.is_valid():
             user = form.save()
 
@@ -52,7 +52,7 @@ def index(request):
             if auth:
                 return redirect('accounts:dashboard')
     else:
-        form = CreateAccountForm()
+        form = CreateAccountForm(user=request.user)
   
     context = {'form': form}
 
@@ -70,11 +70,20 @@ def dashboard(request):
 
     context = {}
 
-    if request.user.subscriber.email_verified:
-        context = {'verified': True}
+    if request.method == 'POST':
+        form = CreateAccountForm(request.POST, user=request.user)
+        if form.is_valid():
+            user = form.save()
+            # send_verification_mail(user)
+    else:
+        if request.user.subscriber.email_verified:
+            context.update({'verified': True})
 
-    if request.user.subscriber.is_group_admin:
-        context.update({'form': CreateAccountForm})
+        if request.user.subscriber.is_group_admin:
+            form = CreateAccountForm(user=request.user)
+
+    if form:
+        context.update({'form': form})
 
     return render(request, 'accounts/dashboard.html', context)
 

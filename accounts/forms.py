@@ -18,6 +18,10 @@ class CreateAccountForm(forms.Form):
     country = forms.ChoiceField(label='Country', choices=Subscriber.COUNTRY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
     phone_number = forms.CharField(label='Phone Number', widget=forms.NumberInput(attrs={'class': 'mdl-textfield__input'}))
 
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(CreateAccountForm, self).__init__(*args, **kwargs)
+
     def clean(self):
         cleaned_data = super(CreateAccountForm, self).clean()
         password = cleaned_data.get("password")
@@ -41,7 +45,11 @@ class CreateAccountForm(forms.Form):
         user.last_name = last_name
         user.save()
 
-        Subscriber.objects.create(user=user, country=country, phone_number=phone_number)
+        if self.user and self.user.subscriber.is_group_admin:
+            Subscriber.objects.create(user=user, group=self.user.subscriber.group,
+                country=country, phone_number=phone_number)
+        else:
+            Subscriber.objects.create(user=user, country=country, phone_number=phone_number)
 
         Radcheck.objects.create(username=username,
                                 attribute='MD5-Password',
