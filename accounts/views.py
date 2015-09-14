@@ -45,7 +45,7 @@ def index(request):
             user = form.save()
 
             # Send verification mail here - we might need to wrap this in a try - except block
-            # send_verification_mail(user)
+            send_verification_mail(user)
 
             # We need to call login here so that our dashboard can have user's details.
             auth = auth_and_login(request, user.username, form.cleaned_data['password'])
@@ -74,7 +74,7 @@ def dashboard(request):
         form = CreateAccountForm(request.POST, user=request.user)
         if form.is_valid():
             user = form.save()
-            # send_verification_mail(user)
+            send_verification_mail(user)
     else:
         if request.user.subscriber.email_verified:
             context.update({'verified': True})
