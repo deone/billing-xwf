@@ -10,7 +10,10 @@ class Package(models.Model):
     speed = models.CharField(max_length=3, choices=settings.SPEED_CHOICES, default='1.5')
 
     def __str__(self):
-        return "%s %sGB" % (self.package_type, self.volume)
+        if self.volume != "Unlimited":
+            return "%s %sGB" % (self.package_type, self.volume)
+        else:
+            return "%s %s" % (self.package_type, self.volume)
 
 """ class PackageSubscription(models.Model):
     pass """
