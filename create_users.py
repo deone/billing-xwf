@@ -11,7 +11,7 @@ from django.contrib.auth.models import User
 from accounts.models import Subscriber, Radcheck
 from accounts.helpers import md5_password
 
-_file = "emails_.csv"
+_file = "emails.csv"
 
 # We can use python to process the raw data file.
 
