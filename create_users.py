@@ -1,6 +1,8 @@
 #! /usr/bin/env python
 
 import os
+import string
+import random
 
 import django
 
@@ -8,7 +10,7 @@ os.environ.setdefault("DJANGO_SETTINGS_MODULE", "billing.settings")
 django.setup()
 
 from django.contrib.auth.models import User
-from accounts.models import Subscriber, Radcheck
+from accounts.models import Subscriber, Radcheck, GroupAccount
 from accounts.helpers import md5_password
 
 _file = "test.csv"
@@ -37,4 +39,4 @@ for line in lines:
     Radcheck.objects.create(user=user, username=email, attribute='MD5-Password', op=':=', value=md5_password(password))
 
     with open('done.csv', 'a') as f:
-        f.write(email + ',' + password)
+        f.write(email + ',' + password + '\n')
