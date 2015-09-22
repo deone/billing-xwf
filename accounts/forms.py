@@ -49,8 +49,8 @@ class CreateAccountForm(forms.Form):
             if self.user.subscriber and self.user.subscriber.is_group_admin:
                 Subscriber.objects.create(user=user, group=self.user.subscriber.group,
                     country=country, phone_number=phone_number)
-            else:
-                Subscriber.objects.create(user=user, country=country, phone_number=phone_number)
+        else:
+            Subscriber.objects.create(user=user, country=country, phone_number=phone_number)
 
         Radcheck.objects.create(user=user,
                                 username=username,
