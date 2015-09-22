@@ -35,6 +35,8 @@ class SubscriberAdminForm(forms.ModelForm):
 
         subscriber.save()
 
+        send_verification_mail(subscriber.user)
+
         return subscriber
 
 class SubscriberInline(admin.StackedInline):
@@ -60,8 +62,6 @@ class AccountsUserCreationForm(UserCreationForm):
                                 attribute='MD5-Password',
                                 op=':=',
                                 value=md5)
-
-        send_verification_mail(user)
 
         return user
 
