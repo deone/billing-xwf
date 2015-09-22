@@ -6,10 +6,10 @@ from ..forms import CreateAccountForm, ResetPasswordForm
 from ..models import Radcheck
 from ..helpers import md5_password
 
-class CreateAccountFormTest(SimpleTestCase):
+class CreateAccountFormTest(TestCase):
 
-    def test_clean(self):
-        data = {
+    def setUp(self):
+        self.data = {
               'username': 'a@a.com',
               'first_name': 'Ola',
               'last_name': 'Ade',
@@ -19,11 +19,14 @@ class CreateAccountFormTest(SimpleTestCase):
               'phone_number': '08029299274'
             }
 
-        form = CreateAccountForm(data)
+    def test_clean(self):
+        form = CreateAccountForm(self.data)
 
-        result = form.is_valid()
-        self.assertEqual(result, False)
+        self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['__all__'][0], 'Passwords do not match.')
+
+    def test_save(self):
+        pass
 
 class ResetPasswordFormTest(TestCase):
 

@@ -1,7 +1,7 @@
 from django.test import TestCase, RequestFactory, Client
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
 from django.utils import timezone
 
@@ -39,6 +39,7 @@ class AccountsViewsTests(TestCase):
               'country': 'GHA',
               'phone_number': '0542751610'
               })
+        request.user = AnonymousUser
         self.middleware.process_request(request)
         request.session.save()
 
