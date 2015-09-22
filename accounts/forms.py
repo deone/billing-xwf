@@ -52,7 +52,8 @@ class CreateAccountForm(forms.Form):
             else:
                 Subscriber.objects.create(user=user, country=country, phone_number=phone_number)
 
-        Radcheck.objects.create(username=username,
+        Radcheck.objects.create(user=user,
+                                username=username,
                                 attribute='MD5-Password',
                                 op=':=',
                                 value=md5_password(password))

@@ -61,7 +61,8 @@ class AccountsUserCreationForm(UserCreationForm):
         # to figure that out because user.save() is called before subscriber.save().
         # For now, we have to create Radcheck objects even for Spectra admin users.
         md5 = md5_password(self.cleaned_data['password1'])
-        Radcheck.objects.create(username=self.cleaned_data['username'],
+        Radcheck.objects.create(user=user,
+                                username=self.cleaned_data['username'],
                                 attribute='MD5-Password',
                                 op=':=',
                                 value=md5)
