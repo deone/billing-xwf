@@ -4,10 +4,8 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.conf import settings
 
-from ..models import GroupAccount
-from ..admin import AccountsUserCreationForm, AccountsUserChangeForm, AccessPointAdminForm, SubscriberAdminForm
-
-from packages.models import Package
+from ..models import GroupAccount, Subscriber
+from ..admin import AccountsUserCreationForm, AccountsUserChangeForm, AccessPointAdminForm, SubscriberAdminForm, user_group
 
 class AdminFormsTest(TestCase):
 
@@ -18,6 +16,12 @@ class AdminFormsTest(TestCase):
         a = AccountsUserCreationForm()
         self.assertEqual(a.fields['username'].help_text, self.help_text)
 
+    def test_AccountsUserCreationForm_save(self):
+        form = AccountsUserCreationForm({'username': 'a@a.com', 'password1': '12345', 'password2': '12345'})
+        user = form.save()
+        self.assertEqual(user.email, 'a@a.com')
+        self.assertEqual(user.radcheck.__str__(), 'a@a.com')
+
     def test_AccountsUserChangeForm(self):
         a = AccountsUserChangeForm()
         self.assertEqual(a.fields['username'].help_text, self.help_text)
@@ -26,7 +30,6 @@ class GroupAccountRelatedTests(TestCase):
 
     def setUp(self):
         self.user = User.objects.create(username='b@b.com', password='12345')
-        self.package = Package.objects.create(package_type='Daily', volume='3', speed='1.5')
         self.ga = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
 
     def test_AccessPointAdminForm_invalid(self):
@@ -66,3 +69,9 @@ class GroupAccountRelatedTests(TestCase):
         self.assertTrue(form.is_valid())
         subscriber = form.save()
         self.assertEqual(subscriber.phone_number, '+233542751610')
+
+    def test_user_group(self):
+        Subscriber.objects.create(user=self.user, group=self.ga, is_group_admin=True,
+            country='GHA', phone_number='+233542751610')
+        group_name = user_group(self.user)
+        self.assertEqual(group_name, 'CUG')
