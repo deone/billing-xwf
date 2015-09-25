@@ -79,13 +79,15 @@ class AccountsUserChangeForm(UserChangeForm):
 def user_group(obj):
     return obj.subscriber.group.name
 user_group.short_description = 'Group'
-user_group.admin_order_field = 'subscriber__group'
+user_group.admin_order_field = 'subscriber__group__name'
 
 class AccountsUserAdmin(UserAdmin):
     form = AccountsUserChangeForm
     add_form = AccountsUserCreationForm
     inlines = (SubscriberInline, )
     list_display = ('username', 'first_name', 'last_name', 'is_staff', 'date_joined', user_group)
+    list_filter = ('is_staff', 'is_superuser', 'is_active', 'subscriber__is_group_admin')
+    search_fields = ('username', 'first_name', 'last_name', 'email', 'subscriber__group__name')
     ordering = ('date_joined',)
 
     """
