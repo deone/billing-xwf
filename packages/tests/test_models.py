@@ -17,6 +17,10 @@ class PackagesModelsTests(TestCase):
     def test_package__str__(self):
         self.assertEqual(self.package.__str__(), 'Daily 3GB')
 
+    def test_package__str__unlimited_volume(self):
+        package = Package.objects.create(package_type='Monthly', volume='Unlimited', speed='1.5')
+        self.assertEqual(package.__str__(), 'Monthly Unlimited')
+
     def test_gps__str__(self):
         self.assertEqual(self.gps.__str__(), 'CUG Daily ' + self.gps.stop.strftime('%B %d %Y, %I:%M%p'))
 
