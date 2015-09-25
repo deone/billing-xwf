@@ -77,7 +77,9 @@ class AccountsUserChangeForm(UserChangeForm):
         self.fields['username'].help_text = help_text
 
 def user_group(obj):
-    return obj.subscriber.group.name
+    if obj.subscriber is not None:
+        if obj.subscriber.group is not None:
+            return obj.subscriber.group.name
 user_group.short_description = 'Group'
 user_group.admin_order_field = 'subscriber__group__name'
 
@@ -88,7 +90,7 @@ class AccountsUserAdmin(UserAdmin):
     list_display = ('username', 'first_name', 'last_name', 'is_staff', 'date_joined', user_group)
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'subscriber__is_group_admin')
     search_fields = ('username', 'first_name', 'last_name', 'email', 'subscriber__group__name')
-    ordering = ('date_joined',)
+    ordering = ('-date_joined',)
 
     """
     Original
