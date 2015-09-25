@@ -76,10 +76,17 @@ class AccountsUserChangeForm(UserChangeForm):
         self.fields['username'].label = "Email Address"
         self.fields['username'].help_text = help_text
 
+def user_group(obj):
+    return obj.subscriber.group.name
+user_group.short_description = 'Group'
+user_group.admin_order_field = 'subscriber__group'
+
 class AccountsUserAdmin(UserAdmin):
     form = AccountsUserChangeForm
     add_form = AccountsUserCreationForm
     inlines = (SubscriberInline, )
+    list_display = ('username', 'first_name', 'last_name', 'is_staff', 'date_joined', user_group)
+    ordering = ('date_joined',)
 
     """
     Original
