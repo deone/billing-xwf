@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 
-from accounts.models import GroupAccount
+from accounts.models import Subscriber, GroupAccount
 
 class Package(models.Model):
     package_type = models.CharField(max_length=7, choices=settings.PACKAGE_TYPES)
@@ -15,21 +15,35 @@ class Package(models.Model):
         else:
             return "%s %s" % (self.package_type, self.volume)
 
-""" class PackageSubscription(models.Model):
-    pass """
-
-class GroupPackageSubscription(models.Model):
-    group = models.ForeignKey(GroupAccount)
+class AbstractPackageSubscription(models.Model):
     package = models.ForeignKey(Package)
     start = models.DateTimeField()
     stop = models.DateTimeField(blank=True, help_text="The time this subscription expires. You are not allowed to set this.")
 
     class Meta:
-        verbose_name = "Group Package Subscription"
-        ordering = ['-stop']
-
-    def __str__(self):
-        return "%s %s %s" % (self.group.name, self.package.package_type, self.stop.strftime('%B %d %Y, %I:%M%p'))
+        abstract = True
 
     def is_valid(self, now=timezone.now()):
         return self.stop > now
+
+class PackageSubscription(AbstractPackageSubscription):
+    subscriber = models.ForeignKey(Subscriber)
+    # stop = AbstractPackageSubscription._meta.get_field('stop')
+
+    class Meta:
+        verbose_name = "Package Subscription"
+        ordering = ['-stop'] 
+
+    def __str__(self):
+        return "%s %s %s" % (self.subscriber.user.email, self.package.package_type, self.stop.strftime('%B %d %Y, %I:%M%p'))
+
+class GroupPackageSubscription(AbstractPackageSubscription):
+    group = models.ForeignKey(GroupAccount)
+    # stop = AbstractPackageSubscription._meta.get_field('stop')
+
+    class Meta:
+        verbose_name = "Group Package Subscription"
+        ordering = ['-stop'] 
+
+    def __str__(self):
+        return "%s %s %s" % (self.group.name, self.package.package_type, self.stop.strftime('%B %d %Y, %I:%M%p'))
