@@ -5,6 +5,23 @@ from .models import *
 
 from datetime import timedelta
 
+def save_subscription(subscription):
+    package_period = timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[subscription.package.package_type])
+    subscription.stop = subscription.start + package_period
+    subscription.save()
+
+class PackageSubscriptionAdminForm(forms.ModelForm):
+
+    class Meta:
+        model = PackageSubscription
+        exclude = ()
+
+    def save(self, commit=True):
+        package_subscription = super(PackageSubscriptionAdminForm, self).save(commit=False)
+        save_subscription(package_subscription)
+
+        return package_subscription
+
 class GroupPackageSubscriptionAdminForm(forms.ModelForm):
 
     class Meta:
@@ -12,15 +29,17 @@ class GroupPackageSubscriptionAdminForm(forms.ModelForm):
         exclude = ()
 
     def save(self, commit=True):
-        grp_pkg_sub = super(GroupPackageSubscriptionAdminForm, self).save(commit=False)
-        package_period = timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[grp_pkg_sub.package.package_type])
-        grp_pkg_sub.stop = grp_pkg_sub.start + package_period
-        grp_pkg_sub.save()
+        group_package_subscription = super(GroupPackageSubscriptionAdminForm, self).save(commit=False)
+        save_subscription(group_package_subscription)
 
-        return grp_pkg_sub
+        return group_package_subscription
+
+class PackageSubscriptionAdmin(admin.ModelAdmin):
+    form = PackageSubscriptionAdminForm
 
 class GroupPackageSubscriptionAdmin(admin.ModelAdmin):
     form = GroupPackageSubscriptionAdminForm
 
 admin.site.register(Package)
+admin.site.register(PackageSubscription, PackageSubscriptionAdmin)
 admin.site.register(GroupPackageSubscription, GroupPackageSubscriptionAdmin)
