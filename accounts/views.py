@@ -8,7 +8,7 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 
-from .forms import CreateAccountForm, LoginForm
+from .forms import CreateAccountForm, LoginForm, PackageSubscriptionForm
 from .models import Subscriber
 from .helpers import auth_and_login, send_verification_mail
 
@@ -69,6 +69,7 @@ def dashboard(request):
         context = {}"""
 
     context = {}
+    form = None
 
     if request.method == 'POST':
         form = CreateAccountForm(request.POST, user=request.user)
@@ -79,10 +80,11 @@ def dashboard(request):
         if request.user.subscriber.email_verified:
             context.update({'verified': True})
 
+        if request.user.subscriber.group is None:
+            form = PackageSubscriptionForm()
+
         if request.user.subscriber.is_group_admin:
             form = CreateAccountForm(user=request.user)
-        else:
-            form = None
 
     if form:
         context.update({'form': form})
@@ -113,3 +115,7 @@ def verify_email(request, uidb64=None, token=None):
 def resend_mail(request):
     send_verification_mail(request.user)
     return redirect('accounts:dashboard')
+
+@login_required
+def manage(request):
+    return render(request, 'accounts/manage_users.html')
