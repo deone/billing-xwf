@@ -1,171 +1,33 @@
-<html>
-  <head>
-    <title>Spectra Wireless &mdash; Dashboard</title>
-    {% load staticfiles %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/reset.css' %}">
-    <link rel="stylesheet" href="{% static 'css/material.min.css' %}">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-    <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:300,400,500,700" type="text/css">
-    <script src="{% static 'js/material.min.js' %}"></script>
-    <link rel="stylesheet" type="text/css" href="{% static 'css/styles.css' %}">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  </head>
-  <body>
-    <!-- Always shows a header, even in smaller screens. -->
-    <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
-      <header class="mdl-layout__header">
-        <div class="mdl-layout__header-row">
-          <!-- Title -->
-          <span class="mdl-layout-title">Spectra Wireless</span>
-          <!-- Add spacer, to align navigation to the right -->
-          <div class="mdl-layout-spacer"></div>
-          <!-- Navigation. We hide it in small screens. -->
-          <nav class="mdl-navigation mdl-layout--large-screen-only">
-            <!-- <a class="mdl-navigation__link" href="">Link</a>
-            <a class="mdl-navigation__link" href="">Link</a>
-            <a class="mdl-navigation__link" href="">Link</a>
-            <a class="mdl-navigation__link" href="">Link</a> -->
-            <a class="mdl-navigation__link" href="{% url 'accounts:logout' %}">Logout of Dashboard</a>
-          </nav>
-        </div>
-      </header>
-      <div class="mdl-layout__drawer">
-        <span class="mdl-layout-title">Title</span>
-        <nav class="mdl-navigation">
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-          <a class="mdl-navigation__link" href="">Link</a>
-        </nav>
-      </div>
-      <main class="mdl-layout__content">
-        <div class="mdl-grid">
-          <div class="mdl-cell mdl-cell--12-col">
-            {% if user.first_name %}
-              Welcome {{ user.first_name }}
-            {% else %}
-              Welcome {{ user.username }}
-            {% endif %}
+{% extends 'accounts/base.html' %}
 
-            {% if not verified %}
-              <p>Please verify your account. Can't find verification mail? <a href="{% url 'resend_mail' %}">Resend</a>.</p>
-            {% endif %}
-          </div>
-          <div class="mdl-cell mdl-cell--4-col"></div>
-          <div class="mdl-cell mdl-cell--4-col">
-          {% if request.user.subscriber.group == None %}
-            <form action="" method="post">
-              <div class="form-heading">
-                <h4>Please select a package</h4>
-              </div>
-              <ul>
-              {% for radio in form.package_choices %}
-                <li>{{ radio }}</li>
-              {% endfor %}
-              </ul>
-              <div class="form-actions">
-                <button type="submit"
-                  class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-                    Submit 
-                </button>
-              </div>
-            </form>
-          {% else %}
-            <p>Group Member</p>
-          {% endif %}
-          {% if request.user.subscriber.is_group_admin %}
-            <a href="{% url 'accounts:manage' %}">Manage Users</a>
-            {% block auth_form %}
-            <form action="" method="post">
+{% load staticfiles %}
 
-              {% csrf_token %}
+{% block title %}Dashboard{% endblock %}
 
-              <div class="form-heading">
-                <h4>Create New User Account</h4>
-              </div>
+{% block body %}
+<main class="mdl-layout__content">
+  <div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--12-col">
+      {% if user.first_name %}
+        Welcome {{ user.first_name }}
+      {% else %}
+        Welcome {{ user.username }}
+      {% endif %}
 
-              {{ form.non_field_errors }}
+      {% if not verified %}
+        <p>Please verify your account. Can't find verification mail? <a href="{% url 'resend_mail' %}">Resend</a>.</p>
+      {% endif %}
 
-              <div>
-                {{ form.first_name.errors }}
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  {{ form.first_name }}
-                  <label class="mdl-textfield__label" for="id_first_name">
-                    {{ form.first_name.label }}
-                  </label>
-                  <span class="mdl-textfield__error">Names can not contain numbers!</span>
-                </div>
-              </div>
-
-              <div>
-                {{ form.last_name.errors }}
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  {{ form.last_name }}
-                  <label class="mdl-textfield__label" for="id_last_name">
-                    {{ form.last_name.label }}
-                  </label>
-                  <span class="mdl-textfield__error">Names can not contain numbers!</span>
-                </div>
-              </div>
-
-              <div>
-                {{ form.username.errors }}
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  {{ form.username }}
-                  <label class="mdl-textfield__label" for="id_username">
-                    {{ form.username.label }}
-                  </label>
-                </div>
-              </div>
-
-              <div>
-                {{ form.password.errors }}
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  {{ form.password }}
-                  <label class="mdl-textfield__label" for="id_password">
-                    {{ form.password.label }}
-                  </label>
-                </div>
-              </div>
-
-              <div>
-                {{ form.confirm_password.errors }}
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  {{ form.confirm_password }}
-                  <label class="mdl-textfield__label" for="id_confirm_password">
-                    {{ form.confirm_password.label }}
-                  </label>
-                </div>
-              </div>
-
-              <div>
-                {{ form.country.errors }}
-                {{ form.country }}
-              </div>
-
-              <div>
-                {{ form.phone_number.errors }}
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                  {{ form.phone_number }}
-                  <label class="mdl-textfield__label" for="id_phone_number">
-                    {{ form.phone_number.label }}
-                  </label>
-                </div>
-              </div>
-
-              <div class="form-actions">
-                <button type="submit"
-                  class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-                    Create Account
-                </button>
-              </div>
-            </form>
-            {% endblock %}
-          {% endif %}
-          </div>
-          <div class="mdl-cell mdl-cell--4-col"></div>
-        </div>
-      </main>
+      {% if request.user.subscriber.group == None %}
+        <ul>
+          <li><a href="">Set up payment options</a></li>
+          <li><a href="">Top up account</a></li>
+          <li><a href="">Purchase Service Package</a></li>
+        </ul>
+      {% else %}
+        <p>Group Member</p>
+      {% endif %}
     </div>
-  </body>
-</html>
+  </div>
+</main>
+{% endblock %}
