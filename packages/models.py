@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 
+from datetime import timedelta
+
 from accounts.models import Subscriber, GroupAccount
 
 class Package(models.Model):
@@ -14,6 +16,9 @@ class Package(models.Model):
             return "%s %sGB" % (self.package_type, self.volume)
         else:
             return "%s %s" % (self.package_type, self.volume)
+
+def compute_stop(package_type):
+    return timezone.now() + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[package_type])
 
 class AbstractPackageSubscription(models.Model):
     package = models.ForeignKey(Package)

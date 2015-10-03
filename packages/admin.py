@@ -3,12 +3,6 @@ from django.contrib import admin
 
 from .models import *
 
-from datetime import timedelta
-
-def save_subscription(subscription):
-    package_period = timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[subscription.package.package_type])
-    subscription.stop = subscription.start + package_period
-    subscription.save()
 
 class PackageSubscriptionAdminForm(forms.ModelForm):
 
@@ -18,7 +12,8 @@ class PackageSubscriptionAdminForm(forms.ModelForm):
 
     def save(self, commit=True):
         package_subscription = super(PackageSubscriptionAdminForm, self).save(commit=False)
-        save_subscription(package_subscription)
+        package_subscription.stop = compute_stop(package_subscription.package.package_type)
+        package_subscription.save()
 
         return package_subscription
 
@@ -30,7 +25,8 @@ class GroupPackageSubscriptionAdminForm(forms.ModelForm):
 
     def save(self, commit=True):
         group_package_subscription = super(GroupPackageSubscriptionAdminForm, self).save(commit=False)
-        save_subscription(group_package_subscription)
+        group_package_subscription.stop = compute_stop(group_package_subscription.package.package_type)
+        group_package_subscription.save()
 
         return group_package_subscription
 
