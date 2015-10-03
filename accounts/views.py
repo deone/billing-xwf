@@ -68,7 +68,7 @@ def dashboard(request):
     else:
         context = {}"""
 
-    context = {}
+    """ context = {}
     form = None
 
     if request.method == 'POST':
@@ -87,7 +87,7 @@ def dashboard(request):
             form = CreateAccountForm(user=request.user)
 
     if form:
-        context.update({'form': form})
+        context.update({'form': form}) """
 
     return render(request, 'accounts/dashboard.html', context)
 
@@ -118,8 +118,20 @@ def resend_mail(request):
 
 @login_required
 def add_users(request):
-    return render(request, 'accounts/add_users.html')
+    context = {}
+
+    if request.method == 'POST':
+        form = CreateAccountForm(request.POST, user=request.user)
+        if form.is_valid():
+            user = form.save()
+            send_verification_mail(user)
+    else:
+        form = CreateAccountForm(user=request.user)
+
+    context.update({'form': form})
+    return render(request, 'accounts/add_users.html', context)
 
 @login_required
 def buy_package(request):
-    return render(request, 'accounts/buy_package.html')
+    context = {}
+    return render(request, 'accounts/buy_package.html', context)
