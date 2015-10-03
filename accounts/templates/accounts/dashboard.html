@@ -20,12 +20,20 @@
 
       {% if request.user.subscriber.group == None %}
         <ul>
-          <li><a href="">Set up payment options</a></li>
-          <li><a href="">Top up account</a></li>
-          <li><a href="">Purchase Service Package</a></li>
+          <li><a href="#">Set up payment options</a></li>
+          <li><a href="#">Top up account</a></li>
+          <li><a href="#">Purchase Service Package</a></li>
         </ul>
       {% else %}
-        <p>Group Member</p>
+        {% if request.user.subscriber.is_group_admin %}
+          <ul>
+            <li><a href="#">Add Users</a></li>
+            <li><a href="#">Edit Users</a></li>
+            <li><a href="#">Deactivate Users</a></li>
+          </ul>
+        {% else %}
+          <p>Group Member</p>
+        {% endif %}
       {% endif %}
     </div>
   </div>
