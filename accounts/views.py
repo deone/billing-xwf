@@ -8,9 +8,11 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 
-from .forms import CreateAccountForm, LoginForm, PackageSubscriptionForm
+from .forms import CreateAccountForm, LoginForm
 from .models import Subscriber
 from .helpers import auth_and_login, send_verification_mail
+
+from packages.forms import PackageSubscriptionForm
 
 def captive(request):
     context = {'form': LoginForm()}
@@ -68,8 +70,8 @@ def dashboard(request):
     else:
         context = {}"""
 
-    """ context = {}
-    form = None
+    context = {}
+    """ form = None
 
     if request.method == 'POST':
         form = CreateAccountForm(request.POST, user=request.user)
@@ -134,4 +136,12 @@ def add_users(request):
 @login_required
 def buy_package(request):
     context = {}
+    if request.method == "POST":
+        form = PackageSubscriptionForm(request.POST, user=request.user)
+        if form.is_valid():
+            form.save()
+    else:
+        form = PackageSubscriptionForm(user=request.user)
+
+    context.update({'form': form})
     return render(request, 'accounts/buy_package.html', context)

@@ -4,8 +4,6 @@ from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm, Authen
 from .models import *
 from .helpers import md5_password
 
-from packages.models import Package
-
 class CreateAccountForm(forms.Form):
     username = forms.EmailField(label='Email Address', max_length=254,
         widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
@@ -79,8 +77,3 @@ class LoginForm(AuthenticationForm):
         widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
     password = forms.CharField(label='Password',
         widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
-
-packages = [(p.id, p) for p in Package.objects.all()]
-
-class PackageSubscriptionForm(forms.Form):
-    package_choices = forms.ChoiceField(choices=packages, widget=forms.RadioSelect())

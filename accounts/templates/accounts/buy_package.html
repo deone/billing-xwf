@@ -1,0 +1,29 @@
+{% extends 'accounts/base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Buy Package{% endblock %}
+
+{% block body %}
+<div class="mdl-cell mdl-cell--4-col">
+  <form action="" method="post">
+
+    {% csrf_token %}
+
+    <div class="form-heading">
+      <h4>Please select a package</h4>
+    </div>
+    <ul>
+    {% for radio in form.package_choice %}
+      <li>{{ radio }}</li>
+    {% endfor %}
+    </ul>
+    <div class="form-actions">
+      <button type="submit"
+        class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+          Submit
+      </button>
+    </div>
+  </form>
+</div>
+{% endblock %}
