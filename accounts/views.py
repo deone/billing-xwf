@@ -117,5 +117,9 @@ def resend_mail(request):
     return redirect('accounts:dashboard')
 
 @login_required
-def manage(request):
-    return render(request, 'accounts/manage_users.html')
+def add_users(request):
+    return render(request, 'accounts/add_users.html')
+
+@login_required
+def buy_package(request):
+    return render(request, 'accounts/buy_package.html')

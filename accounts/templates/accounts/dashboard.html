@@ -22,12 +22,12 @@
         <ul>
           <li><a href="#">Set up payment options</a></li>
           <li><a href="#">Top up account</a></li>
-          <li><a href="#">Purchase Service Package</a></li>
+          <li><a href="{% url 'accounts:buy_package' %}">Purchase Service Package</a></li>
         </ul>
       {% else %}
         {% if request.user.subscriber.is_group_admin %}
           <ul>
-            <li><a href="#">Add Users</a></li>
+            <li><a href="{% url 'accounts:add_users' %}">Add Users</a></li>
             <li><a href="#">Edit Users</a></li>
             <li><a href="#">Deactivate Users</a></li>
           </ul>
