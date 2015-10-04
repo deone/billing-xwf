@@ -36,7 +36,5 @@ for line in lines:
     Subscriber.objects.create(group=group, is_group_admin=False, country='GHA', email_verified=False, user=user)
     Radcheck.objects.create(user=user, username=email, attribute='MD5-Password', op=':=', value=md5_password(password))
 
-    index = email.split('@')[0][-4:]
-
     with open('done.csv', 'a') as f:
-        f.write(index + ',' + first_name + ',' + last_name + ',' + email + ',' + password + '\n')
+        f.write(first_name + ',' + last_name + ',' + email + ',' + password + '\n')
