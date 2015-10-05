@@ -33,7 +33,6 @@ class AbstractPackageSubscription(models.Model):
 
 class PackageSubscription(AbstractPackageSubscription):
     subscriber = models.ForeignKey(Subscriber)
-    # stop = AbstractPackageSubscription._meta.get_field('stop')
 
     class Meta:
         verbose_name = "Package Subscription"
@@ -44,7 +43,6 @@ class PackageSubscription(AbstractPackageSubscription):
 
 class GroupPackageSubscription(AbstractPackageSubscription):
     group = models.ForeignKey(GroupAccount)
-    # stop = AbstractPackageSubscription._meta.get_field('stop')
 
     class Meta:
         verbose_name = "Group Package Subscription"
