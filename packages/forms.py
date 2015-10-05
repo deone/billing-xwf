@@ -4,14 +4,13 @@ from django.utils import timezone
 from .models import Package, PackageSubscription, compute_stop
 
 
-packages = [(p.id, p) for p in Package.objects.all()]
-
 class PackageSubscriptionForm(forms.Form):
-    package_choice = forms.ChoiceField(choices=packages, widget=forms.RadioSelect())
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('user', None)
+        packages = kwargs.pop('packages')
+        self.user = kwargs.pop('user')
         super(PackageSubscriptionForm, self).__init__(*args, **kwargs)
+        self.fields['package_choice'] = forms.ChoiceField(choices=packages, widget=forms.RadioSelect())
 
     def save(self):
         package = Package.objects.get(pk=self.cleaned_data['package_choice'])

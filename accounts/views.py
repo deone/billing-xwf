@@ -14,6 +14,7 @@ from .models import Subscriber
 from .helpers import auth_and_login, send_verification_mail
 
 from packages.forms import PackageSubscriptionForm
+from packages.models import Package
 
 def captive(request):
     context = {'form': LoginForm()}
@@ -126,14 +127,16 @@ def add_users(request):
 @login_required
 def buy_package(request):
     context = {}
+    packages = [(p.id, p) for p in Package.objects.all()]
     if request.method == "POST":
-        form = PackageSubscriptionForm(request.POST, user=request.user)
+        form = PackageSubscriptionForm(request.POST, user=request.user, packages=packages)
         if form.is_valid():
             form.save()
             messages.success(request, 'Package purchased successfully.')
             return redirect('accounts:buy_package')
     else:
-        form = PackageSubscriptionForm(user=request.user)
+        form = PackageSubscriptionForm(user=request.user,
+            packages=packages)
 
     context.update({'form': form})
     return render(request, 'accounts/buy_package.html', context)
