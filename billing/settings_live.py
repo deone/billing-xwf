@@ -9,3 +9,5 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static_live")
 STATIC_URL = "/static/"
 
 SUCCESS_URL = "http://154.117.0.11/success/"
+
+DEFAULT_FROM_EMAIL = 'info@spectrawireless.com'
