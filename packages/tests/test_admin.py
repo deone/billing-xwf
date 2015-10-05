@@ -11,7 +11,7 @@ from accounts.models import GroupAccount
 class AdminFormsTest(TestCase):
     
     def setUp(self):
-        self.package = Package.objects.create(package_type='Daily', volume='3', speed='1.5')
+        self.package = Package.objects.create(package_type='Monthly', volume='3', speed='1.5')
         self.ga = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
     
     def test_GroupPackageSubscriptionAdminForm_save(self):
@@ -23,4 +23,4 @@ class AdminFormsTest(TestCase):
             'package': self.package.pk
         })
         gps = form.save() 
-        self.assertEqual(gps.stop, gps.start + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[self.package.package_type]))
+        self.assertEqual((gps.stop - gps.start).days, settings.PACKAGE_TYPES_HOURS_MAP[self.package.package_type] / 24)
