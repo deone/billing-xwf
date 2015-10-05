@@ -131,7 +131,7 @@ def buy_package(request):
         if form.is_valid():
             form.save()
             messages.success(request, 'Package purchased successfully.')
-            return redirect('accounts:dashboard')
+            return redirect('accounts:buy_package')
     else:
         form = PackageSubscriptionForm(user=request.user)
 
