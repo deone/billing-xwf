@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
+from django.contrib import messages
 from django.conf import settings
 from django.http import Http404
 from django.utils import timezone
@@ -47,7 +48,7 @@ def index(request):
             user = form.save()
 
             # Send verification mail here - we might need to wrap this in a try - except block
-            send_verification_mail(user)
+            # send_verification_mail(user)
 
             # We need to call login here so that our dashboard can have user's details.
             auth = auth_and_login(request, user.username, form.cleaned_data['password'])
@@ -71,26 +72,6 @@ def dashboard(request):
         context = {}"""
 
     context = {}
-    """ form = None
-
-    if request.method == 'POST':
-        form = CreateAccountForm(request.POST, user=request.user)
-        if form.is_valid():
-            user = form.save()
-            send_verification_mail(user)
-    else:
-        if request.user.subscriber.email_verified:
-            context.update({'verified': True})
-
-        if request.user.subscriber.group is None:
-            form = PackageSubscriptionForm()
-
-        if request.user.subscriber.is_group_admin:
-            form = CreateAccountForm(user=request.user)
-
-    if form:
-        context.update({'form': form}) """
-
     return render(request, 'accounts/dashboard.html', context)
 
 def verify_email(request, uidb64=None, token=None):
@@ -127,6 +108,8 @@ def add_users(request):
         if form.is_valid():
             user = form.save()
             send_verification_mail(user)
+            messages.success(request, 'User added successfully.')
+            return redirect('accounts:add_users')
     else:
         form = CreateAccountForm(user=request.user)
 
@@ -140,6 +123,8 @@ def buy_package(request):
         form = PackageSubscriptionForm(request.POST, user=request.user)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Package purchased successfully.')
+            return redirect('accounts:dashboard')
     else:
         form = PackageSubscriptionForm(user=request.user)
 
