@@ -159,3 +159,23 @@ class AccountsViewsTests(TestCase):
         request.user = self.user
         response = resend_mail(request)
         self.assertEqual(response.status_code, 302)
+
+    def test_add_users_get(self):
+        self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
+        response = self.c.get(reverse('accounts:add_users'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('form' in response.context)
+        self.assertTemplateUsed(response, 'accounts/add_users.html')
+
+    def test_add_users_post(self):
+        pass
+
+    def test_buy_package_get(self):
+        self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
+        response = self.c.get(reverse('accounts:buy_package'))
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('form' in response.context)
+        self.assertTemplateUsed(response, 'accounts/buy_package.html')
+
+    def test_buy_package_post(self):
+        pass
