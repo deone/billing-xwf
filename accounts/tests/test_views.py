@@ -3,23 +3,30 @@ from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.contrib.auth.models import User, AnonymousUser
 from django.contrib.sessions.middleware import SessionMiddleware
+from django.contrib.messages.storage.fallback import FallbackStorage
+from django.contrib.messages import get_messages
 from django.utils import timezone
 
 from ..helpers import auth_and_login, make_context
 from ..forms import CreateAccountForm, LoginForm
-from ..views import index, resend_mail, dashboard
+from ..views import index, resend_mail, add_users, buy_package
 from ..models import Subscriber
+
+from packages.forms import PackageSubscriptionForm
+from packages.models import Package
 
 class AccountsViewsTests(TestCase):
     def setUp(self):
         self.c = Client()
         self.factory = RequestFactory()
-        self.middleware = SessionMiddleware()
+        self.session = SessionMiddleware()
         self.user = User.objects.create_user('a@a.com', 'a@a.com', '12345')
         country = 'GHA'
         self.subscriber = Subscriber.objects.create(user=self.user,
             country=country, phone_number=Subscriber.COUNTRY_CODES_MAP[country] + '542751610',
             email_verified=True, date_verified=timezone.now())
+        self.package = Package.objects.create(package_type='Daily',
+            volume='3', speed='1.5')
 
     def test_index_get(self):
         response = self.client.get(reverse('index'))
@@ -40,7 +47,7 @@ class AccountsViewsTests(TestCase):
               'phone_number': '0542751610'
               })
         request.user = AnonymousUser
-        self.middleware.process_request(request)
+        self.session.process_request(request)
         request.session.save()
 
         response = index(request)
@@ -68,7 +75,7 @@ class AccountsViewsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue('form' in response.context)
         self.assertTrue(isinstance(response.context['form'],
-        CreateAccountForm)) """
+        CreateAccountForm))
 
     def test_dashboard_post(self):
         request = self.factory.post(reverse('accounts:dashboard'),
@@ -86,7 +93,7 @@ class AccountsViewsTests(TestCase):
         request.session.save()
 
         response = dashboard(request)
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 200) """
 
     def test_login(self):
         response = self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
@@ -168,7 +175,33 @@ class AccountsViewsTests(TestCase):
         self.assertTemplateUsed(response, 'accounts/add_users.html')
 
     def test_add_users_post(self):
-        pass
+        request = self.factory.post(reverse('accounts:add_users'),
+            data={
+              'username': 'b@b.com',
+              'password': '12345',
+              'first_name': 'Ola',
+              'last_name': 'Ade',
+              'confirm_password': '12345',
+              'country': 'GHA',
+              'phone_number': '0542751610'
+              })
+        request.user = self.user
+
+        self.session.process_request(request)
+        request.session.save()
+
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+
+        response = add_users(request)
+        storage = get_messages(request)
+
+        lst = []
+        for message in storage:
+            lst.append(message)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual('User added successfully.', lst[0].__str__())
 
     def test_buy_package_get(self):
         self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
@@ -178,4 +211,24 @@ class AccountsViewsTests(TestCase):
         self.assertTemplateUsed(response, 'accounts/buy_package.html')
 
     def test_buy_package_post(self):
-        pass
+        request = self.factory.post(reverse('accounts:buy_package'),
+            data={
+              'package_choice': str(self.package.pk)
+              })
+        request.user = self.user
+
+        self.session.process_request(request)
+        request.session.save()
+
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+
+        response = buy_package(request)
+        storage = get_messages(request)
+
+        lst = []
+        for message in storage:
+            lst.append(message)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual('Package purchased successfully.', lst[0].__str__())
