@@ -87,29 +87,26 @@ class BulkUserUploadForm(forms.Form):
         self.user = kwargs.pop('user', None)
         super(BulkUserUploadForm, self).__init__(*args, **kwargs)
 
-    """ def clean(self):
+    def clean(self):
         cleaned_data = super(BulkUserUploadForm, self).clean()
         _file = cleaned_data.get('user_list')
-
-        with open(_file.name) as ofile:
-            for line in ofile:
-                if len(line.split(',')) > 3:
-                    raise forms.ValidationError("Found more than 3 items per line. Please check file")
-
-        print dir(_file)
-        lines = _file.readlines()
-        lines_length = len(lines)
 
         if not _file.name.endswith('.csv'):
             raise forms.ValidationError("Please upload a CSV file.")
 
-        if lines_length > settings.MAX_FILE_LENGTH:
-            raise forms.ValidationError("Uploaded file should not have more than %s lines. It has %s." % (str(settings.MAX_FILE_LENGTH), str(lines_length))) """
-
-    def save(self):
-        lst = []
-        _file = self.cleaned_data['user_list']
         lines = _file.readlines()
+        lines_length = len(lines)
+
+        if lines_length > settings.MAX_FILE_LENGTH:
+            raise forms.ValidationError("Uploaded file should not have more than %s lines. It has %s." % (str(settings.MAX_FILE_LENGTH), str(lines_length)))
+
+        if lines_length > int(self.user.subscriber.group.max_no_of_users):
+            if settings.EXCEED_MAX_USER_COUNT:
+                pass
+            else:
+                raise forms.ValidationError("You are not allowed to create more users than your group threshold.")
+
+        lst = []
 
         for line in lines:
           dct = {}
@@ -131,6 +128,11 @@ class BulkUserUploadForm(forms.Form):
 
           lst.append(dct)
 
+        return lst
+
+    def save(self):
+        lst = self.cleaned_data
+
         now = timezone.now()
 
         for dct in lst:
@@ -138,3 +140,5 @@ class BulkUserUploadForm(forms.Form):
             Subscriber.objects.create(group=self.user.subscriber.group,
                 country=self.user.subscriber.country, email_verified=True, user=user, date_verified=now)
             Radcheck.objects.create(user=user, username=user.email, attribute='MD5-Password', op=':=', value="")
+
+        return lst
