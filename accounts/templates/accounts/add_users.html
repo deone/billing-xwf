@@ -104,13 +104,20 @@
     </div>
 
     <div class="mdl-cell mdl-cell--4-col">
-      <form action="{% url 'accounts:add_bulk_users' %}" method="post">
+      <form action="{% url 'accounts:add_bulk_users' %}" method="post" enctype="multipart/form-data">
 
         {% csrf_token %}
 
         <div class="form-heading">
           <h4>Upload List of Users</h4>
         </div>
+
+        <ul>
+          <li>User list must be in .csv format and can contain a maximum of 50 entries.</li>
+          <li>Each entry in the list should contain first name, last name and email address separated by commas.</li>
+          <li>Ensure there are no spaces between words or lines.</li>
+        </ul>
+
 
         {{ bulk_user_form.non_field_errors }}
 

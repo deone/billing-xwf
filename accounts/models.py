@@ -171,9 +171,9 @@ class AccessPoint(models.Model):
         (PUBLIC, 'Public'),
     )
 
-    name = models.CharField(max_length=30)
+    name = models.CharField(max_length=30, unique=True)
     group = models.ForeignKey(GroupAccount, null=True, blank=True)
-    mac_address = models.CharField(max_length=17)
+    mac_address = models.CharField(max_length=17, unique=True)
     status = models.CharField(max_length=3, choices=STATUS_CHOICES, default=PRIVATE)
 
     class Meta:
