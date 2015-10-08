@@ -6,15 +6,17 @@
 
 {% block body %}
 <main class="mdl-layout__content">
+
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
   <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--4-col">
-      {% if messages %}
-      <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-      </ul>
-      {% endif %}
       <form action="" method="post">
 
         {% csrf_token %}
