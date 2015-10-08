@@ -108,7 +108,7 @@ def resend_mail(request):
     return redirect('accounts:dashboard')
 
 @login_required
-def add_users(request):
+def add_user(request):
     context = {}
 
     if request.method == 'POST':
@@ -117,30 +117,30 @@ def add_users(request):
             user = form.save()
             send_verification_mail(user)
             messages.success(request, 'User added successfully.')
-            return redirect('accounts:add_users')
+            return redirect('accounts:add_user')
     else:
-        single_user_form = CreateAccountForm(user=request.user)
-        bulk_user_form = BulkUserUploadForm(user=request.user)
+        form = CreateAccountForm(user=request.user)
 
-    context.update({
-      'single_user_form': single_user_form,
-      'bulk_user_form': bulk_user_form,
-      'file_length': settings.MAX_FILE_LENGTH
-    })
-
-    return render(request, 'accounts/add_users.html', context)
+    context.update({'form': form})
+    return render(request, 'accounts/add_user.html', context)
 
 @login_required
-def add_bulk_users(request):
-    if request.method == "POST":
-        form = BulkUserUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Users added successfully.')
-    else:
-        pass
+def upload_user_list(request):
+    context = {}
 
-    return redirect('accounts:add_users')
+    if request.method == 'POST':
+      form = BulkUserUploadForm(request.POST, request.FILES, user=request.user)
+      if form.is_valid():
+          form.save()
+          messages.success(request, 'Users added successfully.')
+    else:
+        form = BulkUserUploadForm(user=request.user)
+
+    context.update({
+      'form': form, 
+      'file_length': settings.MAX_FILE_LENGTH
+    })
+    return render(request, 'accounts/upload_user_list.html', context)
 
 @login_required
 def buy_package(request):

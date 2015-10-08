@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm, AuthenticationForm
+from django.conf import settings
 
 from .models import *
 from .helpers import md5_password
@@ -84,3 +85,15 @@ class BulkUserUploadForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super(BulkUserUploadForm, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        cleaned_data = super(BulkUserUploadForm, self).clean()
+        _file = cleaned_data.get('user_list')
+        lines = _file.readlines()
+        lines_length = len(lines)
+        if lines_length > settings.MAX_FILE_LENGTH:
+            raise forms.ValidationError("""Uploaded file should not
+                have more than %s lines. It has %s.""" % (str(settings.MAX_FILE_LENGTH), str(lines_length)))
+
+    def save(self):
+        pass

@@ -25,7 +25,7 @@ urlpatterns = [
     url(r'^reset/done/$', auth_views.password_reset_complete, {'template_name': 'accounts/password_reset_complete.html'}, name='password_reset_complete'),
     url(r'^verify/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', views.verify_email, {}, name='verify_email'),
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
-    url(r'^add_users/$', views.add_users, name='add_users'),
-    url(r'^add_bulk_users/$', views.add_bulk_users, name='add_bulk_users'),
+    url(r'^add_user/$', views.add_user, name='add_user'),
+    url(r'^upload_user_list/$', views.upload_user_list, name='upload_user_list'),
     url(r'^buy_package/$', views.buy_package, name='buy_package'),
 ]

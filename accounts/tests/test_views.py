@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from ..helpers import auth_and_login, make_context
 from ..forms import CreateAccountForm, LoginForm
-from ..views import index, resend_mail, add_users, buy_package
+from ..views import index, resend_mail, add_user, buy_package
 from ..models import Subscriber
 
 from packages.forms import PackageSubscriptionForm
@@ -167,15 +167,15 @@ class AccountsViewsTests(TestCase):
         response = resend_mail(request)
         self.assertEqual(response.status_code, 302)
 
-    def test_add_users_get(self):
+    def test_add_user_get(self):
         self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
-        response = self.c.get(reverse('accounts:add_users'))
+        response = self.c.get(reverse('accounts:add_user'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue('form' in response.context)
-        self.assertTemplateUsed(response, 'accounts/add_users.html')
+        self.assertTemplateUsed(response, 'accounts/add_user.html')
 
-    def test_add_users_post(self):
-        request = self.factory.post(reverse('accounts:add_users'),
+    def test_add_user_post(self):
+        request = self.factory.post(reverse('accounts:add_user'),
             data={
               'username': 'b@b.com',
               'password': '12345',
@@ -193,7 +193,7 @@ class AccountsViewsTests(TestCase):
         messages = FallbackStorage(request)
         setattr(request, '_messages', messages)
 
-        response = add_users(request)
+        response = add_user(request)
         storage = get_messages(request)
 
         lst = []
