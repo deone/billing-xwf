@@ -124,14 +124,22 @@ def add_users(request):
 
     context.update({
       'single_user_form': single_user_form,
-      'bulk_user_form': bulk_user_form
+      'bulk_user_form': bulk_user_form,
+      'file_length': settings.MAX_FILE_LENGTH
     })
 
     return render(request, 'accounts/add_users.html', context)
 
 @login_required
 def add_bulk_users(request):
-    messages.success(request, 'Users added successfully.')
+    if request.method == "POST":
+        form = BulkUserUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Users added successfully.')
+    else:
+        pass
+
     return redirect('accounts:add_users')
 
 @login_required
