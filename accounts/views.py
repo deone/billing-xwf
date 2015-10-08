@@ -9,7 +9,7 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 
-from .forms import CreateAccountForm, LoginForm
+from .forms import CreateAccountForm, LoginForm, BulkUserUploadForm
 from .models import Subscriber
 from .helpers import auth_and_login, send_verification_mail
 
@@ -119,10 +119,20 @@ def add_users(request):
             messages.success(request, 'User added successfully.')
             return redirect('accounts:add_users')
     else:
-        form = CreateAccountForm(user=request.user)
+        single_user_form = CreateAccountForm(user=request.user)
+        bulk_user_form = BulkUserUploadForm(user=request.user)
 
-    context.update({'form': form})
+    context.update({
+      'single_user_form': single_user_form,
+      'bulk_user_form': bulk_user_form
+    })
+
     return render(request, 'accounts/add_users.html', context)
+
+@login_required
+def add_bulk_users(request):
+    messages.success(request, 'Users added successfully.')
+    return redirect('accounts:add_users')
 
 @login_required
 def buy_package(request):

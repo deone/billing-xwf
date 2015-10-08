@@ -5,98 +5,128 @@
 {% block title %}Add Users{% endblock %}
 
 {% block body %}
-<div class="mdl-cell mdl-cell--4-col">
+<main class="mdl-layout__content">
+  <div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--4-col">
+      {% if messages %}
+      <ul class="messages">
+        {% for message in messages %}
+        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+      <form action="" method="post">
 
-  {% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  <form action="" method="post">
+        {% csrf_token %}
 
-    {% csrf_token %}
+        <div class="form-heading">
+          <h4>Create New User Account</h4>
+        </div>
 
-    <div class="form-heading">
-      <h4>Create New User Account</h4>
+        {{ single_user_form.non_field_errors }}
+
+        <div>
+          {{ single_user_form.first_name.errors }}
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            {{ single_user_form.first_name }}
+            <label class="mdl-textfield__label" for="id_first_name">
+              {{ single_user_form.first_name.label }}
+            </label>
+            <span class="mdl-textfield__error">Names can not contain numbers!</span>
+          </div>
+        </div>
+
+        <div>
+          {{ single_user_form.last_name.errors }}
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            {{ single_user_form.last_name }}
+            <label class="mdl-textfield__label" for="id_last_name">
+              {{ single_user_form.last_name.label }}
+            </label>
+            <span class="mdl-textfield__error">Names can not contain numbers!</span>
+          </div>
+        </div>
+
+        <div>
+          {{ single_user_form.username.errors }}
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            {{ single_user_form.username }}
+            <label class="mdl-textfield__label" for="id_username">
+              {{ single_user_form.username.label }}
+            </label>
+          </div>
+        </div>
+
+        <div>
+          {{ single_user_form.password.errors }}
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            {{ single_user_form.password }}
+            <label class="mdl-textfield__label" for="id_password">
+              {{ single_user_form.password.label }}
+            </label>
+          </div>
+        </div>
+
+        <div>
+          {{ single_user_form.confirm_password.errors }}
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            {{ single_user_form.confirm_password }}
+            <label class="mdl-textfield__label" for="id_confirm_password">
+              {{ single_user_form.confirm_password.label }}
+            </label>
+          </div>
+        </div>
+
+        <div>
+          {{ single_user_form.country.errors }}
+          {{ single_user_form.country }}
+        </div>
+
+        <div>
+          {{ single_user_form.phone_number.errors }}
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            {{ single_user_form.phone_number }}
+            <label class="mdl-textfield__label" for="id_phone_number">
+              {{ single_user_form.phone_number.label }}
+            </label>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit"
+            class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+              Create Account
+          </button>
+        </div>
+      </form>
     </div>
 
-    {{ form.non_field_errors }}
+    <div class="mdl-cell mdl-cell--4-col">
+      <form action="{% url 'accounts:add_bulk_users' %}" method="post">
 
-    <div>
-      {{ form.first_name.errors }}
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        {{ form.first_name }}
-        <label class="mdl-textfield__label" for="id_first_name">
-          {{ form.first_name.label }}
-        </label>
-        <span class="mdl-textfield__error">Names can not contain numbers!</span>
-      </div>
-    </div>
+        {% csrf_token %}
 
-    <div>
-      {{ form.last_name.errors }}
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        {{ form.last_name }}
-        <label class="mdl-textfield__label" for="id_last_name">
-          {{ form.last_name.label }}
-        </label>
-        <span class="mdl-textfield__error">Names can not contain numbers!</span>
-      </div>
-    </div>
+        <div class="form-heading">
+          <h4>Upload List of Users</h4>
+        </div>
 
-    <div>
-      {{ form.username.errors }}
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        {{ form.username }}
-        <label class="mdl-textfield__label" for="id_username">
-          {{ form.username.label }}
-        </label>
-      </div>
-    </div>
+        {{ bulk_user_form.non_field_errors }}
 
-    <div>
-      {{ form.password.errors }}
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        {{ form.password }}
-        <label class="mdl-textfield__label" for="id_password">
-          {{ form.password.label }}
-        </label>
-      </div>
-    </div>
+        <div>
+          {{ bulk_user_form.user_list.errors }}
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            {{ bulk_user_form.user_list }}
+          </div>
+        </div>
 
-    <div>
-      {{ form.confirm_password.errors }}
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        {{ form.confirm_password }}
-        <label class="mdl-textfield__label" for="id_confirm_password">
-          {{ form.confirm_password.label }}
-        </label>
-      </div>
+        <div class="form-actions">
+          <button type="submit"
+            class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+              Upload
+          </button>
+        </div>
+      </form>
     </div>
-
-    <div>
-      {{ form.country.errors }}
-      {{ form.country }}
-    </div>
-
-    <div>
-      {{ form.phone_number.errors }}
-      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-        {{ form.phone_number }}
-        <label class="mdl-textfield__label" for="id_phone_number">
-          {{ form.phone_number.label }}
-        </label>
-      </div>
-    </div>
-
-    <div class="form-actions">
-      <button type="submit"
-        class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-          Create Account
-      </button>
-    </div>
-  </form>
-</div>
+  </div>
+</main>
 {% endblock %}

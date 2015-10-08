@@ -6,7 +6,7 @@ from .forms import ResetPasswordForm, PasswordResetEmailForm, LoginForm
 
 urlpatterns = [
     url(r'^login/$', auth_views.login, {'template_name': 'accounts/login.html', 'authentication_form': LoginForm}, name='login'),
-    url(r'^logout/$', auth_views.logout, {'next_page': '/'}, name='logout'),
+    url(r'^logout/$', auth_views.logout, {'next_page': '/accounts/login/'}, name='logout'),
     url(r'^password_change/$', auth_views.password_change, name='password_change'),
     url(r'^password_change/done/$', auth_views.password_change_done, name='password_change_done'),
     url(r'^password_reset/$', auth_views.password_reset, {
@@ -26,5 +26,6 @@ urlpatterns = [
     url(r'^verify/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', views.verify_email, {}, name='verify_email'),
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
     url(r'^add_users/$', views.add_users, name='add_users'),
+    url(r'^add_bulk_users/$', views.add_bulk_users, name='add_bulk_users'),
     url(r'^buy_package/$', views.buy_package, name='buy_package'),
 ]

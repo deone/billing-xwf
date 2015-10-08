@@ -77,3 +77,10 @@ class LoginForm(AuthenticationForm):
         widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
     password = forms.CharField(label='Password',
         widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
+
+class BulkUserUploadForm(forms.Form):
+    user_list = forms.FileField()
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)
+        super(BulkUserUploadForm, self).__init__(*args, **kwargs)
