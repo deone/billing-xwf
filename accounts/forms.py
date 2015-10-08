@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm, AuthenticationForm
 from django.conf import settings
+from django.utils import timezone
 
 from .models import *
 from .helpers import md5_password
@@ -86,14 +87,54 @@ class BulkUserUploadForm(forms.Form):
         self.user = kwargs.pop('user', None)
         super(BulkUserUploadForm, self).__init__(*args, **kwargs)
 
-    def clean(self):
+    """ def clean(self):
         cleaned_data = super(BulkUserUploadForm, self).clean()
         _file = cleaned_data.get('user_list')
+
+        with open(_file.name) as ofile:
+            for line in ofile:
+                if len(line.split(',')) > 3:
+                    raise forms.ValidationError("Found more than 3 items per line. Please check file")
+
+        print dir(_file)
         lines = _file.readlines()
         lines_length = len(lines)
+
+        if not _file.name.endswith('.csv'):
+            raise forms.ValidationError("Please upload a CSV file.")
+
         if lines_length > settings.MAX_FILE_LENGTH:
-            raise forms.ValidationError("""Uploaded file should not
-                have more than %s lines. It has %s.""" % (str(settings.MAX_FILE_LENGTH), str(lines_length)))
+            raise forms.ValidationError("Uploaded file should not have more than %s lines. It has %s." % (str(settings.MAX_FILE_LENGTH), str(lines_length))) """
 
     def save(self):
-        pass
+        lst = []
+        _file = self.cleaned_data['user_list']
+        lines = _file.readlines()
+
+        for line in lines:
+          dct = {}
+          try:
+              first_name, last_name, email = line.split(',')
+          except ValueError:
+              raise forms.ValidationError("File line has too many or too few values. Please check file.")
+          else:
+              email = email.strip()
+              first_name = first_name.strip()
+              last_name = last_name.strip()
+
+              dct.update({
+                'username': email,
+                'email': email,
+                'first_name': first_name.title(),
+                'last_name': last_name.title()
+              })
+
+          lst.append(dct)
+
+        now = timezone.now()
+
+        for dct in lst:
+            user = User.objects.create(**dct)
+            Subscriber.objects.create(group=self.user.subscriber.group,
+                country=self.user.subscriber.country, email_verified=True, user=user, date_verified=now)
+            Radcheck.objects.create(user=user, username=user.email, attribute='MD5-Password', op=':=', value="")
