@@ -17,8 +17,8 @@ class Package(models.Model):
         else:
             return "%s %s" % (self.package_type, self.volume)
 
-def compute_stop(package_type):
-    return timezone.now() + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[package_type])
+def compute_stop(start, package_type):
+    return start + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[package_type])
 
 class AbstractPackageSubscription(models.Model):
     package = models.ForeignKey(Package)
