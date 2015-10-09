@@ -175,3 +175,14 @@ class UserList(ListView):
 
     """ def get_queryset(self):
         return User.objects.filter(subscriber__group=self.request.user.subscriber.group) """
+
+def toggle_active(request, pk=None):
+    user = User.objects.get(pk=pk)
+
+    if user.is_active:
+        user.is_active = False
+    else:
+        user.is_active = True
+
+    user.save()
+    return redirect('accounts:view_users')
