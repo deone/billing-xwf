@@ -115,7 +115,7 @@ def add_user(request):
         form = CreateAccountForm(request.POST, user=request.user)
         if form.is_valid():
             user = form.save()
-            # send_group_welcome_mail(user)
+            success = send_group_welcome_mail([user])
             messages.success(request, 'User added successfully.')
             return redirect('accounts:add_user')
     else:
@@ -132,8 +132,7 @@ def upload_user_list(request):
       form = BulkUserUploadForm(request.POST, request.FILES, user=request.user)
       if form.is_valid():
           user_list = form.save()
-          # Send email with user_list
-          send_group_welcome_mail(user_list)
+          success = send_group_welcome_mail(user_list)
           messages.success(request, 'Users added successfully.')
     else:
         form = BulkUserUploadForm(user=request.user)

@@ -14,7 +14,8 @@ class PackageSubscriptionForm(forms.Form):
 
     def save(self):
         package = Package.objects.get(pk=self.cleaned_data['package_choice'])
-        stop = compute_stop(package.package_type)
-        subscription = PackageSubscription.objects.create(subscriber=self.user.subscriber, package=package, start=timezone.now(), stop=stop)
+        subscription = PackageSubscription.objects.create(subscriber=self.user.subscriber, package=package, start=timezone.now())
+        subscription.stop = compute_stop(subscription.start, package.package_type)
+        subscription.save()
 
         return subscription
