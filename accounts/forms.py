@@ -104,7 +104,8 @@ class BulkUserUploadForm(forms.Form):
             if settings.EXCEED_MAX_USER_COUNT:
                 pass
             else:
-                raise forms.ValidationError("You are not allowed to create more users than your group threshold.")
+                raise forms.ValidationError("""You are not allowed to create more users than
+                    your group threshold. Your group threshold is set to %s.""" % str(self.user.subscriber.group.max_no_of_users))
 
         lst = []
 
@@ -134,11 +135,13 @@ class BulkUserUploadForm(forms.Form):
         lst = self.cleaned_data
 
         now = timezone.now()
+        user_list = []
 
         for dct in lst:
             user = User.objects.create(**dct)
             Subscriber.objects.create(group=self.user.subscriber.group,
                 country=self.user.subscriber.country, email_verified=True, user=user, date_verified=now)
             Radcheck.objects.create(user=user, username=user.email, attribute='MD5-Password', op=':=', value="")
+            user_list.append(user)
 
-        return lst
+        return user_list

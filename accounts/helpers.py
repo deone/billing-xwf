@@ -3,7 +3,7 @@ from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.models import Site
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
-from django.core.mail import EmailMultiAlternatives
+from django.core.mail import EmailMultiAlternatives, send_mass_mail
 from django.core.urlresolvers import reverse
 from django.conf import settings
 from django.template import loader
@@ -47,3 +47,24 @@ def send_verification_mail(user):
     email_message = EmailMultiAlternatives(subject, body, settings.DEFAULT_FROM_EMAIL, [user.email])
 
     email_message.send()
+
+def send_group_welcome_mail(lst):
+    messages = build_message_list(lst)
+    success = send_mass_mail(messages)
+
+    return success
+
+def build_message_list(lst):
+    message_list = []
+
+    subject_template = 'accounts/group_member_welcome_subject.txt'
+    email_template = 'accounts/group_member_welcome_email.html'
+    for user in lst:
+        context = make_context(user)
+        subject = loader.render_to_string(subject_template, context)
+        subject = ''.join(subject.splitlines())
+        body = loader.render_to_string(email_template, context)
+        message = (subject, body, settings.DEFAULT_FROM_EMAIL, [user.email])
+        message_list.append(message)
+
+    return tuple(message_list)

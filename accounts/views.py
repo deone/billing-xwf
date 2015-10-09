@@ -11,7 +11,7 @@ from django.utils.http import urlsafe_base64_decode
 
 from .forms import CreateAccountForm, LoginForm, BulkUserUploadForm
 from .models import Subscriber
-from .helpers import auth_and_login, send_verification_mail
+from .helpers import auth_and_login, send_verification_mail, send_group_welcome_mail
 
 from packages.forms import PackageSubscriptionForm
 from packages.models import Package
@@ -115,7 +115,7 @@ def add_user(request):
         form = CreateAccountForm(request.POST, user=request.user)
         if form.is_valid():
             user = form.save()
-            send_verification_mail(user)
+            # send_group_welcome_mail(user)
             messages.success(request, 'User added successfully.')
             return redirect('accounts:add_user')
     else:
@@ -131,7 +131,9 @@ def upload_user_list(request):
     if request.method == 'POST':
       form = BulkUserUploadForm(request.POST, request.FILES, user=request.user)
       if form.is_valid():
-          form.save()
+          user_list = form.save()
+          # Send email with user_list
+          send_group_welcome_mail(user_list)
           messages.success(request, 'Users added successfully.')
     else:
         form = BulkUserUploadForm(user=request.user)
