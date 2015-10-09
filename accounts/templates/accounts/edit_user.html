@@ -2,18 +2,10 @@
 
 {% load staticfiles %}
 
-{% block title %}Add User{% endblock %}
+{% block title %}Edit User{% endblock %}
 
 {% block body %}
 <main class="mdl-layout__content">
-  {% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-
   <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--4-col">
       <form action="" method="post">
@@ -21,7 +13,7 @@
         {% csrf_token %}
 
         <div class="form-heading">
-          <h4>Add User</h4>
+          <h4>Edit User</h4>
         </div>
 
         {{ form.non_field_errors }}
@@ -59,31 +51,6 @@
         </div>
 
         <div>
-          {{ form.password.errors }}
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            {{ form.password }}
-            <label class="mdl-textfield__label" for="id_password">
-              {{ form.password.label }}
-            </label>
-          </div>
-        </div>
-
-        <div>
-          {{ form.confirm_password.errors }}
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            {{ form.confirm_password }}
-            <label class="mdl-textfield__label" for="id_confirm_password">
-              {{ form.confirm_password.label }}
-            </label>
-          </div>
-        </div>
-
-        <div>
-          {{ form.country.errors }}
-          {{ form.country }}
-        </div>
-
-        <div>
           {{ form.phone_number.errors }}
           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
             {{ form.phone_number }}
@@ -99,6 +66,7 @@
               Save
           </button>
         </div>
+
       </form>
     </div>
   </div>

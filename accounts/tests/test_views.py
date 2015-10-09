@@ -8,7 +8,7 @@ from django.contrib.messages import get_messages
 from django.utils import timezone
 
 from ..helpers import auth_and_login, make_context
-from ..forms import CreateAccountForm, LoginForm
+from ..forms import CreateUserForm, LoginForm
 from ..views import index, resend_mail, add_user, buy_package
 from ..models import Subscriber
 
@@ -33,7 +33,7 @@ class AccountsViewsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, 'Create Account')
         self.assertTemplateUsed(response, 'accounts/index.html')
-        self.assertTrue(isinstance(response.context['form'], CreateAccountForm))
+        self.assertTrue(isinstance(response.context['form'], CreateUserForm))
 
     def test_index_post(self):
         request = self.factory.post(reverse('index'),

@@ -2,11 +2,11 @@ from django.test import SimpleTestCase, TestCase
 from django.contrib.auth.models import User, AnonymousUser
 from django import forms
 
-from ..forms import CreateAccountForm, ResetPasswordForm
+from ..forms import CreateUserForm, ResetPasswordForm
 from ..models import Radcheck, GroupAccount, Subscriber
 from ..helpers import md5_password
 
-class CreateAccountFormTest(TestCase):
+class CreateUserFormTest(TestCase):
 
     def setUp(self):
         self.data = {
@@ -20,7 +20,7 @@ class CreateAccountFormTest(TestCase):
             }
 
     def test_clean(self):
-        form = CreateAccountForm(self.data, user=AnonymousUser)
+        form = CreateUserForm(self.data, user=AnonymousUser)
 
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['__all__'][0], 'Passwords do not match.')
@@ -32,7 +32,7 @@ class CreateAccountFormTest(TestCase):
 
         data = self.data
         data['confirm_password'] = '12345'
-        form = CreateAccountForm(data, user=user)
+        form = CreateUserForm(data, user=user)
         form.is_valid()
         new_user = form.save()
 

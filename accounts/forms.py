@@ -6,7 +6,7 @@ from django.utils import timezone
 from .models import *
 from .helpers import md5_password
 
-class CreateAccountForm(forms.Form):
+class CreateUserForm(forms.Form):
     username = forms.EmailField(label='Email Address', max_length=254,
         widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
     password = forms.CharField(label='Password',
@@ -17,15 +17,17 @@ class CreateAccountForm(forms.Form):
         widget=forms.TextInput(attrs={'class': 'mdl-textfield__input', 'pattern': '[A-Z,a-z, ]*'}))
     confirm_password = forms.CharField(label='Confirm Password', max_length=20, 
       widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
-    country = forms.ChoiceField(label='Country', choices=Subscriber.COUNTRY_CHOICES, widget=forms.Select(attrs={'class': 'form-control'}))
-    phone_number = forms.CharField(label='Phone Number', widget=forms.NumberInput(attrs={'class': 'mdl-textfield__input'}))
+    country = forms.ChoiceField(label='Country', choices=Subscriber.COUNTRY_CHOICES,
+        widget=forms.Select(attrs={'class': 'form-control'}))
+    phone_number = forms.CharField(label='Phone Number', validators=[phone_regex],
+        widget=forms.NumberInput(attrs={'class': 'mdl-textfield__input'}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
-        super(CreateAccountForm, self).__init__(*args, **kwargs)
+        super(CreateUserForm, self).__init__(*args, **kwargs)
 
     def clean(self):
-        cleaned_data = super(CreateAccountForm, self).clean()
+        cleaned_data = super(CreateUserForm, self).clean()
         password = cleaned_data.get("password")
         confirm_password = cleaned_data.get("confirm_password")
 
@@ -60,6 +62,48 @@ class CreateAccountForm(forms.Form):
                                 op=':=',
                                 value=md5_password(password))
         return user
+
+class EditUserForm(forms.Form):
+    username = forms.EmailField(label='Email Address', max_length=254,
+        widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
+    first_name = forms.CharField(label='First Name', max_length=20, 
+        widget=forms.TextInput(attrs={'class': 'mdl-textfield__input', 'pattern': '[A-Z,a-z, ]*'}))
+    last_name = forms.CharField(label='Last Name', max_length=20, 
+        widget=forms.TextInput(attrs={'class': 'mdl-textfield__input', 'pattern': '[A-Z,a-z, ]*'}))
+    phone_number = forms.CharField(label='Phone Number', required=False, validators=[phone_regex],
+        widget=forms.NumberInput(attrs={'class': 'mdl-textfield__input'}))
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('creator', None)
+        super(EditUserForm, self).__init__(*args, **kwargs)
+
+    def save(self):
+        print self.cleaned_data
+        username = self.cleaned_data['username']
+        first_name = self.cleaned_data['first_name']
+        last_name = self.cleaned_data['last_name']
+        """ country = self.cleaned_data['country']
+        country_code = Subscriber.COUNTRY_CODES_MAP[country]
+        phone_number = country_code + self.cleaned_data['phone_number'][1:] """
+
+        """ user = User.objects.create_user(username, username, password)
+        user.first_name = first_name
+        user.last_name = last_name
+        user.save()
+
+        if not self.user.is_anonymous():
+            if self.user.subscriber and self.user.subscriber.is_group_admin:
+                Subscriber.objects.create(user=user, group=self.user.subscriber.group,
+                    country=country, phone_number=phone_number)
+        else:
+            Subscriber.objects.create(user=user, country=country, phone_number=phone_number)
+
+        Radcheck.objects.create(user=user,
+                                username=username,
+                                attribute='MD5-Password',
+                                op=':=',
+                                value=md5_password(password))
+        return user """
 
 class ResetPasswordForm(SetPasswordForm):
     new_password1 = forms.CharField(label='New Password', widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))

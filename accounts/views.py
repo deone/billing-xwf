@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.utils.http import urlsafe_base64_decode
 from django.views.generic import ListView
 
-from .forms import CreateAccountForm, LoginForm, BulkUserUploadForm
+from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm
 from .models import Subscriber
 from .helpers import auth_and_login, send_verification_mail, send_group_welcome_mail
 
@@ -46,7 +46,7 @@ def success(request):
 
 def index(request):
     if request.method == 'POST':
-        form = CreateAccountForm(request.POST, user=AnonymousUser())
+        form = CreateUserForm(request.POST, user=AnonymousUser())
         if form.is_valid():
             user = form.save()
 
@@ -61,7 +61,7 @@ def index(request):
             if auth:
                 return redirect('accounts:dashboard')
     else:
-        form = CreateAccountForm(user=request.user)
+        form = CreateUserForm(user=request.user)
   
     context = {'form': form}
 
@@ -114,17 +114,40 @@ def add_user(request):
     context = {}
 
     if request.method == 'POST':
-        form = CreateAccountForm(request.POST, user=request.user)
+        form = CreateUserForm(request.POST, user=request.user)
         if form.is_valid():
             user = form.save()
             success = send_group_welcome_mail([user])
             messages.success(request, 'User added successfully.')
             return redirect('accounts:add_user')
     else:
-        form = CreateAccountForm(user=request.user)
+        form = CreateUserForm(user=request.user)
 
     context.update({'form': form})
     return render(request, 'accounts/add_user.html', context)
+
+@login_required
+def edit_user(request, pk=None):
+    context = {}
+    if request.method == 'POST':
+        form = EditUserForm(request.POST, creator=request.user)
+        if form.is_valid():
+            print "Yes"
+            user = form.save()
+            messages.success(request, 'User changed successfully.')
+            return redirect('accounts:view_users')
+    else:
+        user = User.objects.get(pk=pk)
+        dct = {
+            'username': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'phone_number': user.subscriber.phone_number
+            }
+        form = EditUserForm(creator=request.user, initial=dct)
+
+    context.update({'form': form})
+    return render(request, 'accounts/edit_user.html', context)
 
 @login_required
 def upload_user_list(request):
