@@ -1,5 +1,5 @@
 {% load i18n %}{% autoescape off %}
-{% blocktrans %}You're receiving this email because you (or an administrator) created an account at {{ site_name }}.{% endblocktrans %}
+{% blocktrans %}You're receiving this email because you created an account at {{ site_name }}.{% endblocktrans %}
 
 {% trans "Please click on the link below to verify your email:" %}
 {% block verify_link %}
@@ -8,15 +8,8 @@
                   
 {% endblock %}
 
-{% trans "You may click on the link below to set your password:" %}
-{% block set_password_link %}
-
-      {{ protocol }}://{{ domain }}{% url 'accounts:password_reset' %}
-                  
-{% endblock %}
-
 {% trans "Thanks for using our site!" %}
 
-{% blocktrans %}The {{ site_name }} team{% endblocktrans %}
+{% blocktrans %}The {{ site_name }} team.{% endblocktrans %}
 
 {% endautoescape %}

@@ -1,0 +1,15 @@
+{% load i18n %}{% autoescape off %}
+{% blocktrans %}You're receiving this email because an administrator created an account for you at {{ site_name }}.{% endblocktrans %}
+
+{% trans "You may click on the link below to set your password:" %}
+{% block set_password_link %}
+
+      {{ protocol }}://{{ domain }}{% url 'accounts:password_reset_confirm' uidb64=uid token=token %}
+                  
+{% endblock %}
+
+{% trans "Thanks for using our site!" %}
+
+{% blocktrans %}The {{ site_name }} team.{% endblocktrans %}
+
+{% endautoescape %}
