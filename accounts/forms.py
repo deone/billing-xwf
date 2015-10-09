@@ -74,6 +74,17 @@ class ResetPasswordForm(SetPasswordForm):
 class PasswordResetEmailForm(PasswordResetForm):
     email = forms.EmailField(label='Email Address', max_length=50, widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
 
+    def clean(self):
+        cleaned_data = super(PasswordResetForm, self).clean()
+        email = cleaned_data.get('email')
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise forms.ValidationError("Email does not exist.")
+        else:
+            pass
+
 class LoginForm(AuthenticationForm):
     username = forms.EmailField(label='Email Address', max_length=254,
         widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
