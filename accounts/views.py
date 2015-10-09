@@ -7,7 +7,9 @@ from django.conf import settings
 from django.http import Http404
 from django.utils import timezone
 from django.utils.encoding import force_text
+from django.utils.decorators import method_decorator
 from django.utils.http import urlsafe_base64_decode
+from django.views.generic import ListView
 
 from .forms import CreateAccountForm, LoginForm, BulkUserUploadForm
 from .models import Subscriber
@@ -159,3 +161,17 @@ def buy_package(request):
 
     context.update({'form': form})
     return render(request, 'accounts/buy_package.html', context)
+
+class UserList(ListView):
+    template_name = 'accounts/user_list.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(UserList, self).dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        users = User.objects.filter(subscriber__group=request.user.subscriber.group).exclude(pk=request.user.pk)
+        return render(request, self.template_name, {'users': users})
+
+    """ def get_queryset(self):
+        return User.objects.filter(subscriber__group=self.request.user.subscriber.group) """
