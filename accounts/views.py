@@ -161,6 +161,7 @@ def upload_user_list(request):
           user_list = form.save()
           success = send_group_welcome_mail(user_list)
           messages.success(request, 'Users added successfully.')
+          return redirect('accounts:upload_user_list')
     else:
         form = BulkUserUploadForm(user=request.user)
 

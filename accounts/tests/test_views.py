@@ -8,9 +8,9 @@ from django.contrib.messages import get_messages
 from django.utils import timezone
 
 from ..helpers import auth_and_login, make_context
-from ..forms import CreateUserForm, LoginForm
-from ..views import index, resend_mail, add_user, buy_package
-from ..models import Subscriber
+from ..forms import CreateUserForm, LoginForm, BulkUserUploadForm
+from ..views import index, resend_mail, add_user, buy_package, upload_user_list
+from ..models import Subscriber, GroupAccount
 
 from packages.forms import PackageSubscriptionForm
 from packages.models import Package
@@ -53,6 +53,7 @@ class AccountsViewsTests(TestCase):
         response = index(request)
 
         self.assertTrue(response.status_code, 302)
+        self.assertEqual(response.get('location'), reverse('accounts:dashboard'))
 
     def test_dashboard_login_redirect(self):
         response = self.client.get(reverse('accounts:dashboard'))
@@ -172,6 +173,7 @@ class AccountsViewsTests(TestCase):
         response = self.c.get(reverse('accounts:add_user'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue('form' in response.context)
+        self.assertTrue(isinstance(response.context['form'], CreateUserForm))
         self.assertTemplateUsed(response, 'accounts/add_user.html')
 
     def test_add_user_post(self):
@@ -202,6 +204,7 @@ class AccountsViewsTests(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual('User added successfully.', lst[0].__str__())
+        self.assertEqual(response.get('location'), reverse('accounts:add_user'))
 
     def test_buy_package_get(self):
         self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
@@ -231,6 +234,7 @@ class AccountsViewsTests(TestCase):
             lst.append(message)
 
         self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.get('location'), reverse('accounts:buy_package'))
         self.assertEqual('Package purchased successfully.', lst[0].__str__())
 
     def test_toggle_active_off(self):
@@ -256,3 +260,41 @@ class AccountsViewsTests(TestCase):
         self.assertTrue(active_user.is_active)
         self.assertRedirects(response, reverse('accounts:view_users'))
         self.assertEqual(response.status_code, 302)
+
+    def test_upload_user_list_post(self):
+        group = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
+        self.subscriber.group = group
+        self.subscriber.save()
+
+        with open('/Users/deone/src/billing/billing/accounts/tests/test.csv') as _file:
+            request = self.factory.post(reverse('accounts:upload_user_list'), {'user_list': _file})
+
+        request.user = self.user
+
+        self.session.process_request(request)
+        request.session.save()
+
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+
+        response = upload_user_list(request)
+        storage = get_messages(request)
+
+        lst = []
+        for message in storage:
+            lst.append(message)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual('Users added successfully.', lst[0].__str__())
+        self.assertEqual(response.get('location'), reverse('accounts:upload_user_list'))
+
+    def test_upload_user_list_get(self):
+        self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
+        response = self.c.get(reverse('accounts:upload_user_list'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue('form' in response.context)
+        self.assertTrue('file_length' in response.context)
+        self.assertEqual(response.context['file_length'], settings.MAX_FILE_LENGTH)
+        self.assertTrue(isinstance(response.context['form'], BulkUserUploadForm))
+        self.assertTemplateUsed(response, 'accounts/upload_user_list.html')
