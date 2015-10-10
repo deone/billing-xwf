@@ -1,8 +1,18 @@
+FIRST = '1'
+SECOND = '1.5'
+THIRD = '2'
+
 SPEED_CHOICES = (
-    ('1', '1Mbps'),
-    ('1.5', '1.5Mbps'),
-    ('2', '2Mbps'),
+    (FIRST, '1Mbps Lite'),
+    (SECOND, '1.5Mbps Delux'),
+    (THIRD, '2Mbps Supreme'),
 )
+
+SPEED_NAME_MAP = {
+    FIRST: 'Lite',
+    SECOND: 'Delux',
+    THIRD: 'Supreme'
+}
 
 VOLUME_CHOICES = (
     ('1', '1GB'),
