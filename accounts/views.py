@@ -204,7 +204,7 @@ class UserList(ListView):
 def toggle_active(request, pk=None):
     user = User.objects.get(pk=pk)
 
-    if user.is_active:
+    if user.is_active: 
         user.is_active = False
     else:
         user.is_active = True

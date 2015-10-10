@@ -232,3 +232,27 @@ class AccountsViewsTests(TestCase):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual('Package purchased successfully.', lst[0].__str__())
+
+    def test_toggle_active_off(self):
+        self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
+
+        user = User.objects.create_user('b@b.com', 'b@b.com', '12345')
+        response = self.c.get(reverse('accounts:toggle_active', kwargs={'pk':user.pk}))
+
+        inactive_user = User.objects.get(pk=user.pk)
+
+        self.assertFalse(inactive_user.is_active)
+        self.assertRedirects(response, reverse('accounts:view_users'))
+        self.assertEqual(response.status_code, 302)
+
+    def test_toggle_active_on(self):
+        self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
+
+        user = User.objects.create(email='b@b.com', username='b@b.com', password='12345', is_active=False)
+        response = self.c.get(reverse('accounts:toggle_active', kwargs={'pk':user.pk}))
+
+        active_user = User.objects.get(pk=user.pk)
+
+        self.assertTrue(active_user.is_active)
+        self.assertRedirects(response, reverse('accounts:view_users'))
+        self.assertEqual(response.status_code, 302)
