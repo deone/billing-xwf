@@ -13,9 +13,11 @@ class Package(models.Model):
 
     def __str__(self):
         if self.volume != "Unlimited":
-            return "%s %sGB" % (self.package_type, self.volume)
+            return "%s%s %s %s %sGB" % (self.speed, 'Mbps', settings.SPEED_NAME_MAP[self.speed],
+                self.package_type, self.volume)
         else:
-            return "%s %s" % (self.package_type, self.volume)
+            return "%s%s %s %s %s" % (self.speed, 'Mbps', settings.SPEED_NAME_MAP[self.speed],
+                self.package_type, self.volume)
 
 def compute_stop(start, package_type):
     return start + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[package_type])
