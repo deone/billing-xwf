@@ -74,36 +74,31 @@ class EditUserForm(forms.Form):
         widget=forms.NumberInput(attrs={'class': 'mdl-textfield__input'}))
 
     def __init__(self, *args, **kwargs):
-        self.user = kwargs.pop('creator', None)
+        self.user = kwargs.pop('user', None)
         super(EditUserForm, self).__init__(*args, **kwargs)
 
-    def save(self):
-        print self.cleaned_data
+    def save(self, user):
         username = self.cleaned_data['username']
         first_name = self.cleaned_data['first_name']
         last_name = self.cleaned_data['last_name']
-        """ country = self.cleaned_data['country']
-        country_code = Subscriber.COUNTRY_CODES_MAP[country]
-        phone_number = country_code + self.cleaned_data['phone_number'][1:] """
 
-        """ user = User.objects.create_user(username, username, password)
+        user.username = username
+        user.email = username
         user.first_name = first_name
         user.last_name = last_name
         user.save()
 
-        if not self.user.is_anonymous():
-            if self.user.subscriber and self.user.subscriber.is_group_admin:
-                Subscriber.objects.create(user=user, group=self.user.subscriber.group,
-                    country=country, phone_number=phone_number)
-        else:
-            Subscriber.objects.create(user=user, country=country, phone_number=phone_number)
+        # Save subscriber
+        if self.cleaned_data['phone_number']:
+            country_code = Subscriber.COUNTRY_CODES_MAP[user.subscriber.country]
+            user.subscriber.phone_number = country_code + self.cleaned_data['phone_number'][1:]
+            user.subscriber.save()
 
-        Radcheck.objects.create(user=user,
-                                username=username,
-                                attribute='MD5-Password',
-                                op=':=',
-                                value=md5_password(password))
-        return user """
+        # Save radcheck
+        user.radcheck.username = username
+        user.radcheck.save()
+
+        return user
 
 class ResetPasswordForm(SetPasswordForm):
     new_password1 = forms.CharField(label='New Password', widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))

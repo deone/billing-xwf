@@ -129,22 +129,24 @@ def add_user(request):
 @login_required
 def edit_user(request, pk=None):
     context = {}
+
+    user = User.objects.get(pk=pk)
+
+    dct = {
+        'username': user.email,
+        'first_name': user.first_name,
+        'last_name': user.last_name,
+        'phone_number': '0' + user.subscriber.phone_number[4:]
+        }
+
     if request.method == 'POST':
-        form = EditUserForm(request.POST, creator=request.user)
+        form = EditUserForm(request.POST, user=request.user)
         if form.is_valid():
-            print "Yes"
-            user = form.save()
+            user = form.save(user)
             messages.success(request, 'User changed successfully.')
             return redirect('accounts:view_users')
     else:
-        user = User.objects.get(pk=pk)
-        dct = {
-            'username': user.email,
-            'first_name': user.first_name,
-            'last_name': user.last_name,
-            'phone_number': user.subscriber.phone_number
-            }
-        form = EditUserForm(creator=request.user, initial=dct)
+        form = EditUserForm(user=request.user, initial=dct)
 
     context.update({'form': form})
     return render(request, 'accounts/edit_user.html', context)
