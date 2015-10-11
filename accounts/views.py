@@ -142,7 +142,7 @@ def edit_user(request, pk=None):
     if request.method == 'POST':
         form = EditUserForm(request.POST, user=request.user)
         if form.is_valid():
-            user = form.save(user)
+            form.save(user)
             messages.success(request, 'User changed successfully.')
             return redirect('accounts:view_users')
     else:

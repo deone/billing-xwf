@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from ..helpers import auth_and_login, make_context
 from ..forms import CreateUserForm, LoginForm, BulkUserUploadForm
-from ..views import index, resend_mail, add_user, buy_package, upload_user_list
+from ..views import index, resend_mail, add_user, buy_package, upload_user_list, edit_user
 from ..models import Subscriber, GroupAccount
 
 from packages.forms import PackageSubscriptionForm
@@ -298,3 +298,52 @@ class AccountsViewsTests(TestCase):
         self.assertEqual(response.context['file_length'], settings.MAX_FILE_LENGTH)
         self.assertTrue(isinstance(response.context['form'], BulkUserUploadForm))
         self.assertTemplateUsed(response, 'accounts/upload_user_list.html')
+
+    def test_edit_user_get(self):
+        self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
+
+        user = User.objects.create(email='c@c.com', username='c@c.com', password='12345', is_active=False)
+        subscriber = Subscriber.objects.create(user=user,
+            country='GHA', phone_number=Subscriber.COUNTRY_CODES_MAP['GHA'] + '542751610',
+            email_verified=True, date_verified=timezone.now())
+
+        response = self.c.get(reverse('accounts:edit_user', kwargs={'pk':user.pk}))
+
+        self.assertEqual(response.status_code, 200)
+
+    """ def test_edit_user_post(self):
+        # self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
+        user = User.objects.create(email='c@c.com', username='c@c.com', password='12345', is_active=False)
+        subscriber = Subscriber.objects.create(user=user,
+            country='GHA', phone_number=Subscriber.COUNTRY_CODES_MAP['GHA'] + '542751610',
+            email_verified=True, date_verified=timezone.now())
+
+        # print 'Test', user.pk
+        # response = self.c.get(reverse('accounts:edit_user', kwargs={'pk':user.pk}))
+
+        request = self.factory.post(reverse('accounts:edit_user', kwargs={'pk':user.pk}),
+            data={
+              'username': 'b@de.com',
+              'first_name': 'Ola',
+              'last_name': 'Ade',
+              'phone_number': '0542751233'
+              })
+        print request
+        request.user = self.user
+
+        self.session.process_request(request)
+        request.session.save()
+
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+
+        response = edit_user(request)
+        storage = get_messages(request)
+
+        lst = []
+        for message in storage:
+            lst.append(message)
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual('User changed successfully.', lst[0].__str__())
+        self.assertEqual(response.get('location'), reverse('accounts:view_users')) """
