@@ -121,8 +121,6 @@ class PasswordResetEmailForm(PasswordResetForm):
             user = User.objects.get(email=email)
         except User.DoesNotExist:
             raise forms.ValidationError("Email does not exist.")
-        else:
-            pass
 
 class LoginForm(AuthenticationForm):
     username = forms.EmailField(label='Email Address', max_length=254,
@@ -158,6 +156,7 @@ class BulkUserUploadForm(forms.Form):
                     your group threshold. Your group threshold is set to %s.""" % str(self.user.subscriber.group.max_no_of_users))
 
         lst = []
+        created_user_emails = [user.email for user in User.objects.filter(subscriber__group__name=self.user.subscriber.group.name)]
 
         for line in lines:
           dct = {}
@@ -169,6 +168,9 @@ class BulkUserUploadForm(forms.Form):
               email = email.strip()
               first_name = first_name.strip()
               last_name = last_name.strip()
+
+              if email in created_user_emails:
+                  raise forms.ValidationError("Duplicate email found. %s already exists." % email)
 
               dct.update({
                 'username': email,
