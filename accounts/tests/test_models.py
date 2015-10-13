@@ -20,7 +20,7 @@ class AccountsModelsTests(TestCase):
 
     def test_radcheck(self):
         entry = Radcheck.objects.create(
-            username=self.user.username, attribute='MD5-Password', op=':=', value=md5_password('12345')
+            user=self.user, username=self.user.username, attribute='MD5-Password', op=':=', value=md5_password('12345')
         )
         self.assertEqual(entry.__str__(), 'a@a.com')
 
