@@ -1,8 +1,9 @@
 from django.test import SimpleTestCase, TestCase
 from django.contrib.auth.models import User, AnonymousUser
+from django.core.files.uploadedfile import SimpleUploadedFile
 from django import forms
 
-from ..forms import CreateUserForm, ResetPasswordForm
+from ..forms import CreateUserForm, ResetPasswordForm, PasswordResetEmailForm, BulkUserUploadForm
 from ..models import Radcheck, GroupAccount, Subscriber
 from ..helpers import md5_password
 
@@ -58,3 +59,51 @@ class ResetPasswordFormTest(TestCase):
 
         new_password = Radcheck.objects.get(username='b@b.com').value
         self.assertNotEqual(old_password, new_password)
+
+class PasswordResetEmailFormTest(TestCase):
+
+    def setUp(self):
+        self.data = {'email': 'z@z.com'}
+
+    def test_clean(self):
+        form = PasswordResetEmailForm(self.data)
+
+        self.assertFalse(form.is_valid())
+        self.assertEqual(form.errors['__all__'][0], 'Email does not exist.')
+
+class BulkUserUploadFormTest(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create(username='u@u.com', password='12345')
+
+        path = '/Users/deone/src/billing/billing/accounts/tests/'
+        self.txt_file = path + 'test.txt'
+        self.csv_file_40_lines = path + 'test_40.csv'
+        self.csv_file_12_lines = path + 'test_12.csv'
+
+    def bind_form_data(self, _file):
+        file_data = {'user_list': SimpleUploadedFile(_file.name, _file.read())}
+        form = BulkUserUploadForm({}, file_data, user=self.user)
+        return form
+
+    def test_clean_invalid_file_type(self):
+        with open(self.txt_file) as _file:
+            form = self.bind_form_data(_file)
+            self.assertFalse(form.is_valid())
+            self.assertEqual(form.errors['__all__'][0], 'Please upload a CSV file.')
+
+    def test_clean_exceed_max_file_length(self):
+        with open(self.csv_file_40_lines) as _file:
+            form = self.bind_form_data(_file)
+            self.assertFalse(form.is_valid())
+            self.assertEqual(form.errors['__all__'][0], 'Uploaded file should not have more than 30 lines. It has 40.')
+
+    def test_clean_exceed_group_threshold(self):
+        group = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
+        subscriber = Subscriber.objects.create(user=self.user, country='GHA', phone_number='0542751610', group=group)
+
+        with open(self.csv_file_12_lines) as _file:
+            form = self.bind_form_data(_file)
+            self.assertFalse(form.is_valid())
+            self.assertEqual(form.errors['__all__'][0],
+                'You are not allowed to create more users than your group threshold. Your group threshold is set to 10.')

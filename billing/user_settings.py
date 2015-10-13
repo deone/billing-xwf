@@ -45,4 +45,6 @@ PACKAGE_TYPES_HOURS_MAP = {
 
 MAX_FILE_LENGTH = 30
 
-EXCEED_MAX_USER_COUNT = True
+# Set this to False to test BulkUserUploadForm.clean()
+# EXCEED_MAX_USER_COUNT = True
+EXCEED_MAX_USER_COUNT = False

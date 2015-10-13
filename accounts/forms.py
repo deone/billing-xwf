@@ -149,11 +149,8 @@ class BulkUserUploadForm(forms.Form):
             raise forms.ValidationError("Uploaded file should not have more than %s lines. It has %s." % (str(settings.MAX_FILE_LENGTH), str(lines_length)))
 
         if lines_length > int(self.user.subscriber.group.max_no_of_users):
-            if settings.EXCEED_MAX_USER_COUNT:
-                pass
-            else:
-                raise forms.ValidationError("""You are not allowed to create more users than
-                    your group threshold. Your group threshold is set to %s.""" % str(self.user.subscriber.group.max_no_of_users))
+            if not settings.EXCEED_MAX_USER_COUNT:
+                raise forms.ValidationError("You are not allowed to create more users than your group threshold. Your group threshold is set to %s." % str(self.user.subscriber.group.max_no_of_users))
 
         lst = []
         created_user_emails = [user.email for user in User.objects.filter(subscriber__group__name=self.user.subscriber.group.name)]
