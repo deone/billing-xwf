@@ -10,22 +10,26 @@
     <div class="mdl-cell mdl-cell--4-col">
       <h4>Users in {{ request.user.subscriber.group }} Group</h4>
       <ul>
-      {% for user in users %}
-        <li>
-          <form action="{% url 'accounts:toggle_active' pk=user.pk %}" method="post">
+      {% if users %}
+        {% for user in users %}
+          <li>
+            <form action="{% url 'accounts:toggle_active' pk=user.pk %}" method="post">
 
-            {% csrf_token %}
+              {% csrf_token %}
 
-            {% if user.is_active %}
-              <button type="submit">Deactivate</button>
-            {% else %}
-              <button type="submit">Activate</button>
-            {% endif %}
-            {{ user.email }}
-            <a href="{% url 'accounts:edit_user' pk=user.pk %}">Edit</a>
-          </form>
-        </li>
-      {% endfor %}
+              {% if user.is_active %}
+                <button type="submit">Deactivate</button>
+              {% else %}
+                <button type="submit">Activate</button>
+              {% endif %}
+              {{ user.email }}
+              <a href="{% url 'accounts:edit_user' pk=user.pk %}">Edit</a>
+            </form>
+          </li>
+        {% endfor %}
+      {% else %}
+        <p>There are no users in this group.</p>
+      {% endif %}
       </ul>
     </div>
   </div>
