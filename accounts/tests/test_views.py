@@ -266,7 +266,7 @@ class AccountsViewsTests(TestCase):
         self.subscriber.group = group
         self.subscriber.save()
 
-        with open('/Users/deone/src/billing/billing/accounts/tests/test.csv') as _file:
+        with open('/Users/deone/src/billing/billing/accounts/tests/test_files/test.csv') as _file:
             request = self.factory.post(reverse('accounts:upload_user_list'), {'user_list': _file})
 
         request.user = self.user
