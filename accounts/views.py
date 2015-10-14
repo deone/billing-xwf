@@ -132,11 +132,16 @@ def edit_user(request, pk=None):
 
     user = User.objects.get(pk=pk)
 
+    if user.subscriber.phone_number:
+        phone_number = '0' + user.subscriber.phone_number[4:]
+    else:
+        phone_number = ""
+
     dct = {
         'username': user.email,
         'first_name': user.first_name,
         'last_name': user.last_name,
-        'phone_number': '0' + user.subscriber.phone_number[4:]
+        'phone_number': phone_number
         }
 
     if request.method == 'POST':
