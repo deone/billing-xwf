@@ -9,7 +9,7 @@ from accounts.models import Subscriber, GroupAccount
 class Package(models.Model):
     package_type = models.CharField(max_length=7, choices=settings.PACKAGE_TYPES)
     volume = models.CharField(max_length=9, choices=settings.VOLUME_CHOICES)
-    speed = models.CharField(max_length=3, choices=settings.SPEED_CHOICES, default='1.5')
+    speed = models.CharField(max_length=5, choices=settings.SPEED_CHOICES, default='1.5')
 
     def __str__(self):
         if self.volume != "Unlimited":
