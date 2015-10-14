@@ -1,6 +1,7 @@
 from django.contrib.auth import authenticate, login as auth_login
 from django.contrib.auth.tokens import default_token_generator
 from django.contrib.sites.models import Site
+from django.contrib.auth.models import User
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from django.core.mail import EmailMultiAlternatives, send_mass_mail
@@ -68,3 +69,17 @@ def build_message_list(lst):
         message_list.append(message)
 
     return tuple(message_list)
+
+def exceeds_max_user_count(user_id, group_name, max_user_count, line_count=None):
+    max_user_count = int(max_user_count)
+    active_user_count = int(User.objects.filter(
+            subscriber__group__name=group_name
+            ).filter(is_active=True).exclude(pk=user_id).count())
+
+    if line_count:
+        return line_count > max_user_count or line_count > (max_user_count - active_user_count)
+    else:
+        return active_user_count == max_user_count
+
+def get_group_name_max_allowed_users(group):
+    return (group.name, group.max_no_of_users)

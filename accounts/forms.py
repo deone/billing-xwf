@@ -4,7 +4,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from .models import *
-from .helpers import md5_password
+from .helpers import md5_password, exceeds_max_user_count, get_group_name_max_allowed_users
 
 class CreateUserForm(forms.Form):
     username = forms.EmailField(label='Email Address', max_length=254,
@@ -34,6 +34,14 @@ class CreateUserForm(forms.Form):
         if password and confirm_password:
             if password != confirm_password:
                 raise forms.ValidationError("Passwords do not match.", code="password_mismatch")
+
+        if not self.user.is_anonymous() and self.user.subscriber.group is not None:
+            group_name, max_user_count = get_group_name_max_allowed_users(self.user.subscriber.group)
+            if exceeds_max_user_count(self.user.pk, group_name, max_user_count):
+                if not settings.EXCEED_MAX_USER_COUNT:
+                    raise forms.ValidationError(
+                        "You are not allowed to create more users than your group threshold. Your group threshold is set to %s."
+                      % str(self.user.subscriber.group.max_no_of_users), code="exceeds_threshold")
 
     def save(self):
         username = self.cleaned_data['username']
@@ -143,47 +151,47 @@ class BulkUserUploadForm(forms.Form):
             raise forms.ValidationError("Please upload a CSV file.")
 
         lines = _file.readlines()
-        lines_length = len(lines)
+        line_count = len(lines)
 
-        if lines_length > settings.MAX_FILE_LENGTH:
-            raise forms.ValidationError("Uploaded file should not have more than %s lines. It has %s." % (str(settings.MAX_FILE_LENGTH), str(lines_length)))
+        if line_count > settings.MAX_FILE_LENGTH:
+            raise forms.ValidationError(
+                "Uploaded file should not have more than %s lines. It has %s." % (
+                  str(settings.MAX_FILE_LENGTH), str(line_count)))
 
-        max_user_count = int(self.user.subscriber.group.max_no_of_users)
-        # Count the number of active users in a group, deduct it from max_no_of_users and check lines_length against the result.
-        active_user_count = int(User.objects.filter(
-            subscriber__group__name=self.user.subscriber.group.name
-            ).filter(is_active=True).exclude(pk=self.user.pk).count())
+        group_name, max_user_count = get_group_name_max_allowed_users(self.user.subscriber.group)
 
-        if lines_length > max_user_count or lines_length > (max_user_count - active_user_count):
+        if exceeds_max_user_count(self.user.pk, group_name, max_user_count, line_count):
             if not settings.EXCEED_MAX_USER_COUNT:
-                raise forms.ValidationError("You are not allowed to create more users than your group threshold. Your group threshold is set to %s."
+                raise forms.ValidationError(
+                    "You are not allowed to create more users than your group threshold. Your group threshold is set to %s."
                   % str(self.user.subscriber.group.max_no_of_users))
 
         lst = []
-        created_user_emails = [user.email for user in User.objects.filter(subscriber__group__name=self.user.subscriber.group.name)]
+        created_user_emails = [user.email for user in User.objects.filter(
+          subscriber__group__name=self.user.subscriber.group.name)]
 
         for line in lines:
-          dct = {}
-          try:
-              first_name, last_name, email = line.split(',')
-          except ValueError:
-              raise forms.ValidationError("File line has too many or too few values. Please check file.")
-          else:
-              email = email.strip()
-              first_name = first_name.strip()
-              last_name = last_name.strip()
+            dct = {}
+            try:
+                first_name, last_name, email = line.split(',')
+            except ValueError:
+                raise forms.ValidationError("File line has too many or too few values. Please check file.")
+            else:
+                email = email.strip()
+                first_name = first_name.strip()
+                last_name = last_name.strip()
 
-              if email in created_user_emails:
-                  raise forms.ValidationError("Duplicate email found. %s already exists." % email)
+                if email in created_user_emails:
+                    raise forms.ValidationError("Duplicate email found. %s already exists." % email)
 
-              dct.update({
-                'username': email,
-                'email': email,
-                'first_name': first_name.title(),
-                'last_name': last_name.title()
-              })
+                dct.update({
+                  'username': email,
+                  'email': email,
+                  'first_name': first_name.title(),
+                  'last_name': last_name.title()
+                })
 
-          lst.append(dct)
+            lst.append(dct)
 
         return lst
 
