@@ -25,15 +25,9 @@ class PackagesModelsTests(TestCase):
             stop=now + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[self.package.package_type]))
 
     def test_package__str__(self):
-        string = '%s%s %s %s %s%s' % (self.package.speed, 'Mbps', settings.SPEED_NAME_MAP[self.package.speed],
-            self.package.package_type, self.package.volume, 'GB')
+        string = '%s %s %s' % (settings.SPEED_NAME_MAP[self.package.speed],
+            self.package.package_type, settings.VOLUME_NAME_MAP[self.package.volume])
         self.assertEqual(self.package.__str__(), string)
-
-    def test_package__str__unlimited_volume(self):
-        package = Package.objects.create(package_type='Monthly', volume='Unlimited', speed='1.5')
-        string = '%s%s %s %s %s' % (package.speed, 'Mbps', settings.SPEED_NAME_MAP[self.package.speed],
-            package.package_type, package.volume)
-        self.assertEqual(package.__str__(), string)
 
     def test_gps__str__(self):
         string = '%s %s %s' % (self.group.name, self.package.package_type, self.gps.stop.strftime('%B %d %Y, %I:%M%p'))
