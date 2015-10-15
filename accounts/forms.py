@@ -209,3 +209,10 @@ class BulkUserUploadForm(forms.Form):
             user_list.append(user)
 
         return user_list
+
+class UserListForm(forms.Form):
+
+    def __init__(self, *args, **kwargs):
+        users = kwargs.pop('users')
+        super(UserListForm, self).__init__(*args, **kwargs)
+        self.fields['user_list'] = forms.MultipleChoiceField(choices=users, widget=forms.CheckboxSelectMultiple())

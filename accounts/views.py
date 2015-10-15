@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.utils.http import urlsafe_base64_decode
 from django.views.generic import ListView
 
-from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm
+from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, UserListForm
 from .models import Subscriber
 from .helpers import auth_and_login, send_verification_mail, send_group_welcome_mail
 
@@ -187,13 +187,28 @@ def buy_package(request):
             messages.success(request, 'Package purchased successfully.')
             return redirect('accounts:buy_package')
     else:
-        form = PackageSubscriptionForm(user=request.user,
-            packages=packages)
+        form = PackageSubscriptionForm(user=request.user, packages=packages)
 
     context.update({'form': form})
     return render(request, 'accounts/buy_package.html', context)
 
-class UserList(ListView):
+def view_users(request):
+    context = {}
+    group_name = request.user.subscriber.group.name
+    users = [(u.id, u) for u in User.objects.filter(
+      subscriber__group__name=group_name).exclude(pk=request.user.pk)]
+    if request.method == "POST":
+        form = UserListForm(request.POST, users=users)
+        if form.is_valid():
+            form.save()
+            return redirect('accounts:view_users')
+    else:
+        form = UserListForm(users=users)
+
+    context.update({'form': form})
+    return render(request, 'accounts/user_list.html', context)
+
+""" class UserList(ListView):
     template_name = 'accounts/user_list.html'
 
     @method_decorator(login_required)
@@ -202,10 +217,10 @@ class UserList(ListView):
 
     def get(self, request, *args, **kwargs):
         users = User.objects.filter(subscriber__group=request.user.subscriber.group).exclude(pk=request.user.pk)
-        return render(request, self.template_name, {'users': users})
+        return render(request, self.template_name, {'users': users}) """
 
-    """ def get_queryset(self):
-        return User.objects.filter(subscriber__group=self.request.user.subscriber.group) """
+    # def get_queryset(self):
+        # return User.objects.filter(subscriber__group=self.request.user.subscriber.group)
 
 def toggle_active(request, pk=None):
     user = User.objects.get(pk=pk)
