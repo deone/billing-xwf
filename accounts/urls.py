@@ -31,5 +31,4 @@ urlpatterns = [
     url(r'^upload_user_list/$', views.upload_user_list, name='upload_user_list'),
     url(r'^buy_package/$', views.buy_package, name='buy_package'),
     url(r'^view_users/$', views.UserList.as_view(), name='view_users'),
-    # url(r'^view_users/$', views.view_users, name='view_users'),
 ]

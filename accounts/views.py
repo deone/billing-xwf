@@ -192,23 +192,6 @@ def buy_package(request):
     context.update({'form': form})
     return render(request, 'accounts/buy_package.html', context)
 
-""" def view_users(request):
-    context = {}
-    group_name = request.user.subscriber.group.name
-    users = [(u.id, u) for u in User.objects.filter(
-      subscriber__group__name=group_name).exclude(pk=request.user.pk)]
-    if request.method == "POST":
-        form = UserListForm(request.POST, users=users)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Users deactivated successfully.')
-            return redirect('accounts:view_users')
-    else:
-        form = UserListForm(users=users)
-
-    context.update({'form': form})
-    return render(request, 'accounts/user_list.html', context) """
-
 class UserList(ListView):
     template_name = 'accounts/user_list.html'
 
@@ -219,9 +202,6 @@ class UserList(ListView):
     def get(self, request, *args, **kwargs):
         users = User.objects.filter(subscriber__group=request.user.subscriber.group).exclude(pk=request.user.pk)
         return render(request, self.template_name, {'users': users})
-
-    # def get_queryset(self):
-        # return User.objects.filter(subscriber__group=self.request.user.subscriber.group)
 
 def toggle_active(request, pk=None):
     user = User.objects.get(pk=pk)
