@@ -9,27 +9,29 @@
   <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--4-col">
       <h4>Users in {{ request.user.subscriber.group }} Group</h4>
-      <ul>
-      {% if users %}
-        {% for user in users %}
-          <li>
-            <form action="{% url 'accounts:toggle_active' pk=user.pk %}" method="post">
+        <form action="" method="post">
 
-              {% csrf_token %}
+          {% csrf_token %}
 
-              {% if user.is_active %}
-                <button type="submit">Deactivate</button>
-              {% else %}
-                <button type="submit">Activate</button>
-              {% endif %}
-              {{ user.email }}
-              <a href="{% url 'accounts:edit_user' pk=user.pk %}">Edit</a>
-            </form>
-          </li>
-        {% endfor %}
-      {% else %}
-        <p>There are no users in this group.</p>
-      {% endif %}
+          <ul>
+
+          {% for id, user in form.user_list.field.choices %}
+            <li>
+              <label for="id_user_list_{{ forloop.counter }}">
+                <input id="id_user_list_{{ forloop.counter }}" name="user_list" type="checkbox" value="{{ id }}"> 
+                <a href="{% url 'accounts:edit_user' pk=id %}">{{ user.email }}</a>
+              </label>
+            </li>
+          {% endfor %}
+
+          <div class="form-actions">
+            <button type="submit"
+              class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                Submit
+            </button>
+          </div>
+
+        </form>
       </ul>
     </div>
   </div>
