@@ -11,9 +11,9 @@ from django.utils.decorators import method_decorator
 from django.utils.http import urlsafe_base64_decode
 from django.views.generic import ListView
 
-from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, UserListForm
+from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm
 from .models import Subscriber
-from .helpers import auth_and_login, send_verification_mail, send_group_welcome_mail
+from .helpers import *
 
 from packages.forms import PackageSubscriptionForm
 from packages.models import Package
@@ -192,7 +192,7 @@ def buy_package(request):
     context.update({'form': form})
     return render(request, 'accounts/buy_package.html', context)
 
-def view_users(request):
+""" def view_users(request):
     context = {}
     group_name = request.user.subscriber.group.name
     users = [(u.id, u) for u in User.objects.filter(
@@ -201,14 +201,15 @@ def view_users(request):
         form = UserListForm(request.POST, users=users)
         if form.is_valid():
             form.save()
+            messages.success(request, 'Users deactivated successfully.')
             return redirect('accounts:view_users')
     else:
         form = UserListForm(users=users)
 
     context.update({'form': form})
-    return render(request, 'accounts/user_list.html', context)
+    return render(request, 'accounts/user_list.html', context) """
 
-""" class UserList(ListView):
+class UserList(ListView):
     template_name = 'accounts/user_list.html'
 
     @method_decorator(login_required)
@@ -217,7 +218,7 @@ def view_users(request):
 
     def get(self, request, *args, **kwargs):
         users = User.objects.filter(subscriber__group=request.user.subscriber.group).exclude(pk=request.user.pk)
-        return render(request, self.template_name, {'users': users}) """
+        return render(request, self.template_name, {'users': users})
 
     # def get_queryset(self):
         # return User.objects.filter(subscriber__group=self.request.user.subscriber.group)
@@ -228,6 +229,13 @@ def toggle_active(request, pk=None):
     if user.is_active: 
         user.is_active = False
     else:
+        group_name, max_user_count = get_group_name_max_allowed_users(request.user.subscriber.group)
+        if exceeds_max_user_count(request.user.pk, group_name, max_user_count):
+            if not settings.EXCEED_MAX_USER_COUNT:
+                messages.error(request,
+                    "You are not allowed to create more users than your group threshold. Your group threshold is set to %s." % max_user_count)
+                return redirect('accounts:view_users')
+
         user.is_active = True
 
     user.save()

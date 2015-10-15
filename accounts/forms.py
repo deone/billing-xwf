@@ -41,7 +41,7 @@ class CreateUserForm(forms.Form):
                 if not settings.EXCEED_MAX_USER_COUNT:
                     raise forms.ValidationError(
                         "You are not allowed to create more users than your group threshold. Your group threshold is set to %s."
-                      % str(self.user.subscriber.group.max_no_of_users), code="exceeds_threshold")
+                      % max_user_count, code="exceeds_threshold")
 
     def save(self):
         username = self.cleaned_data['username']
@@ -210,9 +210,15 @@ class BulkUserUploadForm(forms.Form):
 
         return user_list
 
-class UserListForm(forms.Form):
+""" class UserListForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
         users = kwargs.pop('users')
         super(UserListForm, self).__init__(*args, **kwargs)
         self.fields['user_list'] = forms.MultipleChoiceField(choices=users, widget=forms.CheckboxSelectMultiple())
+
+    def save(self):
+        for _id in self.cleaned_data['user_list']:
+            user = User.objects.get(pk=_id)
+            user.is_active = False
+            user.save() """
