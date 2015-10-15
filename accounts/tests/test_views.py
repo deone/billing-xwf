@@ -68,34 +68,6 @@ class AccountsViewsTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTrue('verified' in response.context)
 
-    """ def test_dashboard_with_group_admin(self):
-        self.subscriber.is_group_admin = True
-        self.subscriber.save()
-        self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
-        response = self.c.get(reverse('accounts:dashboard'))
-        self.assertEqual(response.status_code, 200)
-        self.assertTrue('form' in response.context)
-        self.assertTrue(isinstance(response.context['form'],
-        CreateAccountForm))
-
-    def test_dashboard_post(self):
-        request = self.factory.post(reverse('accounts:dashboard'),
-            data={
-              'username': 'b@b.com',
-              'password': '12345',
-              'first_name': 'Ola',
-              'last_name': 'Ade',
-              'confirm_password': '12345',
-              'country': 'GHA',
-              'phone_number': '0542751610'
-              })
-        request.user = self.user
-        self.middleware.process_request(request)
-        request.session.save()
-
-        response = dashboard(request)
-        self.assertEqual(response.status_code, 200) """
-
     def test_login(self):
         response = self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
         self.assertRedirects(response, reverse(settings.LOGIN_REDIRECT_URL))
@@ -238,6 +210,9 @@ class AccountsViewsTests(TestCase):
         self.assertEqual('Package purchased successfully.', lst[0].__str__())
 
     def test_toggle_active_off(self):
+        self.user.subscriber.group = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
+        self.user.subscriber.save()
+
         self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
 
         user = User.objects.create_user('b@b.com', 'b@b.com', '12345')
@@ -250,6 +225,8 @@ class AccountsViewsTests(TestCase):
         self.assertEqual(response.status_code, 302)
 
     def test_toggle_active_on(self):
+        self.user.subscriber.group = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
+        self.user.subscriber.save()
         self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
 
         user = User.objects.create(email='b@b.com', username='b@b.com', password='12345', is_active=False)
