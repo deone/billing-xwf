@@ -209,35 +209,6 @@ class AccountsViewsTests(TestCase):
         self.assertEqual(response.get('location'), reverse('accounts:buy_package'))
         self.assertEqual('Package purchased successfully.', lst[0].__str__())
 
-    def test_toggle_active_off(self):
-        self.user.subscriber.group = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
-        self.user.subscriber.save()
-
-        self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
-
-        user = User.objects.create_user('b@b.com', 'b@b.com', '12345')
-        response = self.c.get(reverse('accounts:toggle_active', kwargs={'pk':user.pk}))
-
-        inactive_user = User.objects.get(pk=user.pk)
-
-        self.assertFalse(inactive_user.is_active)
-        self.assertRedirects(response, reverse('accounts:view_users'))
-        self.assertEqual(response.status_code, 302)
-
-    def test_toggle_active_on(self):
-        self.user.subscriber.group = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
-        self.user.subscriber.save()
-        self.c.post(reverse('accounts:login'), {'username': 'a@a.com', 'password': '12345'})
-
-        user = User.objects.create(email='b@b.com', username='b@b.com', password='12345', is_active=False)
-        response = self.c.get(reverse('accounts:toggle_active', kwargs={'pk':user.pk}))
-
-        active_user = User.objects.get(pk=user.pk)
-
-        self.assertTrue(active_user.is_active)
-        self.assertRedirects(response, reverse('accounts:view_users'))
-        self.assertEqual(response.status_code, 302)
-
     def test_upload_user_list_post(self):
         group = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
         self.subscriber.group = group
@@ -281,14 +252,14 @@ class AccountsViewsTests(TestCase):
 
         user = User.objects.create(email='c@c.com', username='c@c.com', password='12345', is_active=False)
         subscriber = Subscriber.objects.create(user=user,
-            country='GHA', phone_number=Subscriber.COUNTRY_CODES_MAP['GHA'] + '542751610',
-            email_verified=True, date_verified=timezone.now())
+            country='GHA', email_verified=True, date_verified=timezone.now())
 
         response = self.c.get(reverse('accounts:edit_user', kwargs={'pk':user.pk}))
 
         self.assertEqual(response.status_code, 200)
         self.assertTrue('form' in response.context)
         self.assertTrue(isinstance(response.context['form'], EditUserForm))
+        self.assertEqual(response.context['form'].initial['phone_number'], "")
 
     def test_edit_user_post(self):
         user = User.objects.create(email='d@d.com', username='d@d.com', password='12345', is_active=False)
@@ -332,3 +303,85 @@ class AccountsViewsTests(TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual('User changed successfully.', lst[0].__str__())
         self.assertEqual(response.get('location'), reverse('accounts:view_users'))
+
+class ViewsTests(TestCase):
+    
+    def setUp(self):
+        self.c = Client()
+        self.user = User.objects.create_user('z@z.com', 'z@z.com', '12345')
+        country = 'GHA'
+        self.subscriber = Subscriber.objects.create(user=self.user,
+            country=country, phone_number=Subscriber.COUNTRY_CODES_MAP[country] + '555223345')
+        self.group = GroupAccount.objects.create(name='CUG', max_no_of_users=5)
+        self.factory = RequestFactory()
+        
+
+class ToggleUserStatusTests(ViewsTests):
+
+    def create_user(self, is_active=True):
+        user = User.objects.create_user('b@b.com', 'b@b.com', '12345')
+        user.is_active = is_active
+        user.save()
+
+        return user
+
+    def get_user(self, pk):
+        return User.objects.get(pk=pk)
+
+    def send_request(self, pk):
+        return self.c.get(reverse('accounts:toggle_active', kwargs={'pk':pk}))
+
+    def check_response(self, response):
+        self.assertRedirects(response, reverse('accounts:view_users'))
+        self.assertEqual(response.status_code, 302)
+
+    def set_group_group_admin(self):
+        """ Set group and group_admin status for user. """
+        self.user.subscriber.group = self.group
+        self.user.subscriber.is_group_admin = True
+        self.user.subscriber.save()
+
+    def test_toggle_status_inactive(self):
+        """ Test that user.is_active is set to False. """
+
+        # Set group and group_admin status for user sending this request.
+        # Only group_admins are allowed to perform this action. We might need to write a
+        # custom decorator to ensure this so that a random logged-in user doesn't just
+        # enter the URL and performs this action.
+        self.set_group_group_admin()
+
+        # Log user in, since login is required
+        self.c.post(reverse('accounts:login'), {'username': 'z@z.com', 'password': '12345'})
+
+        # Create user. We don't need to bother with creating subscriber and group instances
+        # for this user since those are not checked when we're deactivating user.
+        user = self.create_user()
+
+        # Send request and get response
+        response = self.send_request(user.pk)
+
+        # Fetch user instance and perform checks.
+        deactivated_user = self.get_user(user.pk)
+
+        self.assertFalse(deactivated_user.is_active)
+        self.check_response(response)
+
+    def test_toggle_status_active(self):
+        """ Test that user.is_active is set to True. """
+
+        self.set_group_group_admin()
+
+        # Log user in
+        self.c.post(reverse('accounts:login'), {'username': 'z@z.com', 'password': '12345'})
+
+        # Create user
+        user = self.create_user(is_active=False)
+
+        # Send request and get response
+        response = self.send_request(user.pk)
+
+        # Fetch user instance and perform checks
+        activated_user = self.get_user(user.pk)
+
+        self.assertTrue(activated_user.is_active)
+        self.check_response(response)
