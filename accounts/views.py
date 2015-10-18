@@ -209,11 +209,11 @@ def toggle_active(request, pk=None):
     if user.is_active: 
         user.is_active = False
     else:
-        group_name, max_user_count = get_group_name_max_allowed_users(request.user.subscriber.group)
-        if exceeds_max_user_count(request.user.pk, group_name, max_user_count):
+        group = request.user.subscriber.group
+        if group.max_user_count_reached() or group.available_user_slots_count() is None:
             if not settings.EXCEED_MAX_USER_COUNT:
                 messages.error(request,
-                    "You are not allowed to create more users than your group threshold. Your group threshold is set to %s." % max_user_count)
+                    "You are not allowed to create more users than your group threshold. Your group threshold is set to %s." % group.max_no_of_users)
                 return redirect('accounts:view_users')
 
         user.is_active = True

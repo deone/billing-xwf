@@ -4,7 +4,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from .models import *
-from .helpers import md5_password, exceeds_max_user_count, get_group_name_max_allowed_users
+from .helpers import md5_password
 
 class CreateUserForm(forms.Form):
     username = forms.EmailField(label='Email Address', max_length=254,
@@ -34,14 +34,14 @@ class CreateUserForm(forms.Form):
         if password and confirm_password:
             if password != confirm_password:
                 raise forms.ValidationError("Passwords do not match.", code="password_mismatch")
-
+            
         if not self.user.is_anonymous() and self.user.subscriber.group is not None:
-            group_name, max_user_count = get_group_name_max_allowed_users(self.user.subscriber.group)
-            if exceeds_max_user_count(self.user.pk, group_name, max_user_count):
+            group = self.user.subscriber.group
+            if group.max_user_count_reached() or group.available_user_slots_count() is None:
                 if not settings.EXCEED_MAX_USER_COUNT:
                     raise forms.ValidationError(
                         "You are not allowed to create more users than your group threshold. Your group threshold is set to %s."
-                      % max_user_count, code="exceeds_threshold")
+                      % str(group.max_no_of_users))
 
     def save(self):
         username = self.cleaned_data['username']
@@ -158,13 +158,13 @@ class BulkUserUploadForm(forms.Form):
                 "Uploaded file should not have more than %s lines. It has %s." % (
                   str(settings.MAX_FILE_LENGTH), str(line_count)))
 
-        group_name, max_user_count = get_group_name_max_allowed_users(self.user.subscriber.group)
+        group = self.user.subscriber.group
 
-        if exceeds_max_user_count(self.user.pk, group_name, max_user_count, line_count):
+        if group.max_user_count_reached() or line_count > group.available_user_slots_count():
             if not settings.EXCEED_MAX_USER_COUNT:
                 raise forms.ValidationError(
                     "You are not allowed to create more users than your group threshold. Your group threshold is set to %s."
-                  % str(self.user.subscriber.group.max_no_of_users))
+                  % str(group.max_no_of_users))
 
         lst = []
         created_user_emails = [user.email for user in User.objects.filter(

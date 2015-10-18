@@ -113,10 +113,23 @@ class GroupAccount(models.Model):
     max_no_of_users = models.IntegerField(verbose_name="Max. No. of users")
 
     class Meta:
-      verbose_name = "Group Account"
+        verbose_name = "Group Account"
 
     def __str__(self):
         return self.name
+
+    def active_users_count(self):
+        """ Return the number of active users in group. """
+        return int(User.objects.filter(subscriber__group__name=self.name).filter(is_active=True).count())
+
+    def available_user_slots_count(self):
+        """ Call this only if max_user_count_reached returns False. """
+        return int(self.max_no_of_users) - self.active_users_count()
+
+    def max_user_count_reached(self):
+        """ Check whether group max. no. of users has been reached. """
+        return self.active_users_count() == int(self.max_no_of_users)
+
 
 phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
 
