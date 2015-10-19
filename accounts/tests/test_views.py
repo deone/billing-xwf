@@ -9,7 +9,7 @@ from django.utils import timezone
 
 from ..helpers import auth_and_login, make_context, md5_password
 from ..forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm
-from ..views import index, resend_mail, add_user, buy_package, upload_user_list, edit_user
+from ..views import index, resend_mail, add_user, buy_package, upload_user_list, edit_user, toggle_active
 from ..models import Subscriber, GroupAccount, Radcheck
 
 from packages.forms import PackageSubscriptionForm
@@ -308,11 +308,13 @@ class ViewsTests(TestCase):
     
     def setUp(self):
         self.c = Client()
+        self.factory = RequestFactory()
+        self.session = SessionMiddleware()
         self.user = User.objects.create_user('z@z.com', 'z@z.com', '12345')
         country = 'GHA'
         self.subscriber = Subscriber.objects.create(user=self.user,
             country=country, phone_number=Subscriber.COUNTRY_CODES_MAP[country] + '555223345')
-        self.group = GroupAccount.objects.create(name='CUG', max_no_of_users=5)
+        self.group = GroupAccount.objects.create(name='CUG', max_no_of_users=2)
         self.factory = RequestFactory()
         
 
@@ -322,6 +324,16 @@ class ToggleUserStatusTests(ViewsTests):
         user = User.objects.create_user('b@b.com', 'b@b.com', '12345')
         user.is_active = is_active
         user.save()
+
+        return user
+
+    def create_group_user(self, email):
+        country = 'GHA'
+        if not self.group.max_user_count_reached():
+            user = User.objects.create_user(email, email, '12345')
+            user.subscriber = Subscriber.objects.create(user=user, group=self.group,
+                country=country, phone_number=Subscriber.COUNTRY_CODES_MAP[country] + '555223345')
+            user.subscriber.save()
 
         return user
 
@@ -385,3 +397,47 @@ class ToggleUserStatusTests(ViewsTests):
 
         self.assertTrue(activated_user.is_active)
         self.check_response(response)
+
+    def test_toggle_status_active_max_user_count_reached(self):
+        """ Test that group admin is unable to set user.is_active to True if group has reached its max. no of users. """
+
+        self.set_group_group_admin()
+
+        # Log user in, since login is required
+        self.c.post(reverse('accounts:login'), {'username': 'z@z.com', 'password': '12345'})
+
+        # Create second user. Group admin is the first
+        second_user = self.create_group_user('p@p.com')
+
+        # Deactivate second_user to free slot to create another
+        second_user.is_active = False
+        second_user.save()
+
+        # Create third user.
+        third_user = self.create_group_user('s@s.com')
+
+        # Attempt making second_user active.
+        request = self.factory.post(reverse('accounts:toggle_active', kwargs={'pk':second_user.pk}))
+
+        request.user = self.user
+
+        self.session.process_request(request)
+        request.session.save()
+
+        messages = FallbackStorage(request)
+        setattr(request, '_messages', messages)
+
+        response = toggle_active(request, pk=second_user.pk)
+        storage = get_messages(request)
+
+        lst = []
+        for message in storage:
+            lst.append(message)
+
+        # Fetch user again so that we can check it
+        inactive_user = self.get_user(second_user.pk)
+
+        # Check that user wasn't made active
+        # Also check that error message was added to message storage
+        self.assertFalse(inactive_user.is_active)
+        self.assertTrue(lst[0].__str__().startswith("You are not allowed"))

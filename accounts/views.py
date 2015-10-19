@@ -215,8 +215,8 @@ def toggle_active(request, pk=None):
                 messages.error(request,
                     "You are not allowed to create more users than your group threshold. Your group threshold is set to %s." % group.max_no_of_users)
                 return redirect('accounts:view_users')
-
-        user.is_active = True
+        else:
+            user.is_active = True
 
     user.save()
     return redirect('accounts:view_users')
