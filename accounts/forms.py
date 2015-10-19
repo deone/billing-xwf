@@ -37,7 +37,7 @@ class CreateUserForm(forms.Form):
             
         if not self.user.is_anonymous() and self.user.subscriber.group is not None:
             group = self.user.subscriber.group
-            if group.max_user_count_reached() or group.available_user_slots_count() is None:
+            if group.max_user_count_reached():
                 if not settings.EXCEED_MAX_USER_COUNT:
                     raise forms.ValidationError(
                         "You are not allowed to create more users than your group threshold. Your group threshold is set to %s."

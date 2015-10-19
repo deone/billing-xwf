@@ -10,6 +10,11 @@ from ..helpers import md5_password
 class CreateUserFormTest(TestCase):
 
     def setUp(self):
+        self.group = GroupAccount.objects.create(name='CUG', max_no_of_users=1)
+        self.user = User.objects.create_user('e@e.com', 'e@e.com', '12345')
+        country = 'GHA'
+        self.subscriber = Subscriber.objects.create(user=self.user, group=self.group,
+            country=country, phone_number=Subscriber.COUNTRY_CODES_MAP[country] + '555223345')
         self.data = {
               'username': 'a@a.com',
               'first_name': 'Ola',
@@ -20,11 +25,21 @@ class CreateUserFormTest(TestCase):
               'phone_number': '08029299274'
             }
 
-    def test_clean(self):
+    def test_clean_password_mismatch(self):
         form = CreateUserForm(self.data, user=AnonymousUser)
 
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['__all__'][0], 'Passwords do not match.')
+
+    def test_clean_max_user_count_reached(self):
+        data = self.data
+        data['confirm_password'] = '12345'
+        form = CreateUserForm(data, user=self.user)
+
+        self.assertFalse(form.is_valid())
+        self.assertTrue(form.errors['__all__'][0].startswith(
+          'You are not allowed to create more users than your group threshold.'
+          ))
 
     def test_save(self):
         user = User.objects.create(username='b@b.com', password='12345')
