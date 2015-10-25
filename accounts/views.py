@@ -197,14 +197,14 @@ def recharge_account(request):
     context = {}
 
     if request.method == 'POST':
-        form = RechargeAccountForm(request.POST)
+        form = RechargeAccountForm(request.POST, user=request.user)
         if form.is_valid():
             form.save()
             messages.success(request, "Account recharged successfully.")
             # Set voucher as used on successful recharge.
             return redirect('accounts:recharge_account')
     else:
-        form = RechargeAccountForm()
+        form = RechargeAccountForm(user=request.user)
 
     context.update({'form': form})
     return render(request, 'accounts/recharge_account.html', context)

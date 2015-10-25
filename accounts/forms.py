@@ -223,6 +223,10 @@ class RechargeAccountForm(forms.Form):
         cleaned_data = super(RechargeAccountForm, self).clean()
 
         pin = cleaned_data.get('pin')
+
+        if len(pin) != 14:
+            raise forms.ValidationError("PINs cannot be shorter than 14 characters.", code="invalid-pin-length")
+
         url = settings.VMS_REDEEM_URL
 
         get_response = requests.get(url)
@@ -241,7 +245,27 @@ class RechargeAccountForm(forms.Form):
         return recharge
 
     def save(self):
-        print self.cleaned_data
-        # Fetch balance on last activity
-        # Compute new balance
-        # Create new RechargeAndUsage entry with recharge value and new balance
+        data = self.cleaned_data
+        try:
+            last_activity = RechargeAndUsage.objects.filter(subscriber=self.user.subscriber)[0]
+        except RechargeAndUsage.DoesNotExist:
+            last_activity = None
+        else:
+            pass
+
+        if last_activity is not None:
+            balance = last_activity.balance
+        else:
+            balance = 0
+
+        amount = data['value']
+        balance = balance + amount
+
+        recharge = RechargeAndUsage.objects.create(
+            subscriber=self.user.subscriber,
+            amount=amount,
+            balance=balance,
+            action='REC'
+        )
+
+        return recharge
