@@ -218,7 +218,7 @@ class RechargeAndUsage(models.Model):
         (USAGE, 'Usage'),
     )
 
-    subscriber = models.OneToOneField(Subscriber)
+    subscriber = models.ForeignKey(Subscriber)
     amount = models.SmallIntegerField() # Recharges are positive values, usages are negative values
     balance = models.SmallIntegerField() # Stores balance after every recharge or usage activity, we have to fetch last activity's balance to compute this.
     action = models.CharField(max_length=3, choices=ACTION_CHOICES)
