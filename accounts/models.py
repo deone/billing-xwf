@@ -3,6 +3,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class Nas(models.Model):
     nasname = models.CharField(max_length=128)
@@ -206,3 +207,22 @@ class AccessPoint(models.Model):
 
     def __str__(self):
         return self.name
+
+class RechargeAndUsage(models.Model):
+    RECHARGE = 'REC'
+    USAGE = 'USG'
+
+    ACTION_CHOICES = (
+        ('', 'Select Action'),
+        (RECHARGE, 'Recharge'),
+        (USAGE, 'Usage'),
+    )
+
+    subscriber = models.OneToOneField(Subscriber)
+    amount = models.SmallIntegerField() # Recharges are positive values, usages are negative values
+    balance = models.SmallIntegerField() # Stores balance after every recharge or usage activity, we have to fetch last activity's balance to compute this.
+    action = models.CharField(max_length=3, choices=ACTION_CHOICES)
+    date = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ['-date']
