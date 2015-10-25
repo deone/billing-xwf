@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.utils.http import urlsafe_base64_decode
 from django.views.generic import ListView
 
-from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm
+from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, RechargeAccountForm
 from .models import Subscriber
 from .helpers import *
 
@@ -191,6 +191,22 @@ def buy_package(request):
 
     context.update({'form': form})
     return render(request, 'accounts/buy_package.html', context)
+
+@login_required
+def recharge_account(request):
+    context = {}
+
+    if request.method == 'POST':
+        form = RechargeAccountForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Account recharged successfully.")
+            # Set voucher as used on successful recharge.
+    else:
+        form = RechargeAccountForm()
+
+    context.update({'form': form})
+    return render(request, 'accounts/recharge_account.html', context)
 
 class UserList(ListView):
     template_name = 'accounts/user_list.html'

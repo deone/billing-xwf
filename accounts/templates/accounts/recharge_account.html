@@ -1,0 +1,51 @@
+{% extends 'accounts/base.html' %}
+
+{% load staticfiles %}
+
+{% block title %}Recharge Account{% endblock %}
+
+{% block body %}
+<main class="mdl-layout__content">
+  {% if messages %}
+  <ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  <div class="mdl-grid">
+    <div class="mdl-cell mdl-cell--4-col">
+      <form action="" method="post">
+
+        {% csrf_token %}
+
+        <div class="form-heading">
+          <h4>Enter Voucher PIN</h4>
+        </div>
+
+        {{ form.non_field_errors }}
+
+        <div>
+          {{ form.pin.errors }}
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            {{ form.pin }}
+            <label class="mdl-textfield__label" for="id_pin">
+              {{ form.pin.label }}
+            </label>
+            <span class="mdl-textfield__error">PINs have to be 14 characters in length!</span>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit"
+            class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+              Submit
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</main>
+{% endblock %}
