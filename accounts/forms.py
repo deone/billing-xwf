@@ -6,6 +6,8 @@ from django.utils import timezone
 from .models import *
 from .helpers import md5_password
 
+import requests
+
 class CreateUserForm(forms.Form):
     username = forms.EmailField(label='Email Address', max_length=254,
         widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
@@ -217,5 +219,29 @@ class RechargeAccountForm(forms.Form):
         self.user = kwargs.pop('user', None)
         super(RechargeAccountForm, self).__init__(*args, **kwargs)
 
+    def clean(self):
+        cleaned_data = super(RechargeAccountForm, self).clean()
+
+        pin = cleaned_data.get('pin')
+        url = settings.VMS_REDEEM_URL
+
+        get_response = requests.get(url)
+        post_response = requests.post(
+              url,
+              data={'pin': pin},
+              headers={"X-CSRFToken": get_response.cookies['csrftoken']},
+              cookies=get_response.cookies
+            )
+
+        recharge = post_response.json()
+
+        if recharge['code'] != 200:
+            raise forms.ValidationError("Invalid recharge PIN.", code="invalid-pin")
+
+        return recharge
+
     def save(self):
         print self.cleaned_data
+        # Fetch balance on last activity
+        # Compute new balance
+        # Create new RechargeAndUsage entry with recharge value and new balance

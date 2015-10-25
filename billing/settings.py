@@ -113,19 +113,24 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
 
+LOGIN_URL = 'accounts:login'
+
 LOGIN_REDIRECT_URL = 'accounts:dashboard'
 
 DEFAULT_FROM_EMAIL = 'test@example.com'
+
+SITE_ID = 1
 
 EMAIL_HOST = '74.55.86.74'
 EMAIL_PORT = 25
 EMAIL_HOST_USER = 'deone'
 EMAIL_HOST_PASSWORD = '@dune369'
 
+# Captive portal success URL
 SUCCESS_URL = "http://154.117.0.10:3000/success/"
 
-LOGIN_URL = 'accounts:login'
-
-SITE_ID = 1
+# VMS
+VMS_URL = "http://localhost:3000/"
+VMS_REDEEM_URL = VMS_URL + "redeem/"
 
 from .user_settings import *

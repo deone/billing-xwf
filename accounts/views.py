@@ -202,6 +202,7 @@ def recharge_account(request):
             form.save()
             messages.success(request, "Account recharged successfully.")
             # Set voucher as used on successful recharge.
+            return redirect('accounts:recharge_account')
     else:
         form = RechargeAccountForm()
 
