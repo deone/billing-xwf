@@ -239,16 +239,20 @@ class RechargeAccountForm(forms.Form):
 
         recharge = post_response.json()
 
+        if recharge['code'] == 0:
+            raise forms.ValidationError("This voucher has been used.", code="used-pin")
+
         if recharge['code'] != 200:
             raise forms.ValidationError("Invalid recharge PIN.", code="invalid-pin")
 
         return recharge
 
     def save(self):
-        data = self.cleaned_data
+        voucher = self.cleaned_data
+
         try:
             last_activity = RechargeAndUsage.objects.filter(subscriber=self.user.subscriber)[0]
-        except RechargeAndUsage.DoesNotExist:
+        except IndexError, RechargeAndUsage.DoesNotExist:
             last_activity = None
         else:
             pass
@@ -258,14 +262,16 @@ class RechargeAccountForm(forms.Form):
         else:
             balance = 0
 
-        amount = data['value']
+        amount = voucher['value']
         balance = balance + amount
+        activity_id = voucher['serial_number']
 
-        recharge = RechargeAndUsage.objects.create(
+        RechargeAndUsage.objects.create(
             subscriber=self.user.subscriber,
             amount=amount,
             balance=balance,
-            action='REC'
+            action='REC',
+            activity_id=activity_id
         )
 
-        return recharge
+        return voucher
