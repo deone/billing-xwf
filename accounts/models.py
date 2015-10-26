@@ -223,6 +223,7 @@ class RechargeAndUsage(models.Model):
     balance = models.SmallIntegerField() # Stores balance after every recharge or usage activity, we have to fetch last activity's balance to compute this.
     action = models.CharField(max_length=3, choices=ACTION_CHOICES)
     date = models.DateTimeField(default=timezone.now)
+    activity_id = models.IntegerField() # This is voucher ID in the case of recharge, and package ID in the case of usage.
 
     class Meta:
         ordering = ['-date']
