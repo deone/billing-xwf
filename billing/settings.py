@@ -131,6 +131,7 @@ SUCCESS_URL = "http://154.117.0.10:3000/success/"
 
 # VMS
 VMS_URL = "http://localhost:3000/"
-VMS_REDEEM_URL = VMS_URL + "redeem/"
+VOUCHER_REDEEM_URL = VMS_URL + "redeem/"
+VOUCHER_INVALIDATE_URL = VMS_URL + "invalidate/"
 
 from .user_settings import *

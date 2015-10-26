@@ -10,6 +10,7 @@ from django.conf import settings
 from django.template import loader
 
 import hashlib
+import requests
 
 def auth_and_login(request, username, password):
     user = authenticate(username=username, password=password)
@@ -69,3 +70,14 @@ def build_message_list(lst):
         message_list.append(message)
 
     return tuple(message_list)
+
+def send_vms_request(url, payload):
+    get_response = requests.get(url)
+    post_response = requests.post(
+          url,
+          data={'payload': payload},
+          headers={"X-CSRFToken": get_response.cookies['csrftoken']},
+          cookies=get_response.cookies
+        )
+
+    return post_response.json()

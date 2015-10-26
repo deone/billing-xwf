@@ -4,9 +4,8 @@ from django.conf import settings
 from django.utils import timezone
 
 from .models import *
-from .helpers import md5_password
+from .helpers import md5_password, send_vms_request
 
-import requests
 
 class CreateUserForm(forms.Form):
     username = forms.EmailField(label='Email Address', max_length=254,
@@ -227,17 +226,9 @@ class RechargeAccountForm(forms.Form):
         if len(pin) != 14:
             raise forms.ValidationError("PINs cannot be shorter than 14 characters.", code="invalid-pin-length")
 
-        url = settings.VMS_REDEEM_URL
-
-        get_response = requests.get(url)
-        post_response = requests.post(
-              url,
-              data={'pin': pin},
-              headers={"X-CSRFToken": get_response.cookies['csrftoken']},
-              cookies=get_response.cookies
-            )
-
-        recharge = post_response.json()
+        # Redeem voucher
+        url = settings.VOUCHER_REDEEM_URL
+        recharge = send_vms_request(url, pin)
 
         if recharge['code'] == 0:
             raise forms.ValidationError("This voucher has been used.", code="used-pin")

@@ -200,9 +200,12 @@ def recharge_account(request):
         form = RechargeAccountForm(request.POST, user=request.user)
         if form.is_valid():
             voucher = form.save()
-            # Set voucher as used on successful recharge.
-            messages.success(request, "Account recharged successfully.")
-            return redirect('accounts:recharge_account')
+            url = settings.VOUCHER_INVALIDATE_URL
+            response = send_vms_request(url, voucher['serial_number'])
+
+            if response['code'] == 200:
+                messages.success(request, "Account recharged successfully.")
+                return redirect('accounts:recharge_account')
     else:
         form = RechargeAccountForm(user=request.user)
 
