@@ -1,5 +1,4 @@
 from django import forms
-from django.utils import timezone
 
 from .models import Package, PackageSubscription, compute_stop
 
@@ -14,7 +13,7 @@ class PackageSubscriptionForm(forms.Form):
 
     def save(self):
         package = Package.objects.get(pk=self.cleaned_data['package_choice'])
-        subscription = PackageSubscription.objects.create(subscriber=self.user.subscriber, package=package, start=timezone.now())
+        subscription = PackageSubscription.objects.create(subscriber=self.user.subscriber, package=package)
         subscription.stop = compute_stop(subscription.start, package.package_type)
         subscription.save()
 
