@@ -4,7 +4,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from .models import *
-from .helpers import md5_password, send_vms_request
+from .helpers import md5_password, send_vms_request, get_balance
 
 
 class CreateUserForm(forms.Form):
@@ -241,17 +241,7 @@ class RechargeAccountForm(forms.Form):
     def save(self):
         voucher = self.cleaned_data
 
-        try:
-            last_activity = RechargeAndUsage.objects.filter(subscriber=self.user.subscriber)[0]
-        except IndexError, RechargeAndUsage.DoesNotExist:
-            last_activity = None
-        else:
-            pass
-
-        if last_activity is not None:
-            balance = last_activity.balance
-        else:
-            balance = 0
+        balance = get_balance(self.user)
 
         amount = voucher['value']
         balance = balance + amount

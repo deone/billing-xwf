@@ -12,6 +12,8 @@ from django.template import loader
 import hashlib
 import requests
 
+from .models import RechargeAndUsage
+
 def auth_and_login(request, username, password):
     user = authenticate(username=username, password=password)
     if user is not None:
@@ -81,3 +83,16 @@ def send_vms_request(url, payload):
         )
 
     return post_response.json()
+
+def get_balance(user):
+    try:
+        last_activity = RechargeAndUsage.objects.filter(subscriber=user.subscriber)[0]
+    except IndexError, RechargeAndUsage.DoesNotExist:
+        last_activity = None
+
+    if last_activity is not None:
+        balance = last_activity.balance
+    else:
+        balance = 0
+
+    return balance

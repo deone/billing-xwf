@@ -29,13 +29,14 @@
             <div class="form-heading">
               <h4>Please select a package</h4>
             </div>
+            {{ form.non_field_errors }}
             <ul>
             {% for k, v in form.package_choice.field.choices %}
               <li>
                 <label for="id_package_choice_{{ forloop.counter }}">
                   <input id="id_package_choice_{{ forloop.counter }}" name="package_choice" type="radio" value="{{ k }}">
                   {% with speed=v.speed vol=v.volume %}
-                    {{ speed_map|get_item:speed }} {{ v.package_type }} {{ volume_map|get_item:vol }}
+                    {{ speed_map|get_item:speed }} {{ v.package_type }} {{ volume_map|get_item:vol }} - {{ v.price }} GHS
                   {% endwith %}
                 </label>
               </li>
