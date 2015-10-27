@@ -12,7 +12,7 @@ from accounts.models import GroupAccount, Subscriber
 class AdminFormsTest(TestCase):
     
     def setUp(self):
-        self.package = Package.objects.create(package_type='Monthly', volume='3', speed='1.5')
+        self.package = Package.objects.create(package_type='Monthly', volume='3', speed='1.5', price=4)
         self.now = timezone.now()
     
     def test_GroupPackageSubscriptionAdminForm_save(self):

@@ -27,7 +27,7 @@ class AccountsModelsTests(TestCase):
 class GroupAccountTests(TestCase):
 
     def setUp(self):
-        self.package = Package.objects.create(package_type='Daily', volume='3', speed='1.5')
+        self.package = Package.objects.create(package_type='Daily', volume='3', speed='1.5', price=4)
         self.group = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
 
     def test__str__(self):
@@ -36,7 +36,7 @@ class GroupAccountTests(TestCase):
 class AccessPointTests(TestCase):
 
     def setUp(self):
-        self.package = Package.objects.create(package_type='Daily', volume='3', speed='1.5')
+        self.package = Package.objects.create(package_type='Daily', volume='3', speed='1.5', price=4)
         self.group1 = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
         self.group2 = GroupAccount.objects.create(name='LUG', max_no_of_users=10)
         self.ap = AccessPoint.objects.create(name='Djungle HQ 02', mac_address='00:18:0A:F2:DE:20')

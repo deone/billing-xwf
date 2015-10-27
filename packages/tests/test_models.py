@@ -15,7 +15,7 @@ class PackagesModelsTests(TestCase):
         self.group = GroupAccount.objects.create(name='CUG',
             max_no_of_users=10)
         self.package = Package.objects.create(package_type='Daily',
-            volume='3', speed='1.5')
+            volume='3', speed='1.5', price=4)
         now = timezone.now()
         self.gps = GroupPackageSubscription.objects.create(group=self.group,
             package=self.package, start=now,

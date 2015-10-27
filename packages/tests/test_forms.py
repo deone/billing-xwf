@@ -15,7 +15,7 @@ class PackageSubscriptionFormTest(TestCase):
 
     def test_save(self):
         package = Package.objects.create(package_type='Monthly',
-            volume='Unlimited', speed='1.5')
+            volume='Unlimited', speed='1.5', price=4)
 
         data = {'package_choice': str(package.pk)}
         packages = [(p.id, p) for p in Package.objects.all()]

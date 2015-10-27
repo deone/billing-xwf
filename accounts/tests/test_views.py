@@ -26,7 +26,7 @@ class AccountsViewsTests(TestCase):
             country=country, phone_number=Subscriber.COUNTRY_CODES_MAP[country] + '542751610',
             email_verified=True, date_verified=timezone.now())
         self.package = Package.objects.create(package_type='Daily',
-            volume='3', speed='1.5')
+            volume='3', speed='1.5', price=4)
 
     def test_index_get(self):
         response = self.c.get(reverse('index'))
