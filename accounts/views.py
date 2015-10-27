@@ -189,7 +189,13 @@ def buy_package(request):
     else:
         form = PackageSubscriptionForm(user=request.user, packages=packages)
 
-    context.update({'form': form, 'speed_map': settings.SPEED_NAME_MAP, 'volume_map': settings.VOLUME_NAME_MAP})
+    context.update(
+        {
+          'form': form,
+          'speed_map': settings.SPEED_NAME_MAP,
+          'volume_map': settings.VOLUME_NAME_MAP
+          }
+        )
     return render(request, 'accounts/buy_package.html', context)
 
 @login_required

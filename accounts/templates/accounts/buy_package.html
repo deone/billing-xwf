@@ -18,33 +18,39 @@
 
   <div class="mdl-grid">
     <div class="mdl-cell mdl-cell--4-col">
-      <form action="" method="post">
 
-        {% csrf_token %}
+      {% with balance=request.user.subscriber.rechargeandusage_set.all.0.balance %}
+        <p>Account Balance: {{ balance }} GHS</p>
+        {% if balance == 0 %}
+          <p>You do not have enough cash to purchase a package.</p>
+        {% else %}
+          <form action="" method="post">
+            {% csrf_token %}
+            <div class="form-heading">
+              <h4>Please select a package</h4>
+            </div>
+            <ul>
+            {% for k, v in form.package_choice.field.choices %}
+              <li>
+                <label for="id_package_choice_{{ forloop.counter }}">
+                  <input id="id_package_choice_{{ forloop.counter }}" name="package_choice" type="radio" value="{{ k }}">
+                  {% with speed=v.speed vol=v.volume %}
+                    {{ speed_map|get_item:speed }} {{ v.package_type }} {{ volume_map|get_item:vol }}
+                  {% endwith %}
+                </label>
+              </li>
+            {% endfor %}
+            </ul>
 
-        <div class="form-heading">
-          <h4>Please select a package</h4>
-        </div>
-        <ul>
-        {% for k, v in form.package_choice.field.choices %}
-          <li>
-            <label for="id_package_choice_{{ forloop.counter }}">
-              <input id="id_package_choice_{{ forloop.counter }}" name="package_choice" type="radio" value="{{ k }}">
-              {% with speed=v.speed vol=v.volume %}
-                {{ speed_map|get_item:speed }} {{ v.package_type }} {{ volume_map|get_item:vol }}
-              {% endwith %}
-            </label>
-          </li>
-        {% endfor %}
-        </ul>
-
-        <div class="form-actions">
-          <button type="submit"
-            class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-              Submit
-          </button>
-        </div>
-      </form>
+            <div class="form-actions">
+              <button type="submit"
+                class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
+                  Submit
+              </button>
+            </div>
+          </form>
+        {% endif %}
+      {% endwith %}
     </div>
   </div>
 </main>
