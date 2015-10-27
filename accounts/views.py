@@ -189,7 +189,7 @@ def buy_package(request):
     else:
         form = PackageSubscriptionForm(user=request.user, packages=packages)
 
-    context.update({'form': form})
+    context.update({'form': form, 'speed_map': settings.SPEED_NAME_MAP, 'volume_map': settings.VOLUME_NAME_MAP})
     return render(request, 'accounts/buy_package.html', context)
 
 @login_required
@@ -223,7 +223,7 @@ class UserList(ListView):
         users = User.objects.filter(subscriber__group=request.user.subscriber.group).exclude(pk=request.user.pk)
         return render(request, self.template_name, {'users': users})
 
-def toggle_active(request, pk=None):
+def toggle_active(request, pk=None): # We don't need to set pk to None here. Fix this.
     user = User.objects.get(pk=pk)
 
     if user.is_active: 

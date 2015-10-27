@@ -2,6 +2,8 @@
 
 {% load staticfiles %}
 
+{% load package_tags %}
+
 {% block title %}Buy Package{% endblock %}
 
 {% block body %}
@@ -24,10 +26,18 @@
           <h4>Please select a package</h4>
         </div>
         <ul>
-        {% for radio in form.package_choice %}
-          <li>{{ radio }}</li>
+        {% for k, v in form.package_choice.field.choices %}
+          <li>
+            <label for="id_package_choice_{{ forloop.counter }}">
+              <input id="id_package_choice_{{ forloop.counter }}" name="package_choice" type="radio" value="{{ k }}">
+              {% with speed=v.speed vol=v.volume %}
+                {{ speed_map|get_item:speed }} {{ v.package_type }} {{ volume_map|get_item:vol }}
+              {% endwith %}
+            </label>
+          </li>
         {% endfor %}
         </ul>
+
         <div class="form-actions">
           <button type="submit"
             class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
