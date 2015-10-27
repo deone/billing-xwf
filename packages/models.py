@@ -10,6 +10,7 @@ class Package(models.Model):
     package_type = models.CharField(max_length=7, choices=settings.PACKAGE_TYPES)
     volume = models.CharField(max_length=9, choices=settings.VOLUME_CHOICES)
     speed = models.CharField(max_length=5, choices=settings.SPEED_CHOICES, default='1.5')
+    price = models.PositiveSmallIntegerField()
 
     def __str__(self):
         return "%s %s %s" % (settings.SPEED_NAME_MAP[self.speed],
