@@ -1,5 +1,7 @@
 from django.core.urlresolvers import reverse
 
+from ..helpers import auth_and_login
+
 from views import ViewsTests
 
 class HelpersTests(ViewsTests):
