@@ -229,7 +229,7 @@ class UserList(ListView):
         users = User.objects.filter(subscriber__group=request.user.subscriber.group).exclude(pk=request.user.pk)
         return render(request, self.template_name, {'users': users})
 
-def toggle_active(request, pk=None): # We don't need to set pk to None here. Fix this.
+def toggle_status(request, pk):
     user = User.objects.get(pk=pk)
 
     if user.is_active: 

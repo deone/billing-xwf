@@ -22,7 +22,7 @@
       {% if users %}
         {% for user in users %}
           <li>
-            <form action="{% url 'accounts:toggle_active' pk=user.pk %}" method="post">
+            <form action="{% url 'accounts:toggle_status' pk=user.pk %}" method="post">
 
               {% csrf_token %}
 
