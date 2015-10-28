@@ -1,11 +1,14 @@
 from django.test import SimpleTestCase, TestCase
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.conf import settings
 from django import forms
 
 from ..forms import CreateUserForm, ResetPasswordForm, PasswordResetEmailForm, BulkUserUploadForm
 from ..models import Radcheck, GroupAccount, Subscriber
 from ..helpers import md5_password
+
+import os
 
 class CreateUserFormTest(TestCase):
 
@@ -93,7 +96,7 @@ class BulkUserUploadFormTest(TestCase):
         group = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
         subscriber = Subscriber.objects.create(user=self.user, country='GHA', phone_number='0542751610', group=group)
 
-        path = '/Users/deone/src/billing/billing/accounts/tests/test_files/'
+        path = os.path.join(settings.BASE_DIR, 'accounts/tests/views/test_files/')
         self.txt_file = path + 'test.txt'
         self.csv_file = path + 'test.csv'
         self.csv_file_40_lines = path + 'test_40.csv'

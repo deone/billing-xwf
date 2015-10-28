@@ -1,6 +1,6 @@
 from django.core.urlresolvers import reverse
 
-from ..forms import LoginForm
+from ...forms import LoginForm
 from . import ViewsTests
 
 class CaptiveTests(ViewsTests):

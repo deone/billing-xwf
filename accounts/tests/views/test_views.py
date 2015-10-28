@@ -7,15 +7,17 @@ from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.messages import get_messages
 from django.utils import timezone
 
-from ..helpers import (auth_and_login, make_context, md5_password)
-from ..forms import (CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm)
-from ..views import (index, resend_mail, add_user, buy_package, upload_user_list, edit_user, toggle_active)
-from ..models import (Subscriber, GroupAccount, Radcheck, RechargeAndUsage)
+from ...helpers import (auth_and_login, make_context, md5_password)
+from ...forms import (CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm)
+from ...views import (index, resend_mail, add_user, buy_package, upload_user_list, edit_user, toggle_active)
+from ...models import (Subscriber, GroupAccount, Radcheck, RechargeAndUsage)
 
 from . import ViewsTests
 
 from packages.forms import PackageSubscriptionForm
 from packages.models import Package
+
+import os
 
 class AccountsViewsTests(TestCase):
     def setUp(self):
@@ -191,7 +193,7 @@ class AccountsViewsTests(TestCase):
         self.subscriber.group = group
         self.subscriber.save()
 
-        with open('/Users/deone/src/billing/billing/accounts/tests/test_files/test.csv') as _file:
+        with open(os.path.join(settings.BASE_DIR, 'accounts/tests/views/test_files/test.csv'), 'r') as _file:
             request = self.factory.post(reverse('accounts:upload_user_list'), {'user_list': _file})
 
         request.user = self.user
