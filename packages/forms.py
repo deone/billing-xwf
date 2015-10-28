@@ -19,7 +19,7 @@ class PackageSubscriptionForm(forms.Form):
 
         amount = -package.price
         balance = get_balance(self.user)
-        if (balance - package.price) > 0:
+        if (balance - package.price) >= 0:
             balance = balance - package.price
         else:
             raise forms.ValidationError('Package price is more than balance.', code='insufficient-funds')
