@@ -18,7 +18,7 @@ class UploadUserListTests(ViewsTests):
         self.subscriber.group = group
         self.subscriber.save()
 
-        with open(os.path.join(settings.BASE_DIR, 'accounts/tests/views/test_files/test.csv'), 'r') as _file:
+        with open(os.path.join(settings.BASE_DIR, 'accounts/tests/test_files/test.csv'), 'r') as _file:
             request = self.factory.post(reverse('accounts:upload_user_list'), {'user_list': _file})
 
         request.user = self.user
