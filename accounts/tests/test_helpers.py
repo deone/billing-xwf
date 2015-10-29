@@ -1,6 +1,10 @@
 from django.core.urlresolvers import reverse
+from django.conf import settings
+from django.test import Client
 
-from ..helpers import (auth_and_login, get_balance)
+from ..helpers import (
+    auth_and_login, get_balance, send_vms_request
+)
 
 from views import ViewsTests
 from ..models import RechargeAndUsage
@@ -31,3 +35,9 @@ class HelpersTests(ViewsTests):
         )
 
         self.assertEqual(get_balance(self.user), 4)
+
+    def test_send_vms_request(self):
+        url = settings.VOUCHER_INVALIDATE_URL
+        payload = 68
+        response = send_vms_request(url, payload)
+        self.assertEqual(response['code'], 200)
