@@ -4,7 +4,7 @@ from django.conf import settings
 from django.utils import timezone
 
 from .models import *
-from .helpers import md5_password, send_vms_request, get_balance
+from .helpers import md5_password, send_api_request, get_balance
 
 
 class CreateUserForm(forms.Form):
@@ -228,7 +228,7 @@ class RechargeAccountForm(forms.Form):
 
         # Redeem voucher
         url = settings.VOUCHER_REDEEM_URL
-        recharge = send_vms_request(url, pin)
+        recharge = send_api_request(url, {'pin': pin})
 
         if recharge['code'] == 0:
             raise forms.ValidationError("This voucher has been used.", code="used-pin")

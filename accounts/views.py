@@ -207,7 +207,7 @@ def recharge_account(request):
         if form.is_valid():
             voucher = form.save()
             url = settings.VOUCHER_INVALIDATE_URL
-            response = send_vms_request(url, voucher['serial_number'])
+            response = send_api_request(url, {'id': voucher['serial_number']})
 
             if response['code'] == 200:
                 messages.success(request, "Account recharged successfully.")
