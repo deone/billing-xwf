@@ -230,11 +230,10 @@ class RechargeAccountForm(forms.Form):
         url = settings.VOUCHER_REDEEM_URL
         recharge = send_api_request(url, {'pin': pin})
 
-        if recharge['code'] == 0:
-            raise forms.ValidationError("This voucher has been used.", code="used-pin")
-
-        if recharge['code'] != 200:
-            raise forms.ValidationError("Invalid recharge PIN.", code="invalid-pin")
+        if recharge['code'] == 500:
+            raise forms.ValidationError(recharge['message'], code="used-pin")
+        elif recharge['code'] == 404:
+            raise forms.ValidationError(recharge['message'], code="invalid-pin")
 
         return recharge
 
