@@ -130,7 +130,7 @@ EMAIL_HOST_PASSWORD = '@dune369'
 SUCCESS_URL = "http://154.117.0.10:3000/success/"
 
 # VMS
-VMS_URL = "http://localhost:3000/"
+VMS_URL = "http://localhost:3000/vouchers/"
 VOUCHER_REDEEM_URL = VMS_URL + "redeem/"
 VOUCHER_INVALIDATE_URL = VMS_URL + "invalidate/"
 

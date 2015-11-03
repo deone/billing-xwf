@@ -169,7 +169,7 @@ class Subscriber(models.Model):
     is_group_admin = models.BooleanField(default=False, verbose_name="Group Admin Status",
         help_text="Designates whether this user can create other users in the same group.")
     country = models.CharField(max_length=3, choices=COUNTRY_CHOICES, default=GHANA)
-    phone_number = models.CharField(null=True, validators=[phone_regex], max_length=15) # validators should be a list
+    phone_number = models.CharField(validators=[phone_regex], max_length=15)
     email_verified = models.BooleanField(default=False, help_text="Designates whether this user has confirmed they own specified email address.")
     date_verified = models.DateTimeField(null=True, blank=True)
 

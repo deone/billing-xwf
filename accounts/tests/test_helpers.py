@@ -38,6 +38,6 @@ class HelpersTests(ViewsTests):
 
     def test_send_vms_request(self):
         url = settings.VOUCHER_INVALIDATE_URL
-        payload = 68
+        payload = 20
         response = send_vms_request(url, payload)
         self.assertEqual(response['code'], 200)
