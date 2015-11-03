@@ -3,7 +3,7 @@ from django.conf import settings
 from django.test import Client
 
 from ..helpers import (
-    auth_and_login, get_balance, send_vms_request
+    auth_and_login, get_balance, send_api_request
 )
 
 from views import ViewsTests
@@ -36,8 +36,11 @@ class HelpersTests(ViewsTests):
 
         self.assertEqual(get_balance(self.user), 4)
 
-    def test_send_vms_request(self):
-        url = settings.VOUCHER_INVALIDATE_URL
-        payload = 20
-        response = send_vms_request(url, payload)
+    def test_send_api_request(self):
+        data = {'pin': 12345678901234}
+
+        response = send_api_request(settings.VOUCHER_STUB_INSERT_URL, data)
+        self.assertEqual(response['code'], 200)
+
+        response = send_api_request(settings.VOUCHER_STUB_DELETE_URL, data)
         self.assertEqual(response['code'], 200)
