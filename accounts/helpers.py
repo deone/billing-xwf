@@ -73,11 +73,11 @@ def build_message_list(lst):
 
     return tuple(message_list)
 
-def send_vms_request(url, payload):
+def send_api_request(url, data):
     get_response = requests.get(url)
     post_response = requests.post(
           url,
-          data={'payload': payload},
+          data=data,
           headers={"X-CSRFToken": get_response.cookies['csrftoken']},
           cookies=get_response.cookies
         )
