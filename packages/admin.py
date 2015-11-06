@@ -33,7 +33,7 @@ class GroupPackageSubscriptionAdminForm(forms.ModelForm):
         return group_package_subscription
 
 def subscription_package(obj):
-    return obj.package
+    return obj.package.__str__()
 
 subscription_package.short_description = 'Package'
 subscription_package.admin_order_field = 'package__package_type'
@@ -60,6 +60,10 @@ class GroupPackageSubscriptionAdmin(admin.ModelAdmin):
     list_display = (subscription_package, 'start', 'stop', subscription_group)
     search_fields = ('package__package_type', 'group__name')
 
-admin.site.register(Package)
+class PackageAdmin(admin.ModelAdmin):
+    list_display = ('package_type', 'volume', 'speed', 'price')
+    search_fields = ('package_type', 'volume', 'speed')
+
+admin.site.register(Package, PackageAdmin)
 admin.site.register(PackageSubscription, PackageSubscriptionAdmin)
 admin.site.register(GroupPackageSubscription, GroupPackageSubscriptionAdmin)
