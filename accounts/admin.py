@@ -133,8 +133,12 @@ class AccessPointAdmin(admin.ModelAdmin):
     list_display = ('name', 'mac_address', 'status', ap_group)
     search_fields = ('name', 'status', 'group__name')
 
+class GroupAccountAdmin(admin.ModelAdmin):
+    list_display = ('name', 'max_no_of_users')
+    search_fields = ('name',)
+
 admin.site.unregister(User)
 admin.site.unregister(Group)
 admin.site.register(User, AccountsUserAdmin)
-admin.site.register(GroupAccount)
+admin.site.register(GroupAccount, GroupAccountAdmin)
 admin.site.register(AccessPoint, AccessPointAdmin)

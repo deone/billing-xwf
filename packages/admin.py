@@ -32,11 +32,33 @@ class GroupPackageSubscriptionAdminForm(forms.ModelForm):
 
         return group_package_subscription
 
+def subscription_package(obj):
+    return obj.package
+
+subscription_package.short_description = 'Package'
+subscription_package.admin_order_field = 'package__package_type'
+
+def subscription_group(obj):
+    return obj.group.name
+
+subscription_group.short_description = 'Group'
+subscription_group.admin_order_field = 'group__name'
+
+def subscription_subscriber(obj):
+    return obj.subscriber.user.username
+
+subscription_subscriber.short_description = 'Subscriber'
+subscription_subscriber.admin_order_field = 'subscriber__user__username'
+
 class PackageSubscriptionAdmin(admin.ModelAdmin):
     form = PackageSubscriptionAdminForm
+    list_display = (subscription_package, 'start', 'stop', subscription_subscriber)
+    search_fields = ('package__package_type', 'subscriber__user__username')
 
 class GroupPackageSubscriptionAdmin(admin.ModelAdmin):
     form = GroupPackageSubscriptionAdminForm
+    list_display = (subscription_package, 'start', 'stop', subscription_group)
+    search_fields = ('package__package_type', 'group__name')
 
 admin.site.register(Package)
 admin.site.register(PackageSubscription, PackageSubscriptionAdmin)
