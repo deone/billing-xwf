@@ -4,8 +4,10 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.conf import settings
 
-from ..models import GroupAccount, Subscriber
-from ..admin import AccountsUserCreationForm, AccountsUserChangeForm, AccessPointAdminForm, SubscriberAdminForm, user_group
+from ..models import GroupAccount, Subscriber, AccessPoint
+from ..admin import (
+    AccountsUserCreationForm, AccountsUserChangeForm, AccessPointAdminForm, SubscriberAdminForm, user_group, ap_group
+)
 
 class AdminFormsTest(TestCase):
 
@@ -74,4 +76,9 @@ class GroupAccountRelatedTests(TestCase):
         Subscriber.objects.create(user=self.user, group=self.ga, is_group_admin=True,
             country='GHA', phone_number='+233542751610')
         group_name = user_group(self.user)
+        self.assertEqual(group_name, 'CUG')
+
+    def test_ap_group(self):
+        ap = AccessPoint.objects.create(name='Djungle HQ 02', group=self.ga, mac_address='00:18:0A:F2:DE:20')
+        group_name = ap_group(ap)
         self.assertEqual(group_name, 'CUG')
