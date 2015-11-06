@@ -187,7 +187,7 @@ class AccessPoint(models.Model):
     )
 
     name = models.CharField(max_length=30, unique=True)
-    group = models.ForeignKey(GroupAccount)
+    group = models.ForeignKey(GroupAccount, null=True, blank=True)
     mac_address = models.CharField(max_length=17, unique=True)
     status = models.CharField(max_length=3, choices=STATUS_CHOICES, default=PRIVATE)
 
