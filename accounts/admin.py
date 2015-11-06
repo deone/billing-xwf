@@ -131,6 +131,7 @@ ap_group.admin_order_field = 'group__name'
 class AccessPointAdmin(admin.ModelAdmin):
     form = AccessPointAdminForm
     list_display = ('name', 'mac_address', 'status', ap_group)
+    search_fields = ('name', 'status', 'group__name')
 
 admin.site.unregister(User)
 admin.site.unregister(Group)
