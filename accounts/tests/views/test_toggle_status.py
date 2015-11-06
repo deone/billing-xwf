@@ -47,9 +47,7 @@ class ToggleStatusTests(ViewsTests):
         """ Test that user.is_active is set to False. """
 
         # Set group and group_admin status for user sending this request.
-        # Only group_admins are allowed to perform this action. We might need to write a
-        # custom decorator to ensure this so that a random logged-in user doesn't just
-        # enter the URL and performs this action.
+        # Only group_admins are allowed to perform this action and this is ensured in the view.
         self.set_group_group_admin()
 
         # Log user in, since login is required

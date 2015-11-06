@@ -230,19 +230,21 @@ class UserList(ListView):
         return render(request, self.template_name, {'users': users})
 
 def toggle_status(request, pk):
-    user = User.objects.get(pk=pk)
+    if request.user.subscriber.is_group_admin:
+        user = User.objects.get(pk=pk)
 
-    if user.is_active: 
-        user.is_active = False
-    else:
-        group = request.user.subscriber.group
-        if group.max_user_count_reached() or group.available_user_slots_count() is None:
-            if not settings.EXCEED_MAX_USER_COUNT:
-                messages.error(request,
-                    "You are not allowed to create more users than your group threshold. Your group threshold is set to %s." % group.max_no_of_users)
-                return redirect('accounts:view_users')
+        if user.is_active:
+            user.is_active = False
         else:
-            user.is_active = True
+            group = request.user.subscriber.group
+            if group.max_user_count_reached() or group.available_user_slots_count() is None:
+                if not settings.EXCEED_MAX_USER_COUNT:
+                    messages.error(request,
+                        "You are not allowed to create more users than your group threshold. Your group threshold is set to %s." % group.max_no_of_users)
+                    return redirect('accounts:view_users')
+            else:
+                user.is_active = True
 
-    user.save()
+        user.save()
+
     return redirect('accounts:view_users')

@@ -8,6 +8,7 @@ from ...views import add_user
 from . import ViewsTests
 
 class AddUserTests(ViewsTests):
+
     def test_add_user_get(self):
         self.c.post(reverse('accounts:login'), {'username': 'z@z.com', 'password': '12345'})
         response = self.c.get(reverse('accounts:add_user'))
