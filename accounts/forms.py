@@ -9,19 +9,19 @@ from .helpers import md5_password, send_api_request, get_balance
 
 class CreateUserForm(forms.Form):
     username = forms.EmailField(label='Email Address', max_length=254,
-        widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
+        widget=forms.EmailInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password',
-        widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     first_name = forms.CharField(label='First Name', max_length=20, 
-        widget=forms.TextInput(attrs={'class': 'mdl-textfield__input', 'pattern': '[A-Z,a-z, ]*'}))
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(label='Last Name', max_length=20, 
-        widget=forms.TextInput(attrs={'class': 'mdl-textfield__input', 'pattern': '[A-Z,a-z, ]*'}))
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
     confirm_password = forms.CharField(label='Confirm Password', max_length=20, 
-      widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
+      widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     country = forms.ChoiceField(label='Country', choices=Subscriber.COUNTRY_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control'}))
     phone_number = forms.CharField(label='Phone Number', validators=[phone_regex],
-        widget=forms.NumberInput(attrs={'class': 'mdl-textfield__input'}))
+        widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
