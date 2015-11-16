@@ -17,7 +17,8 @@ form {
   margin-top: 2em;
 }
 .login-form,
-.topup-form {
+.topup-form,
+.buy-package-form {
   margin-top: 7em;
 }
 .errorlist,

@@ -1,4 +1,4 @@
-{% extends 'accounts/base.html' %}
+{% extends 'accounts/dashboard.html' %}
 
 {% load staticfiles %}
 
@@ -6,53 +6,54 @@
 
 {% block title %}Buy Package{% endblock %}
 
-{% block body %}
-<main class="mdl-layout__content">
-  {% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-  </ul>
+{% block links %}
+<li><a href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
+{% if request.user.subscriber.group == None %}
+  <li><a href="#">Payment Options</a></li>
+  <li><a href="{% url 'accounts:recharge_account' %}">Topup Account</a></li>
+  <li class="active"><a href="{% url 'accounts:buy_package' %}">Buy Package <span class="sr-only">(current)</span></a></li>
+{% else %}
+  {% if request.user.subscriber.is_group_admin %}
+    <li><a href="{% url 'accounts:add_user' %}">Add User</a></li>
+    <li><a href="{% url 'accounts:upload_user_list' %}">Upload User List</a></li>
+    <li><a href="{% url 'accounts:view_users' %}">View Users</a></li>
   {% endif %}
+{% endif %}
+{% endblock %}
 
-  <div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--4-col">
+{% block app_body %}
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}
+  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
 
-      {% with balance=request.user.subscriber.rechargeandusage_set.all.0.balance %}
-        <p>Account Balance: {{ balance }} GHS</p>
-        {% if balance == 0 %}
-          <p>You do not have enough cash to purchase a package.</p>
-        {% else %}
-          <form action="" method="post">
-            {% csrf_token %}
-            <div class="form-heading">
-              <h4>Please select a package</h4>
-            </div>
-            {{ form.non_field_errors }}
-            <ul>
-            {% for k, v in form.package_choice.field.choices %}
-              <li>
-                <label for="id_package_choice_{{ forloop.counter }}">
-                  <input id="id_package_choice_{{ forloop.counter }}" name="package_choice" type="radio" value="{{ k }}">
-                  {% with speed=v.speed vol=v.volume %}
-                    {{ speed_map|get_item:speed }} {{ v.package_type }} {{ volume_map|get_item:vol }} - {{ v.price }} GHS
-                  {% endwith %}
-                </label>
-              </li>
-            {% endfor %}
-            </ul>
+{% with balance=request.user.subscriber.rechargeandusage_set.all.0.balance %}
+  <p>Account Balance: {{ balance }} GHS</p>
+  {% if balance == 0 %}
+    <p>You do not have enough cash to purchase a package.</p>
+  {% else %}
+    <form action="" method="post" class="buy-package-form">
+      <fieldset>
+        <legend>Select Package</legend>
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        {% for k, v in form.package_choice.field.choices %}
+          <div class="radio">
+            <label for="id_package_choice_{{ forloop.counter }}">
+              <input id="id_package_choice_{{ forloop.counter }}" name="package_choice" type="radio" value="{{ k }}">
+              {% with speed=v.speed vol=v.volume %}
+                {{ speed_map|get_item:speed }} {{ v.package_type }} {{ volume_map|get_item:vol }} - {{ v.price }} GHS
+              {% endwith %}
+            </label>
+          </div>
+        {% endfor %}
 
-            <div class="form-actions">
-              <button type="submit"
-                class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-                  Submit
-              </button>
-            </div>
-          </form>
-        {% endif %}
-      {% endwith %}
-    </div>
-  </div>
-</main>
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </fieldset>
+    </form>
+  {% endif %}
+{% endwith %}
 {% endblock %}
