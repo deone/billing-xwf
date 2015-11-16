@@ -133,9 +133,9 @@ class PasswordResetEmailForm(PasswordResetForm):
 
 class LoginForm(AuthenticationForm):
     username = forms.EmailField(label='Email Address', max_length=254,
-        widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
+        widget=forms.EmailInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password',
-        widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
 class BulkUserUploadForm(forms.Form):
     user_list = forms.FileField()

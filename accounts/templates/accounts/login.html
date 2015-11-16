@@ -1,50 +1,36 @@
-{% extends 'accounts/index.html' %}
+{% extends 'base.html' %}
 
 {% load staticfiles %}
 
 {% block title %}Log In{% endblock %}
 
-{% block auth_form %}
-<form method="post" action="{{ login_url }}">
+{% block app_body %}
+<form method="post" action="{{ login_url }}" class="login-form">
+  <fieldset>
+    <legend>Log In</legend>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
 
-  {% csrf_token %}
+    <ul class="errorlist nonfield"><li>{{ error_message }}</li></ul>
+    <input type="hidden" name="success_url" value="{{ success_url }}">
 
-  <div class="form-heading">
-    <h4>Log In</h4>
-  </div>
-
-  {{ form.non_field_errors }}
-  <ul class="errorlist nonfield"><li>{{ error_message }}</li></ul>
-
-  <input type="hidden" name="success_url" value="{{ success_url }}">
-
-  <div>
-    {{ form.username.errors }}
-    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <div class="form-group">
+      {{ form.username.errors }}
+      <label for="{{ form.username.id_for_label }}">{{ form.username.label }}</label>
       {{ form.username }}
-      <label class="mdl-textfield__label" for="id_username">
-        {{ form.username.label }}
-      </label>
     </div>
-  </div>
 
-  <div>
-    {{ form.password.errors }}
-    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+    <div class="form-group">
+      {{ form.password.errors }}
+      <label for="{{ form.password.id_for_label }}">{{ form.password.label }}</label>
       {{ form.password }}
-      <label class="mdl-textfield__label" for="id_password">
-        {{ form.password.label }}
-      </label>
     </div>
-  </div>
 
-  <div class="form-actions">
-    <button type="submit"
-      class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-        Log In
-    </button>
-    <p><a href="{% url 'accounts:password_reset' %}">Forgot Password?</a></p>
-    <p><a href="{% url 'index' %}" target="_blank">Create Account</a></p>
-  </div>
+    <button type="submit" class="btn btn-primary">Log In</button>
+    <p>
+      <a href="{% url 'accounts:password_reset' %}">Forgot Password?</a><br>
+      <a href="{% url 'index' %}" target="_blank">Create Account</a>
+    </p>
+  </fieldset>
 </form>
 {% endblock %}

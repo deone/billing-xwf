@@ -12,7 +12,12 @@
 form {
   width: 30%;
   margin: 0 auto;
+}
+.create-account-form {
   margin-top: 2em;
+}
+.login-form {
+  margin-top: 7em;
 }
 .errorlist,
 .errorlist li {
