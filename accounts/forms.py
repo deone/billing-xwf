@@ -212,7 +212,7 @@ class BulkUserUploadForm(forms.Form):
         return user_list
 
 class RechargeAccountForm(forms.Form):
-    pin = forms.CharField(label="PIN", max_length=14, widget=forms.NumberInput(attrs={'class': 'mdl-textfield__input'}))
+    pin = forms.CharField(label="PIN", max_length=14, widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)

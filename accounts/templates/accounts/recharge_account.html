@@ -1,51 +1,50 @@
-{% extends 'accounts/base.html' %}
+{% extends 'base.html' %}
 
 {% load staticfiles %}
 
 {% block title %}Recharge Account{% endblock %}
 
-{% block body %}
-<main class="mdl-layout__content">
-  {% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-  </ul>
+{% block nav_items %}
+<ul class="nav navbar-nav">
+  {% block links %}
+  <li><a href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
+  {% if request.user.subscriber.group == None %}
+    <li><a href="#">Payment Options</a></li>
+    <li class="active"><a href="{% url 'accounts:recharge_account' %}">Topup Account <span class="sr-only">(current)</span></a></li>
+    <li><a href="{% url 'accounts:buy_package' %}">Buy Package</a></li>
+  {% else %}
+    {% if request.user.subscriber.is_group_admin %}
+      <li><a href="{% url 'accounts:add_user' %}">Add User</a></li>
+      <li><a href="{% url 'accounts:upload_user_list' %}">Upload User List</a></li>
+      <li><a href="{% url 'accounts:view_users' %}">View Users</a></li>
+    {% endif %}
   {% endif %}
+  {% endblock %}
+</ul>
+{% endblock %}
 
-  <div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--4-col">
-      <form action="" method="post">
+{% block app_body %}
+{% if messages %}
+<ul class="messages">
+  {% for message in messages %}
+  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+  {% endfor %}
+</ul>
+{% endif %}
 
-        {% csrf_token %}
+<form action="" method="post" class="topup-form">
+  <fieldset>
+    <legend>Topup Account</legend>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
 
-        <div class="form-heading">
-          <h4>Enter Voucher PIN</h4>
-        </div>
-
-        {{ form.non_field_errors }}
-
-        <div>
-          {{ form.pin.errors }}
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            {{ form.pin }}
-            <label class="mdl-textfield__label" for="id_pin">
-              {{ form.pin.label }}
-            </label>
-            <span class="mdl-textfield__error">PINs have to be 14 characters in length!</span>
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit"
-            class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-              Submit
-          </button>
-        </div>
-
-      </form>
+    <div class="form-group">
+      {{ form.pin.errors }}
+      <label for="{{ form.pin.id_for_label }}">{{ form.pin.label }}</label>
+      {{ form.pin }}
     </div>
-  </div>
-</main>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+  </fieldset>
+</form>
 {% endblock %}

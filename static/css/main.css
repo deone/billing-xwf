@@ -2,6 +2,7 @@
 .header {
   border: none;
   border-radius: 0;
+  margin-bottom: 0;
 }
 .header .navbar-brand {
   color: #000;
@@ -15,7 +16,8 @@ form {
 .create-account-form {
   margin-top: 2em;
 }
-.login-form {
+.login-form,
+.topup-form {
   margin-top: 7em;
 }
 .errorlist,
