@@ -1,0 +1,40 @@
+/* Header */
+.header {
+  border: none;
+  border-radius: 0;
+  margin-bottom: 0;
+}
+.header .navbar-brand {
+  color: #000;
+}
+
+/* Forms */
+form {
+  width: 30%;
+  margin: 0 auto;
+  margin-top: 5em;
+}
+.errorlist,
+.errorlist li {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: #f00;
+  font-size: 90%;
+}
+
+/* Messages */
+.messages,
+.messages li {
+  margin: 0;
+  padding: 0;
+  color: green;
+}
+.messages {
+  list-style: none;
+  background: #e7e7e7;
+  font-weight: bold;
+}
+.messages li {
+  padding: .5em 0 .5em .5em;
+}
