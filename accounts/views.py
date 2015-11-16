@@ -196,7 +196,7 @@ def buy_package(request):
           'volume_map': settings.VOLUME_NAME_MAP
           }
         )
-    return render(request, 'accounts/buy_package.html', context)
+    return render(request, 'packages/buy_package.html', context)
 
 @login_required
 def recharge_account(request):
