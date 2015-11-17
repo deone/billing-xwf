@@ -10,16 +10,17 @@
 
 /* Forms */
 form {
-  width: 30%;
+  width: 35%;
   margin: 0 auto;
-}
-.create-account-form {
-  margin-top: 2em;
 }
 .login-form,
 .topup-form,
+.buy-package-form,
+.create-account-form {
+  margin-top: 2.5em;
+}
 .buy-package-form {
-  margin-top: 7em;
+  width: 50%;
 }
 .errorlist,
 .errorlist li {

@@ -31,25 +31,46 @@
 {% endif %}
 
 {% with balance=request.user.subscriber.rechargeandusage_set.all.0.balance %}
-  <p>Account Balance: {{ balance }} GHS</p>
   {% if balance == 0 %}
     <p>You do not have enough cash to purchase a package.</p>
   {% else %}
     <form action="" method="post" class="buy-package-form">
       <fieldset>
-        <legend>Select Package</legend>
+        <!-- <legend>Select Package</legend> -->
+        <div class="page-header">
+          <h1>Select Package <small>Account Balance &mdash; {{ balance }} GHS</small></h1>
+        </div>
         {% csrf_token %}
         {{ form.non_field_errors }}
-        {% for k, v in form.package_choice.field.choices %}
-          <div class="radio">
-            <label for="id_package_choice_{{ forloop.counter }}">
-              <input id="id_package_choice_{{ forloop.counter }}" name="package_choice" type="radio" value="{{ k }}">
+
+        <table class="table table-condensed table-striped">
+          <thead>
+            <tr>
+              <th>Select</th>
+              <th>Package</th>
+              <th>Price</th>
+            </tr>
+          </thead>
+          <tbody>
+          {% for k, v in form.package_choice.field.choices %}
+            <tr>
+              <td>
+                <label for="id_package_choice_{{ forloop.counter }}">
+                  <input id="id_package_choice_{{ forloop.counter }}" name="package_choice" type="radio" value="{{ k }}">
+                </label>
+              </td>
               {% with speed=v.speed vol=v.volume %}
-                {{ speed_map|get_item:speed }} {{ v.package_type }} {{ volume_map|get_item:vol }} - {{ v.price }} GHS
+              <td>
+                {{ speed_map|get_item:speed }} {{ v.package_type }} {{ volume_map|get_item:vol }}
+              </td>
+              <td>
+                {{ v.price }} GHS
+              </td>
               {% endwith %}
-            </label>
-          </div>
-        {% endfor %}
+            </tr>
+          {% endfor %}
+          </tbody>
+        </table>
 
         <button type="submit" class="btn btn-primary">Submit</button>
       </fieldset>

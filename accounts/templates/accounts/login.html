@@ -7,7 +7,10 @@
 {% block app_body %}
 <form method="post" action="{{ login_url }}" class="login-form">
   <fieldset>
-    <legend>Log In</legend>
+    <!-- <legend>Log In</legend> -->
+    <div class="page-header">
+      <h1>Log In</h1>
+    </div>
     {% csrf_token %}
     {{ form.non_field_errors }}
 
