@@ -1,52 +1,36 @@
-{% extends 'accounts/base.html' %}
+{% extends 'accounts/dashboard.html' %}
 
 {% load staticfiles %}
 
 {% block title %}Upload User List{% endblock %}
 
-{% block body %}
-<main class="mdl-layout__content">
-  {% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  <div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--4-col">
-      <form action="" method="post" enctype="multipart/form-data">
+{% block links %}
+<li><a href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
+<li class="active"><a href="{% url 'accounts:users' %}">Users <span class="sr-only">(current)</span></a></li>
+{% endblock %}
 
-        {% csrf_token %}
-
-        <div class="form-heading">
-          <h4>Upload List of Users</h4>
-        </div>
-
-        <ul>
-          <li>User list must be in .csv format and can contain a maximum of {{ file_length }} entries.</li>
-          <li>Each entry in the list should contain first name, last name and email address separated by commas.</li>
-          <li>Ensure there are no spaces between words or lines.</li>
-        </ul>
-
-        {{ form.non_field_errors }}
-
-        <div>
-          {{ form.user_list.errors }}
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            {{ form.user_list }}
-          </div>
-        </div>
-
-        <div class="form-actions">
-          <button type="submit"
-            class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-              Upload
-          </button>
-        </div>
-      </form>
+{% block app_body %}
+<form action="" method="post" enctype="multipart/form-data">
+  <fieldset>
+    <div class="page-header">
+      <h1>Upload User List</h1>
     </div>
-  </div>
-</main>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
 
+    <ul class="help-block">
+      <li>User list must be in .csv format and can contain a maximum of {{ file_length }} entries.</li>
+      <li>Each entry in the list should contain first name, last name and email address separated by commas.</li>
+      <li>Ensure there are no spaces between words or lines.</li>
+    </ul>
+
+    <div class="form-group">
+      {{ form.user_list.errors }}
+      <label for="{{ form.user_list.id_for_label }}">{{ form.user_list.label }}</label>
+      {{ form.user_list }}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Upload</button>
+  </fieldset>
+</form>
 {% endblock %}

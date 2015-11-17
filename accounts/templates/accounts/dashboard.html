@@ -14,9 +14,9 @@
     <li><a href="{% url 'accounts:buy_package' %}">Buy Package</a></li>
   {% else %}
     {% if request.user.subscriber.is_group_admin %}
-      <li><a href="{% url 'accounts:view_users' %}">Users</a></li>
+      <li><a href="{% url 'accounts:users' %}">Users</a></li>
       <!-- <li><a href="{% url 'accounts:upload_user_list' %}">Upload User List</a></li>
-      <li><a href="{% url 'accounts:view_users' %}">View Users</a></li> -->
+      <li><a href="{% url 'accounts:add_user' %}">Add User</a></li> -->
     {% endif %}
   {% endif %}
   {% endblock %}

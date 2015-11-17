@@ -1,46 +1,51 @@
-{% extends 'accounts/base.html' %}
+{% extends 'accounts/dashboard.html' %}
 
 {% load staticfiles %}
 
-{% block title %}View Users{% endblock %}
+{% block title %}{{ request.user.subscriber.group.name }} Users{% endblock %}
 
-{% block body %}
-<main class="mdl-layout__content">
-  <div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--4-col">
-      <h4>Users in {{ request.user.subscriber.group }} Group</h4>
+{% block links %}
+<li><a href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
+<li class="active"><a href="{% url 'accounts:users' %}">Users <span class="sr-only">(current)</span></a></li>
+{% endblock %}
 
-      {% if messages %}
-      <ul class="messages">
-        {% for message in messages %}
-        <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-        {% endfor %}
-      </ul>
-      {% endif %}
+{% block app_body %}
+<table class="table">
+  <caption>
+    {% if users %}
+    Users
+    {% else %}
+    There are no users in this group.
+    {% endif %}
+    <a href="{% url 'accounts:add_user' %}">Add User</a>
+    <a href="{% url 'accounts:upload_user_list' %}">Upload User List</a>
+  </caption>
 
-      <ul>
-      {% if users %}
-        {% for user in users %}
-          <li>
-            <form action="{% url 'accounts:toggle_status' pk=user.pk %}" method="post">
+  {% if users %}
+  {% endif %}
+</table>
 
-              {% csrf_token %}
 
-              {% if user.is_active %}
-                <button type="submit">Deactivate</button>
-                <span><a href="{% url 'accounts:edit_user' pk=user.pk %}">{{ user.email }}</a></span>
-              {% else %}
-                <button type="submit">Activate</button>
-                <span style="text-decoration: line-through"><a href="{% url 'accounts:edit_user' pk=user.pk %}">{{ user.email }}</a></span>
-              {% endif %}
-            </form>
-          </li>
-        {% endfor %}
-      {% else %}
-        <p>There are no users in this group.</p>
-      {% endif %}
-      </ul>
-    </div>
-  </div>
-</main>
+<ul>
+{% if users %}
+  <h4>Users in {{ request.user.subscriber.group.name }} Group</h4>
+  {% for user in users %}
+    <li>
+      <form action="{% url 'accounts:toggle_status' pk=user.pk %}" method="post">
+
+        {% csrf_token %}
+
+        {% if user.is_active %}
+          <button type="submit">Deactivate</button>
+          <span><a href="{% url 'accounts:edit_user' pk=user.pk %}">{{ user.email }}</a></span>
+        {% else %}
+          <button type="submit">Activate</button>
+          <span style="text-decoration: line-through"><a href="{% url 'accounts:edit_user' pk=user.pk %}">{{ user.email }}</a></span>
+        {% endif %}
+      </form>
+    </li>
+  {% endfor %}
+{% else %}
+{% endif %}
+</ul>
 {% endblock %}
