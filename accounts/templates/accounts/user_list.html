@@ -21,46 +21,51 @@
 {% endblock %}
 
 {% block app_body %}
-<table class="table table-striped unmain">
-  <!-- <caption>
-    {% if users %}
-    Users
-    {% else %}
-    There are no users in this group.
-    {% endif %}
-    <a href="{% url 'accounts:add_user' %}">Add User</a>
-    <a href="{% url 'accounts:upload_user_list' %}">Upload User List</a>
-  </caption> -->
+<div class="row">
+  <table class="table table-striped unmain">
+    <!-- <caption>
+      {% if users %}
+      Users
+      {% else %}
+      There are no users in this group.
+      {% endif %}
+      <a href="{% url 'accounts:add_user' %}">Add User</a>
+      <a href="{% url 'accounts:upload_user_list' %}">Upload User List</a>
+    </caption> -->
 
-  {% if users %}
-  <thead>
-    <tr>
-      <th scope="col">User Name</th>
-      <th scope="col">First Name</th>
-      <th scope="col">Last Name</th>
-      <th scope="col">Date Created</th>
-      <th scope="col">Deactivate</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for user in users %}
-    </tr>
-      <td><a href="{% url 'accounts:edit_user' pk=user.pk %}">{{ user.username }}</a></td>
-      <td>{{ user.first_name }}</td>
-      <td>{{ user.last_name }}</td>
-      <td>{{ user.date_joined }}</td>
-      <td>
-        <form action="{% url 'accounts:toggle_status' pk=user.pk %}" method="post">
-          {% csrf_token %}
-          {% if user.is_active %}
-            <button type="submit" class="btn btn-xs btn-danger">Deactivate</button>
-          {% else %}
-            <button type="submit" class="btn btn-xs btn-primary">Activate</button>
-          {% endif %}
-        </form>
-      </td>
-    {% endfor %}
-  </tbody>
-  {% endif %}
-</table>
+    {% if users %}
+    <thead>
+      <tr>
+        <th scope="col">User Name</th>
+        <th scope="col">First Name</th>
+        <th scope="col">Last Name</th>
+        <th scope="col">Date Created</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+      </tr>
+        <td><a href="{% url 'accounts:edit_user' pk=user.pk %}">{{ user.username }}</a></td>
+        <td>{{ user.first_name }}</td>
+        <td>{{ user.last_name }}</td>
+        <td>{{ user.date_joined }}</td>
+        <td>
+          <form action="{% url 'accounts:toggle_status' pk=user.pk %}" method="post">
+            {% csrf_token %}
+            {% if user.is_active %}
+              <button type="submit" class="btn btn-xs btn-danger">Deactivate</button>
+            {% else %}
+              <button type="submit" class="btn btn-xs btn-primary">Activate</button>
+            {% endif %}
+          </form>
+        </td>
+      {% endfor %}
+    </tbody>
+    {% endif %}
+  </table>
+</div>
+
+<div class="row">
+</div>
 {% endblock %}

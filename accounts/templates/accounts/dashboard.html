@@ -36,18 +36,20 @@
 {% endblock %}
 
 {% block app_body %}
-<div class="jumbotron welcome">
-  <h1>
-    {% if user.first_name %}
-      Welcome {{ user.first_name }}
-    {% else %}
-      Welcome {{ user.username }}
-    {% endif %}
-  </h1>
+<div class="row">
+  <div class="jumbotron welcome">
+    <h1>
+      {% if user.first_name %}
+        Welcome {{ user.first_name }}
+      {% else %}
+        Welcome {{ user.username }}
+      {% endif %}
+    </h1>
 
-  {% if not verified %}
-  <p>Please verify your account. Can't find verification mail?</p>
-  <p><a class="btn btn-primary btn-lg" href="{% url 'resend_mail' %}">Resend</a></p>
-  {% endif %}
+    {% if not verified %}
+    <p>Please verify your account. Can't find verification mail?</p>
+    <p><a class="btn btn-primary btn-lg" href="{% url 'resend_mail' %}">Resend</a></p>
+    {% endif %}
+  </div>
 </div>
 {% endblock %}

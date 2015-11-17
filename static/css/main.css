@@ -57,10 +57,7 @@ form {
 .main {
   margin-top: 2.5em;
 }
-.unmain {
-  margin-top: -2.5em;
-}
-.unmain form {
+table form {
   width: 100%;
 }
 .balance {
