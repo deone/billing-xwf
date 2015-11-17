@@ -138,7 +138,7 @@ class LoginForm(AuthenticationForm):
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
 class BulkUserUploadForm(forms.Form):
-    user_list = forms.FileField()
+    user_list = forms.FileField(label='User List')
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
