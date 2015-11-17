@@ -2,16 +2,27 @@
 
 {% load staticfiles %}
 
-{% block title %}{{ request.user.subscriber.group.name }} Users{% endblock %}
+{% block title %}{{ user.subscriber.group.name }} Users{% endblock %}
 
 {% block links %}
 <li><a href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
-<li class="active"><a href="{% url 'accounts:users' %}">Users <span class="sr-only">(current)</span></a></li>
+<!-- <li class="active"><a href="{% url 'accounts:users' %}">Users <span class="sr-only">(current)</span></a></li> -->
+<li class="active dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+    Users <span class="sr-only">(current)</span>
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu">
+    <li><a href="{% url 'accounts:users' %}">View Users</a></li>
+    <li><a href="{% url 'accounts:add_user' %}">Add User</a></li>
+    <li><a href="{% url 'accounts:upload_user_list' %}">Upload User List</a></li>
+  </ul>
+</li>
 {% endblock %}
 
 {% block app_body %}
-<table class="table">
-  <caption>
+<table class="table table-striped unmain">
+  <!-- <caption>
     {% if users %}
     Users
     {% else %}
@@ -19,33 +30,37 @@
     {% endif %}
     <a href="{% url 'accounts:add_user' %}">Add User</a>
     <a href="{% url 'accounts:upload_user_list' %}">Upload User List</a>
-  </caption>
+  </caption> -->
 
   {% if users %}
+  <thead>
+    <tr>
+      <th scope="col">User Name</th>
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
+      <th scope="col">Date Created</th>
+      <th scope="col">Deactivate</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    </tr>
+      <td><a href="{% url 'accounts:edit_user' pk=user.pk %}">{{ user.username }}</a></td>
+      <td>{{ user.first_name }}</td>
+      <td>{{ user.last_name }}</td>
+      <td>{{ user.date_joined }}</td>
+      <td>
+        <form action="{% url 'accounts:toggle_status' pk=user.pk %}" method="post">
+          {% csrf_token %}
+          {% if user.is_active %}
+            <button type="submit" class="btn btn-xs btn-danger">Deactivate</button>
+          {% else %}
+            <button type="submit" class="btn btn-xs btn-primary">Activate</button>
+          {% endif %}
+        </form>
+      </td>
+    {% endfor %}
+  </tbody>
   {% endif %}
 </table>
-
-
-<ul>
-{% if users %}
-  <h4>Users in {{ request.user.subscriber.group.name }} Group</h4>
-  {% for user in users %}
-    <li>
-      <form action="{% url 'accounts:toggle_status' pk=user.pk %}" method="post">
-
-        {% csrf_token %}
-
-        {% if user.is_active %}
-          <button type="submit">Deactivate</button>
-          <span><a href="{% url 'accounts:edit_user' pk=user.pk %}">{{ user.email }}</a></span>
-        {% else %}
-          <button type="submit">Activate</button>
-          <span style="text-decoration: line-through"><a href="{% url 'accounts:edit_user' pk=user.pk %}">{{ user.email }}</a></span>
-        {% endif %}
-      </form>
-    </li>
-  {% endfor %}
-{% else %}
-{% endif %}
-</ul>
 {% endblock %}

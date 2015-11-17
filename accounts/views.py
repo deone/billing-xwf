@@ -149,7 +149,7 @@ def edit_user(request, pk=None):
         if form.is_valid():
             form.save(user)
             messages.success(request, 'User changed successfully.')
-            return redirect('accounts:view_users')
+            return redirect('accounts:users')
     else:
         form = EditUserForm(user=request.user, initial=dct)
 
@@ -241,10 +241,10 @@ def toggle_status(request, pk):
                 if not settings.EXCEED_MAX_USER_COUNT:
                     messages.error(request,
                         "You are not allowed to create more users than your group threshold. Your group threshold is set to %s." % group.max_no_of_users)
-                    return redirect('accounts:view_users')
+                    return redirect('accounts:users')
             else:
                 user.is_active = True
 
         user.save()
 
-    return redirect('accounts:view_users')
+    return redirect('accounts:users')
