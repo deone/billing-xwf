@@ -13,12 +13,6 @@ form {
   width: 35%;
   margin: 0 auto;
 }
-.login-form,
-.topup-form,
-.buy-package-form,
-.create-account-form {
-  margin-top: 2.5em;
-}
 .buy-package-form {
   width: 50%;
 }
@@ -29,6 +23,11 @@ form {
   list-style: none;
   color: #f00;
   font-size: 90%;
+}
+.create-account-form .errorlist {
+  text-align: right;
+  margin-right: 1em;
+  margin-bottom: .2em;
 }
 
 /* Messages */
@@ -45,4 +44,14 @@ form {
 }
 .messages li {
   padding: .5em 0 .5em .5em;
+}
+
+/* Main */
+.main {
+  margin-top: 2.5em;
+}
+
+/* Dashboard */
+.welcome {
+  background: #fff;
 }

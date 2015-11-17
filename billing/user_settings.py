@@ -1,7 +1,7 @@
 # Speed variants 
 REGULAR = '0.512'
 LITE = '1'
-DELUX = '1.5'
+DELUXE = '1.5'
 PREMIERE = '2'
 ULTRA = '3'
 SUPREME = '4'
@@ -10,7 +10,7 @@ SUPREME = '4'
 SPEED_NAME_MAP = {
     REGULAR: '512Kbps Regular',
     LITE: '1Mbps Lite',
-    DELUX: '1.5Mbps Delux',
+    DELUXE: '1.5Mbps Deluxe',
     PREMIERE: '2Mbps Premiere',
     ULTRA: '3Mbps Ultra',
     SUPREME: '4Mbps Supreme'
@@ -19,7 +19,7 @@ SPEED_NAME_MAP = {
 SPEED_CHOICES = (
     (REGULAR, SPEED_NAME_MAP[REGULAR]),
     (LITE, SPEED_NAME_MAP[LITE]),
-    (DELUX, SPEED_NAME_MAP[DELUX]),
+    (DELUXE, SPEED_NAME_MAP[DELUXE]),
     (PREMIERE, SPEED_NAME_MAP[PREMIERE]),
     (ULTRA, SPEED_NAME_MAP[ULTRA]),
     (SUPREME, SPEED_NAME_MAP[SUPREME]),
