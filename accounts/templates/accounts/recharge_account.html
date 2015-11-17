@@ -6,28 +6,12 @@
 
 {% block links %}
 <li><a href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
-{% if request.user.subscriber.group == None %}
-  <li><a href="#">Payment Options</a></li>
-  <li class="active"><a href="{% url 'accounts:recharge_account' %}">Topup Account <span class="sr-only">(current)</span></a></li>
-  <li><a href="{% url 'accounts:buy_package' %}">Buy Package</a></li>
-{% else %}
-  {% if request.user.subscriber.is_group_admin %}
-    <li><a href="{% url 'accounts:add_user' %}">Add User</a></li>
-    <li><a href="{% url 'accounts:upload_user_list' %}">Upload User List</a></li>
-    <li><a href="{% url 'accounts:view_users' %}">View Users</a></li>
-  {% endif %}
-{% endif %}
+<li><a href="#">Payment Options</a></li>
+<li class="active"><a href="{% url 'accounts:recharge_account' %}">Topup Account <span class="sr-only">(current)</span></a></li>
+<li><a href="{% url 'accounts:buy_package' %}">Buy Package</a></li>
 {% endblock %}
 
 {% block app_body %}
-{% if messages %}
-<ul class="messages">
-  {% for message in messages %}
-  <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-  {% endfor %}
-</ul>
-{% endif %}
-
 <form action="" method="post" class="topup-form">
   <fieldset>
     <!-- <legend>Topup Account</legend> -->

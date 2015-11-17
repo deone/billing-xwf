@@ -3,6 +3,8 @@
   border: none;
   border-radius: 0;
   margin-bottom: 0;
+  box-shadow: 0 0 8px rgba(0,0,0,0.5);
+  -webkit-box-shadow: 0 0 8px rgba(0,0,0,0.5);
 }
 .header .navbar-brand {
   color: #000;
@@ -29,12 +31,17 @@ form {
   margin-right: 1em;
   margin-bottom: .2em;
 }
+.login-form p {
+  margin-top: 1em;
+}
 
 /* Messages */
 .messages,
 .messages li {
   margin: 0;
   padding: 0;
+}
+.messages li.success {
   color: green;
 }
 .messages {
@@ -49,6 +56,10 @@ form {
 /* Main */
 .main {
   margin-top: 2.5em;
+}
+.balance {
+  color: green;
+  font-weight: bold;
 }
 
 /* Dashboard */
