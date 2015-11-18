@@ -1,106 +1,81 @@
-{% extends 'accounts/base.html' %}
+{% extends 'accounts/user_list.html' %}
 
 {% load staticfiles %}
 
 {% block title %}Add User{% endblock %}
 
-{% block body %}
-<main class="mdl-layout__content">
-  {% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
+{% block app_body %}
+<div class="row">
+  <form action="" method="post" class="form-horizontal">
+    <fieldset>
+      <div class="page-header">
+        <h1>Add User</h1>
+      </div>
+      {% csrf_token %}
+      {{ form.non_field_errors }}
 
-  <div class="mdl-grid">
-    <div class="mdl-cell mdl-cell--4-col">
-      <form action="" method="post">
-
-        {% csrf_token %}
-
-        <div class="form-heading">
-          <h4>Add User</h4>
+      <div class="form-group">
+        {{ form.first_name.errors }}
+        <label for="{{ form.first_name.id_for_label }}" class="col-sm-4 control-label">{{ form.first_name.label }}</label>
+        <div class="col-sm-8">
+          {{ form.first_name }}
         </div>
+      </div>
 
-        {{ form.non_field_errors }}
-
-        <div>
-          {{ form.first_name.errors }}
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            {{ form.first_name }}
-            <label class="mdl-textfield__label" for="id_first_name">
-              {{ form.first_name.label }}
-            </label>
-            <span class="mdl-textfield__error">Names can not contain numbers!</span>
-          </div>
+      <div class="form-group">
+        {{ form.last_name.errors }}
+        <label for="{{ form.last_name.id_for_label }}" class="col-sm-4 control-label">{{ form.last_name.label }}</label>
+        <div class="col-sm-8">
+          {{ form.last_name }}
         </div>
+      </div>
 
-        <div>
-          {{ form.last_name.errors }}
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            {{ form.last_name }}
-            <label class="mdl-textfield__label" for="id_last_name">
-              {{ form.last_name.label }}
-            </label>
-            <span class="mdl-textfield__error">Names can not contain numbers!</span>
-          </div>
+      <div class="form-group">
+        {{ form.username.errors }}
+        <label for="{{ form.username.id_for_label }}" class="col-sm-4 control-label">{{ form.username.label }}</label>
+        <div class="col-sm-8">
+          {{ form.username }}
         </div>
+      </div>
 
-        <div>
-          {{ form.username.errors }}
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            {{ form.username }}
-            <label class="mdl-textfield__label" for="id_username">
-              {{ form.username.label }}
-            </label>
-          </div>
+      <div class="form-group">
+        {{ form.password.errors }}
+        <label for="{{ form.password.id_for_label }}" class="col-sm-4 control-label">{{ form.password.label }}</label>
+        <div class="col-sm-8">
+          {{ form.password }}
         </div>
+      </div>
 
-        <div>
-          {{ form.password.errors }}
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            {{ form.password }}
-            <label class="mdl-textfield__label" for="id_password">
-              {{ form.password.label }}
-            </label>
-          </div>
+      <div class="form-group">
+        {{ form.confirm_password.errors }}
+        <label for="{{ form.confirm_password.id_for_label }}" class="col-sm-4 control-label">{{ form.confirm_password.label }}</label>
+        <div class="col-sm-8">
+          {{ form.confirm_password }}
         </div>
+      </div>
 
-        <div>
-          {{ form.confirm_password.errors }}
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            {{ form.confirm_password }}
-            <label class="mdl-textfield__label" for="id_confirm_password">
-              {{ form.confirm_password.label }}
-            </label>
-          </div>
-        </div>
-
-        <div>
-          {{ form.country.errors }}
+      <div class="form-group">
+        {{ form.country.errors }}
+        <label for="{{ form.country.id_for_label }}" class="col-sm-4 control-label">{{ form.country.label }}</label>
+        <div class="col-sm-8">
           {{ form.country }}
         </div>
+      </div>
 
-        <div>
-          {{ form.phone_number.errors }}
-          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-            {{ form.phone_number }}
-            <label class="mdl-textfield__label" for="id_phone_number">
-              {{ form.phone_number.label }}
-            </label>
-          </div>
+      <div class="form-group">
+        {{ form.phone_number.errors }}
+        <label for="{{ form.phone_number.id_for_label }}" class="col-sm-4 control-label">{{ form.phone_number.label }}</label>
+        <div class="col-sm-8">
+          {{ form.phone_number }}
         </div>
+      </div>
 
-        <div class="form-actions">
-          <button type="submit"
-            class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored">
-              Save
-          </button>
+      <div class="form-group">
+        <div class="col-sm-offset-4 col-sm-8">
+          <button type="submit" class="btn btn-primary">Save</button>
         </div>
-      </form>
-    </div>
-  </div>
-</main>
+      </div>
+    </fieldset>
+  </form>
+</div>
 {% endblock %}
