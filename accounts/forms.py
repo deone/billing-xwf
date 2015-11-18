@@ -74,13 +74,13 @@ class CreateUserForm(forms.Form):
 
 class EditUserForm(forms.Form):
     username = forms.EmailField(label='Email Address', max_length=254,
-        widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
+        widget=forms.EmailInput(attrs={'class': 'form-control'}))
     first_name = forms.CharField(label='First Name', max_length=20, 
-        widget=forms.TextInput(attrs={'class': 'mdl-textfield__input', 'pattern': '[A-Z,a-z, ]*'}))
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
     last_name = forms.CharField(label='Last Name', max_length=20, 
-        widget=forms.TextInput(attrs={'class': 'mdl-textfield__input', 'pattern': '[A-Z,a-z, ]*'}))
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
     phone_number = forms.CharField(label='Phone Number', required=False, validators=[phone_regex],
-        widget=forms.NumberInput(attrs={'class': 'mdl-textfield__input'}))
+        widget=forms.NumberInput(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
