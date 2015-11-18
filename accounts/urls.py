@@ -30,6 +30,6 @@ urlpatterns = [
     url(r'^upload_user_list/$', views.upload_user_list, name='upload_user_list'),
     url(r'^recharge/$', views.recharge_account, name='recharge_account'),
     url(r'^buy_package/$', views.buy_package, name='buy_package'),
-    url(r'^users/$', views.UserList.as_view(), name='users'),
+    url(r'^users/$', views.view_users, name='users'),
     url(r'^users/add/$', views.add_user, name='add_user'),
 ]

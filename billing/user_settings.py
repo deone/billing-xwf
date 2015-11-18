@@ -85,3 +85,5 @@ MAX_FILE_LENGTH = 30
 # Set this to False to test BulkUserUploadForm.clean()
 # EXCEED_MAX_USER_COUNT = True
 EXCEED_MAX_USER_COUNT = False
+
+PAGINATE_BY = 10

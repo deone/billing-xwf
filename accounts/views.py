@@ -4,10 +4,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
 from django.contrib import messages
 from django.conf import settings
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.http import Http404
 from django.utils import timezone
 from django.utils.encoding import force_text
-from django.utils.decorators import method_decorator
 from django.utils.http import urlsafe_base64_decode
 from django.views.generic import ListView
 
@@ -218,16 +218,23 @@ def recharge_account(request):
     context.update({'form': form})
     return render(request, 'accounts/recharge_account.html', context)
 
-class UserList(ListView):
-    template_name = 'accounts/user_list.html'
+def view_users(request):
+    context = {}
+    user_list = User.objects.filter(
+        subscriber__group=request.user.subscriber.group
+        ).exclude(pk=request.user.pk)
+    paginator = Paginator(user_list, settings.PAGINATE_BY)
+    page = request.GET.get('page')
 
-    @method_decorator(login_required)
-    def dispatch(self, *args, **kwargs):
-        return super(UserList, self).dispatch(*args, **kwargs)
+    try:
+        users = paginator.page(page)
+    except PageNotAnInteger:
+        users = paginator.page(1)
+    except EmptyPage:
+        users = paginator.page(paginator.num_pages)
 
-    def get(self, request, *args, **kwargs):
-        users = User.objects.filter(subscriber__group=request.user.subscriber.group).exclude(pk=request.user.pk)
-        return render(request, self.template_name, {'users': users})
+    context.update({'users': users})
+    return render(request, 'accounts/user_list.html', context)
 
 def toggle_status(request, pk):
     if request.user.subscriber.is_group_admin:
