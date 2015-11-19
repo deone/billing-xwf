@@ -2,6 +2,7 @@ from django import forms
 from django.contrib import admin
 
 from .models import *
+from .helpers import check_balance_and_subscription, charge_subscriber
 
 
 class PackageSubscriptionAdminForm(forms.ModelForm):
@@ -10,7 +11,21 @@ class PackageSubscriptionAdminForm(forms.ModelForm):
         model = PackageSubscription
         exclude = ()
 
+    def clean(self):
+        cleaned_data = super(PackageSubscriptionAdminForm, self).clean()
+        subscriber = cleaned_data.get('subscriber')
+        package = cleaned_data.get('package')
+        return check_balance_and_subscription(subscriber, package)
+
     def save(self, commit=True):
+        subscriber = self.cleaned_data['subscriber']
+        amount = self.cleaned_data['amount']
+        balance = self.cleaned_data['balance']
+        package = self.cleaned_data['package']
+
+        # Charge subscriber for package
+        charge_subscriber(subscriber, amount, balance, package)
+
         package_subscription = super(PackageSubscriptionAdminForm, self).save(commit=False)
         package_subscription.stop = compute_stop(package_subscription.start,
             package_subscription.package.package_type)

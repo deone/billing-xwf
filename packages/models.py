@@ -21,7 +21,7 @@ def compute_stop(start, package_type):
 
 class AbstractPackageSubscription(models.Model):
     package = models.ForeignKey(Package)
-    start = models.DateTimeField(default=timezone.now)
+    start = models.DateTimeField(default=timezone.now) # do we need this default?
     stop = models.DateTimeField(blank=True, null=True, help_text="The time this subscription expires. You are not allowed to set this.")
 
     class Meta:
