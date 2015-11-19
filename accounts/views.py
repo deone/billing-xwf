@@ -233,8 +233,6 @@ def view_users(request):
     except EmptyPage:
         users = paginator.page(paginator.num_pages)
 
-    print type(users)
-
     context.update({'users': users})
     return render(request, 'accounts/user_list.html', context)
 

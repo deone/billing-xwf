@@ -240,7 +240,7 @@ class RechargeAccountForm(forms.Form):
     def save(self):
         voucher = self.cleaned_data
 
-        balance = get_balance(self.user)
+        balance = get_balance(self.user.subscriber)
 
         amount = voucher['value']
         balance = balance + amount

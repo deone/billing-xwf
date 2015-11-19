@@ -16,7 +16,7 @@ class BuyPackageTests(ViewsTests):
         response = self.c.get(reverse('accounts:buy_package'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue('form' in response.context)
-        self.assertTemplateUsed(response, 'accounts/buy_package.html')
+        self.assertTemplateUsed(response, 'packages/buy_package.html')
 
     def test_buy_package_post(self):
         RechargeAndUsage.objects.create(

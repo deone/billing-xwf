@@ -65,4 +65,4 @@ class EditUserTests(ViewsTests):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual('User changed successfully.', lst[0].__str__())
-        self.assertEqual(response.get('location'), reverse('accounts:view_users'))
+        self.assertEqual(response.get('location'), reverse('accounts:users'))
