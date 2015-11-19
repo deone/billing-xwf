@@ -1,7 +1,7 @@
 from django import forms
 
 from .models import Package, PackageSubscription, compute_stop
-from packages.helpers import check_balance_and_subscription, charge_subscriber
+from .helpers import *
 
 class PackageSubscriptionForm(forms.Form):
 
@@ -15,7 +15,10 @@ class PackageSubscriptionForm(forms.Form):
         cleaned_data = super(PackageSubscriptionForm, self).clean()
         package = Package.objects.get(pk=cleaned_data.get('package_choice'))
 
-        return check_balance_and_subscription(self.user.subscriber, package)
+        start, amount, balance = check_balance_and_subscription(self.user.subscriber, package)
+        update_cleaned_data(cleaned_data, {
+          'start': start, 'amount': amount, 'balance': balance, 'package': package
+        })
 
     def save(self):
         package = self.cleaned_data['package']

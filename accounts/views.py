@@ -196,6 +196,7 @@ def buy_package(request):
           'volume_map': settings.VOLUME_NAME_MAP
           }
         )
+
     return render(request, 'packages/buy_package.html', context)
 
 @login_required

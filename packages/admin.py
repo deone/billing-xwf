@@ -2,8 +2,7 @@ from django import forms
 from django.contrib import admin
 
 from .models import *
-from .helpers import check_balance_and_subscription, charge_subscriber
-
+from .helpers import *
 
 class PackageSubscriptionAdminForm(forms.ModelForm):
 
@@ -15,7 +14,9 @@ class PackageSubscriptionAdminForm(forms.ModelForm):
         cleaned_data = super(PackageSubscriptionAdminForm, self).clean()
         subscriber = cleaned_data.get('subscriber')
         package = cleaned_data.get('package')
-        return check_balance_and_subscription(subscriber, package)
+
+        start, amount, balance = check_balance_and_subscription(subscriber, package)
+        update_cleaned_data(cleaned_data, {'start': start, 'amount': amount, 'balance': balance})
 
     def save(self, commit=True):
         subscriber = self.cleaned_data['subscriber']
@@ -38,6 +39,12 @@ class GroupPackageSubscriptionAdminForm(forms.ModelForm):
     class Meta:
         model = GroupPackageSubscription
         exclude = ()
+
+    def clean(self):
+        cleaned_data = super(GroupPackageSubscriptionAdminForm, self).clean()
+        group = cleaned_data.get('group')
+        start = check_subscription(group=group)
+        cleaned_data['start'] = start
 
     def save(self, commit=True):
         group_package_subscription = super(GroupPackageSubscriptionAdminForm, self).save(commit=False)
