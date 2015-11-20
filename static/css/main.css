@@ -15,6 +15,9 @@ form {
   width: 35%;
   margin: 0 auto;
 }
+.topup-form {
+  width: 37%;
+}
 .buy-package-form {
   width: 50%;
 }
