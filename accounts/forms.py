@@ -110,8 +110,8 @@ class EditUserForm(forms.Form):
         return user
 
 class ResetPasswordForm(SetPasswordForm):
-    new_password1 = forms.CharField(label='New Password', widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
-    new_password2 = forms.CharField(label='Confirm New Password', widget=forms.PasswordInput(attrs={'class': 'mdl-textfield__input'}))
+    new_password1 = forms.CharField(label='New Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+    new_password2 = forms.CharField(label='Confirm New Password', widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
     def save(self):
         user = super(ResetPasswordForm, self).save()
@@ -120,14 +120,15 @@ class ResetPasswordForm(SetPasswordForm):
         subscriber.save()
 
 class PasswordResetEmailForm(PasswordResetForm):
-    email = forms.EmailField(label='Email Address', max_length=50, widget=forms.EmailInput(attrs={'class': 'mdl-textfield__input'}))
+    email = forms.EmailField(label='Email Address', max_length=50, widget=forms.EmailInput(attrs={'class': 'form-control'}))
 
     def clean(self):
         cleaned_data = super(PasswordResetForm, self).clean()
         email = cleaned_data.get('email')
 
         try:
-            user = User.objects.get(email=email)
+            if email is not None:
+                user = User.objects.get(email=email)
         except User.DoesNotExist:
             raise forms.ValidationError("Email does not exist.")
 
