@@ -1,7 +1,5 @@
 {% extends 'accounts/dashboard.html' %}
 
-{% load staticfiles %}
-
 {% block title %}{{ user.subscriber.group.name }} Users{% endblock %}
 
 {% block links %}
@@ -36,56 +34,56 @@
 {% endblock %}
 
 {% block app_body %}
-<div class="row">
 {% if users %}
-  <table class="table table-striped table-bordered">
-    <thead>
-      <tr>
-        <th scope="col">ID</th>
-        <th scope="col">User Name</th>
-        <th scope="col">First Name</th>
-        <th scope="col">Last Name</th>
-        <th scope="col">Date Created</th>
-        <th scope="col">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for user in users %}
-      </tr>
-        <td>{{ user.pk }}</td>
-        <td><a href="{% url 'accounts:edit_user' pk=user.pk %}">{{ user.username }}</a></td>
-        <td>{{ user.first_name }}</td>
-        <td>{{ user.last_name }}</td>
-        <td>{{ user.date_joined }}</td>
-        <td>
-          <form action="{% url 'accounts:toggle_status' pk=user.pk %}" method="post">
-            {% csrf_token %}
-            {% if user.is_active %}
-              <button type="submit" class="btn btn-xs btn-danger">Deactivate</button>
-            {% else %}
-              <button type="submit" class="btn btn-xs btn-primary">Activate</button>
-            {% endif %}
-          </form>
-        </td>
-      {% endfor %}
-    </tbody>
-  </table>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th scope="col">ID</th>
+      <th scope="col">User Name</th>
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
+      <th scope="col">Date Created</th>
+      <th scope="col">Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for user in users %}
+    </tr>
+      <td>{{ user.pk }}</td>
+      <td><a href="{% url 'accounts:edit_user' pk=user.pk %}">{{ user.username }}</a></td>
+      <td>{{ user.first_name }}</td>
+      <td>{{ user.last_name }}</td>
+      <td>{{ user.date_joined }}</td>
+      <td>
+        <form action="{% url 'accounts:toggle_status' pk=user.pk %}" method="post">
+          {% csrf_token %}
+          {% if user.is_active %}
+            <button type="submit" class="btn btn-xs btn-danger">Deactivate</button>
+          {% else %}
+            <button type="submit" class="btn btn-xs btn-primary">Activate</button>
+          {% endif %}
+        </form>
+      </td>
+    {% endfor %}
+  </tbody>
+</table>
 {% else %}
-<div class="col-sm-12 main">
-  <p class="well">
-    There are no users in this group.
-    <a href="{% url 'accounts:add_user' %}">
-      <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-      Add User
-    </a>
-    <a href="{% url 'accounts:upload_user_list' %}">
-      <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
-      Upload User List
-    </a>
-  </p>
+<div class="row">
+  <div class="col-sm-12 main">
+    <p class="well">
+      There are no users in this group.
+      <a href="{% url 'accounts:add_user' %}">
+        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+        Add User
+      </a>
+      <a href="{% url 'accounts:upload_user_list' %}">
+        <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
+        Upload User List
+      </a>
+    </p>
+  </div>
 </div>
 {% endif %}
-</div>
 
 <nav>
   <ul class="pager">
