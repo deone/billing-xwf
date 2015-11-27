@@ -123,7 +123,8 @@ class AccessPointAdminForm(forms.ModelForm):
         return cleaned_data
 
 def ap_group(obj):
-    return obj.group.name
+    if obj.group is not None:
+        return obj.group.name
 
 ap_group.short_description = 'Group'
 ap_group.admin_order_field = 'group__name'
