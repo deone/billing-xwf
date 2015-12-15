@@ -9,7 +9,7 @@ from ..admin import (
     PackageSubscriptionAdminForm, GroupPackageSubscriptionAdminForm, subscription_package, subscription_group, subscription_subscriber
 )
 from ..models import *
-from accounts.models import GroupAccount, Subscriber
+from accounts.models import (GroupAccount, Subscriber, RechargeAndUsage)
 
 class AdminFormsTest(TestCase):
     
@@ -33,12 +33,20 @@ class AdminFormsTest(TestCase):
         user = User.objects.create_user('a@a.com', 'a@a.com', '12345')
         subscriber = Subscriber.objects.create(user=user, country='GHA',
             phone_number='0542751610')
+        RechargeAndUsage.objects.create(
+            subscriber=subscriber,
+            amount=20,
+            balance=20,
+            action='REC',
+            activity_id=5
+        )
         form = PackageSubscriptionAdminForm({
             'stop': None,
             'start': self.now,
             'subscriber': subscriber.pk,
             'package': self.package.pk
         })
+        form.is_valid()
         ps = form.save()
         self.assertEqual((ps.stop - ps.start).days,
             settings.PACKAGE_TYPES_HOURS_MAP[self.package.package_type] / 24)
