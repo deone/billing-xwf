@@ -219,13 +219,14 @@ def recharge_account(request):
     context.update({'form': form})
     return render(request, 'accounts/recharge_account.html', context)
 
-def view_users(request):
+@login_required
+def view_users(request, page=None):
     context = {}
-    user_list = User.objects.filter(
-        subscriber__group=request.user.subscriber.group
-        ).exclude(pk=request.user.pk)
+    user_list = User.objects.filter(subscriber__group=request.user.subscriber.group).exclude(pk=request.user.pk)
     paginator = Paginator(user_list, settings.PAGINATE_BY)
-    page = request.GET.get('page')
+
+    if page is None:
+        page = request.GET.get('page')
 
     try:
         users = paginator.page(page)
