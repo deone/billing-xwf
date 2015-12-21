@@ -164,7 +164,7 @@ class Subscriber(models.Model):
         GABON: '+241'
     }
 
-    user = models.OneToOneField(User, null=True)
+    user = models.OneToOneField(User)
     group = models.ForeignKey(GroupAccount, null=True, blank=True)
     is_group_admin = models.BooleanField(default=False, verbose_name="Group Admin Status",
         help_text="Designates whether this user can create other users in the same group.")
