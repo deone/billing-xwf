@@ -4,7 +4,7 @@ from django.utils import timezone
 
 from datetime import timedelta
 
-from accounts.models import Subscriber, GroupAccount
+from accounts.models import (Subscriber, GroupAccount, Radcheck)
 
 class Package(models.Model):
     package_type = models.CharField(max_length=7, choices=settings.PACKAGE_TYPES)
@@ -15,6 +15,10 @@ class Package(models.Model):
     def __str__(self):
         return "%s %s %s" % (settings.SPEED_NAME_MAP[self.speed],
             self.package_type, settings.VOLUME_NAME_MAP[self.volume])
+
+class InstantVoucher(models.Model):
+    radcheck = models.ForeignKey(Radcheck)
+    package = models.ForeignKey(Package)
 
 def compute_stop(start, package_type):
     return start + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[package_type])
