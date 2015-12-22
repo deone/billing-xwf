@@ -35,14 +35,14 @@ class AbstractPackageSubscription(models.Model):
         return self.stop > now
 
 class PackageSubscription(AbstractPackageSubscription):
-    subscriber = models.ForeignKey(Subscriber)
+    radcheck = models.ForeignKey(Radcheck)
 
     class Meta:
         verbose_name = "Package Subscription"
         ordering = ['-stop'] 
 
     def __str__(self):
-        return "%s %s %s" % (self.subscriber.user.email, self.package.package_type, self.stop.strftime('%B %d %Y, %I:%M%p'))
+        return "%s %s %s" % (self.radcheck.username, self.package.package_type, self.stop.strftime('%B %d %Y, %I:%M%p'))
 
 class GroupPackageSubscription(AbstractPackageSubscription):
     group = models.ForeignKey(GroupAccount)

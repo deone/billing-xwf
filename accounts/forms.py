@@ -241,14 +241,14 @@ class RechargeAccountForm(forms.Form):
     def save(self):
         voucher = self.cleaned_data
 
-        balance = get_balance(self.user.subscriber)
+        balance = get_balance(self.user.radcheck)
 
         amount = voucher['value']
         balance = balance + amount
         activity_id = voucher['serial_number']
 
         RechargeAndUsage.objects.create(
-            subscriber=self.user.subscriber,
+            radcheck=self.user.radcheck,
             amount=amount,
             balance=balance,
             action='REC',

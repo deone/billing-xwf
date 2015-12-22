@@ -6,10 +6,11 @@ from django.contrib.auth.models import User
 from datetime import timedelta
 
 from ..admin import (
-    PackageSubscriptionAdminForm, GroupPackageSubscriptionAdminForm, subscription_package, subscription_group, subscription_subscriber
+    PackageSubscriptionAdminForm, GroupPackageSubscriptionAdminForm, subscription_package, subscription_group, subscription_radcheck
 )
 from ..models import *
 from accounts.models import (GroupAccount, Subscriber, RechargeAndUsage)
+from accounts.helpers import md5_password
 
 class AdminFormsTest(TestCase):
     
@@ -30,11 +31,18 @@ class AdminFormsTest(TestCase):
             settings.PACKAGE_TYPES_HOURS_MAP[self.package.package_type] / 24)
 
     def test_PackageSubscriptionAdminForm_save(self):
-        user = User.objects.create_user('a@a.com', 'a@a.com', '12345')
+        username = 'a@a.com'
+        password = '12345'
+        user = User.objects.create_user(username, username, password)
         subscriber = Subscriber.objects.create(user=user, country='GHA',
             phone_number='0542751610')
+        radcheck = Radcheck.objects.create(user=user,
+                                username=username,
+                                attribute='MD5-Password',
+                                op=':=',
+                                value=md5_password(password))
         RechargeAndUsage.objects.create(
-            subscriber=subscriber,
+            radcheck=radcheck,
             amount=20,
             balance=20,
             action='REC',
@@ -43,7 +51,7 @@ class AdminFormsTest(TestCase):
         form = PackageSubscriptionAdminForm({
             'stop': None,
             'start': self.now,
-            'subscriber': subscriber.pk,
+            'radcheck': radcheck.pk,
             'package': self.package.pk
         })
         form.is_valid()
@@ -60,11 +68,17 @@ class AdminFormsTest(TestCase):
         self.assertEqual(subscription_group(gps), 'LFG')
 
     def test_subscription_subscriber_subscription_package(self):
-        user = User.objects.create_user('a@a.com', 'a@a.com', '12345')
-        subscriber = Subscriber.objects.create(user=user, country='GHA', phone_number='+233542751610')
+        username = 'a@a.com'
+        password = '12345'
+        user = User.objects.create_user(username, username, password)
+        radcheck = Radcheck.objects.create(user=user,
+                                username=username,
+                                attribute='MD5-Password',
+                                op=':=',
+                                value=md5_password(password))
         ps = PackageSubscription.objects.create(
-            subscriber=subscriber, package=self.package, start=self.now,
+            radcheck=radcheck, package=self.package, start=self.now,
             stop=self.now + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[self.package.package_type]))
 
-        self.assertEqual(subscription_subscriber(ps), 'a@a.com')
+        self.assertEqual(subscription_radcheck(ps), 'a@a.com')
         self.assertEqual(subscription_package(ps), '1.5Mbps Deluxe Monthly 3GB')

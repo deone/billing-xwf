@@ -12,20 +12,20 @@ class PackageSubscriptionAdminForm(forms.ModelForm):
 
     def clean(self):
         cleaned_data = super(PackageSubscriptionAdminForm, self).clean()
-        subscriber = cleaned_data.get('subscriber')
+        radcheck = cleaned_data.get('radcheck')
         package = cleaned_data.get('package')
 
-        start, amount, balance = check_balance_and_subscription(subscriber, package)
+        start, amount, balance = check_balance_and_subscription(radcheck, package)
         update_cleaned_data(cleaned_data, {'start': start, 'amount': amount, 'balance': balance})
 
     def save(self, commit=True):
-        subscriber = self.cleaned_data['subscriber']
+        radcheck = self.cleaned_data['radcheck']
         amount = self.cleaned_data['amount']
         balance = self.cleaned_data['balance']
         package = self.cleaned_data['package']
 
         # Charge subscriber for package
-        charge_subscriber(subscriber, amount, balance, package)
+        charge_subscriber(radcheck, amount, balance, package)
 
         package_subscription = super(PackageSubscriptionAdminForm, self).save(commit=False)
         package_subscription.stop = compute_stop(package_subscription.start,
@@ -66,16 +66,16 @@ def subscription_group(obj):
 subscription_group.short_description = 'Group'
 subscription_group.admin_order_field = 'group__name'
 
-def subscription_subscriber(obj):
-    return obj.subscriber.user.username
+def subscription_radcheck(obj):
+    return obj.radcheck.username
 
-subscription_subscriber.short_description = 'Subscriber'
-subscription_subscriber.admin_order_field = 'subscriber__user__username'
+subscription_radcheck.short_description = 'Subscriber'
+subscription_radcheck.admin_order_field = 'radcheck__username'
 
 class PackageSubscriptionAdmin(admin.ModelAdmin):
     form = PackageSubscriptionAdminForm
-    list_display = (subscription_package, 'start', 'stop', subscription_subscriber)
-    search_fields = ('package__package_type', 'subscriber__user__username')
+    list_display = (subscription_package, 'start', 'stop', subscription_radcheck)
+    search_fields = ('package__package_type', 'radcheck__username')
 
 class GroupPackageSubscriptionAdmin(admin.ModelAdmin):
     form = GroupPackageSubscriptionAdminForm

@@ -15,7 +15,7 @@ class PackageSubscriptionForm(forms.Form):
         cleaned_data = super(PackageSubscriptionForm, self).clean()
         package = Package.objects.get(pk=cleaned_data.get('package_choice'))
 
-        start, amount, balance = check_balance_and_subscription(self.user.subscriber, package)
+        start, amount, balance = check_balance_and_subscription(self.user.radcheck, package)
         update_cleaned_data(cleaned_data, {
           'start': start, 'amount': amount, 'balance': balance, 'package': package
         })
@@ -26,9 +26,9 @@ class PackageSubscriptionForm(forms.Form):
         amount = self.cleaned_data['amount']
         start = self.cleaned_data['start']
 
-        charge_subscriber(self.user.subscriber, amount, balance, package)
+        charge_subscriber(self.user.radcheck, amount, balance, package)
 
-        subscription = PackageSubscription.objects.create(subscriber=self.user.subscriber, package=package, start=start)
+        subscription = PackageSubscription.objects.create(radcheck=self.user.radcheck, package=package, start=start)
         subscription.stop = compute_stop(subscription.start, package.package_type)
         subscription.save()
 

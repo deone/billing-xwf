@@ -18,23 +18,23 @@ class HelpersTests(ViewsTests):
 
     def test_get_balance_zero(self):
         # User has no recharge entry. Balance should be zero
-        self.assertEqual(get_balance(self.user.subscriber), 0)
+        self.assertEqual(get_balance(self.user.radcheck), 0)
 
     def test_get_balance_non_zero(self):
-        balance = get_balance(self.user.subscriber)
+        balance = get_balance(self.user.radcheck)
         card_value = 4
         balance = balance + card_value
 
         # Recharge user account
         recharge = RechargeAndUsage.objects.create(
-            subscriber=self.subscriber,
+            radcheck=self.radcheck,
             amount=card_value,
             balance=balance,
             action='REC',
             activity_id=30
         )
 
-        self.assertEqual(get_balance(self.user.subscriber), 4)
+        self.assertEqual(get_balance(self.user.radcheck), 4)
 
     def test_send_api_request(self):
         data = {'pin': 12345678901234}

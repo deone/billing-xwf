@@ -20,7 +20,7 @@ class BuyPackageTests(ViewsTests):
 
     def test_buy_package_post(self):
         RechargeAndUsage.objects.create(
-            subscriber=self.subscriber,
+            radcheck=self.radcheck,
             amount=4,
             balance=4,
             action='REC',

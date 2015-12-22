@@ -5,13 +5,19 @@ from django.contrib.auth.models import User
 from datetime import timedelta
 
 from ..models import * 
+from accounts.helpers import md5_password
 
 class PackagesModelsTests(TestCase):
 
     def setUp(self):
-        self.user = User.objects.create_user('a@a.com', 'a@a.com', '12345')
-        self.subscriber = Subscriber.objects.create(user=self.user,
-            country='GHA', phone_number='0542751610')
+        username = 'a@a.com'
+        password = '12345'
+        user = User.objects.create_user(username, username, password)
+        self.radcheck = Radcheck.objects.create(user=user,
+                                username=username,
+                                attribute='MD5-Password',
+                                op=':=',
+                                value=md5_password(password))
         self.group = GroupAccount.objects.create(name='CUG',
             max_no_of_users=10)
         self.package = Package.objects.create(package_type='Daily',
@@ -21,7 +27,7 @@ class PackagesModelsTests(TestCase):
             package=self.package, start=now,
             stop=now + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[self.package.package_type]))
         self.ps = PackageSubscription.objects.create(
-            subscriber=self.subscriber, package=self.package, start=now,
+            radcheck=self.radcheck, package=self.package, start=now,
             stop=now + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[self.package.package_type]))
 
     def test_package__str__(self):
@@ -34,7 +40,7 @@ class PackagesModelsTests(TestCase):
         self.assertEqual(self.gps.__str__(), string)
 
     def test_ps__str__(self):
-        string = '%s %s %s' % (self.subscriber.user.email, self.package.package_type, self.gps.stop.strftime('%B %d %Y, %I:%M%p'))
+        string = '%s %s %s' % (self.radcheck.username, self.package.package_type, self.gps.stop.strftime('%B %d %Y, %I:%M%p'))
         self.assertEqual(self.ps.__str__(), string)
 
     def test_gps_is_valid(self):

@@ -84,9 +84,9 @@ def send_api_request(url, data):
 
     return post_response.json()
 
-def get_balance(subscriber):
+def get_balance(radcheck):
     try:
-        last_activity = RechargeAndUsage.objects.filter(subscriber=subscriber)[0]
+        last_activity = RechargeAndUsage.objects.filter(radcheck=radcheck)[0]
     except IndexError, RechargeAndUsage.DoesNotExist:
         last_activity = None
 

@@ -198,12 +198,15 @@ class AccessPoint(models.Model):
         if self.status == 'PUB':
             return True # AP is public, all users can connect
         else:
-            if user.subscriber.group is not None and self.group is not None: # This ensures we return False even if AP doesn't belong to a group
-                if user.subscriber.group == self.group:
-                    return True # Users in same group as AP can connect
-                else:
-                    return False # Users in other groups can not connect to this AP
-            return False # AP is private, only users who belong to AP group can connect
+            if not isinstance(user, User):
+                return False
+            else:
+                if user.subscriber.group is not None and self.group is not None: # This ensures we return False even if AP doesn't belong to a group
+                    if user.subscriber.group == self.group:
+                        return True # Users in same group as AP can connect
+                    else:
+                        return False # Users in other groups can not connect to this AP
+                return False # AP is private, only users who belong to AP group can connect
 
     def __str__(self):
         return self.name
@@ -218,7 +221,7 @@ class RechargeAndUsage(models.Model):
         (USAGE, 'Usage'),
     )
 
-    subscriber = models.ForeignKey(Subscriber)
+    radcheck = models.ForeignKey(Radcheck)
     amount = models.SmallIntegerField() # Recharges are positive values, usages are negative values
     balance = models.PositiveSmallIntegerField() # Stores balance after every recharge or usage activity, we have to fetch last activity's balance to compute this.
     action = models.CharField(max_length=3, choices=ACTION_CHOICES)

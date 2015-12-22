@@ -5,17 +5,26 @@ from accounts.models import Subscriber, RechargeAndUsage
 
 from ..models import Package
 from ..forms import PackageSubscriptionForm
+from accounts.helpers import md5_password
+from accounts.models import Radcheck
 
 class PackageSubscriptionFormTest(TestCase):
     
     def setUp(self):
-        self.user = User.objects.create_user('a@a.com', 'a@a.com', '12345')
+        username = 'a@a.com'
+        password = '12345'
+        self.user = User.objects.create_user(username, username, password)
         self.subscriber = Subscriber.objects.create(user=self.user, country='GHA', phone_number='0542751610')
+        self.radcheck = Radcheck.objects.create(user=self.user,
+                                username=username,
+                                attribute='MD5-Password',
+                                op=':=',
+                                value=md5_password(password))
         self.package = Package.objects.create(package_type='Monthly', volume='Unlimited', speed='1.5', price=4)
         self.data = {'package_choice': str(self.package.pk)}
         self.packages = [(p.id, p) for p in Package.objects.all()]
         self.recharge = RechargeAndUsage.objects.create(
-            subscriber=self.subscriber,
+            radcheck=self.radcheck,
             amount=3,
             balance=3,
             action='REC',
