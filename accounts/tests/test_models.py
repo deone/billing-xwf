@@ -23,6 +23,7 @@ class AccountsModelsTests(TestCase):
             user=self.user, username=self.user.username, attribute='MD5-Password', op=':=', value=md5_password('12345')
         )
         self.assertEqual(entry.__str__(), 'a@a.com')
+        entry.delete()
 
 class GroupAccountTests(TestCase):
 
@@ -49,6 +50,13 @@ class AccessPointTests(TestCase):
 
     def test_allows_ap_private(self):
         self.assertFalse(self.ap.allows(self.user))
+
+    def test_allows_ap_not_user_instance(self):
+        radcheck = Radcheck.objects.create(
+            user=None, username='a@a.com', attribute='MD5-Password', op=':=', value=md5_password('12345')
+        )
+        self.assertFalse(self.ap.allows(radcheck))
+        radcheck.delete()
 
     def test_allows_ap_public(self):
         self.ap.status = 'PUB'
