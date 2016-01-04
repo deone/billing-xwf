@@ -23,6 +23,9 @@ class RechargeAccountTests(ViewsTests):
         # Insert stub recharge card
         send_api_request(settings.VOUCHER_STUB_INSERT_URL, data)
 
+        # Sell stub card
+        send_api_request(settings.VOUCHER_SELL_URL, data)
+
         request = self.factory.post(reverse('accounts:recharge_account'), data=data)
         request.user = self.user
 
