@@ -144,4 +144,6 @@ VOUCHER_INVALIDATE_URL = VMS_URL + "invalidate/"
 
 VOUCHER_SELL_URL = VMS_URL + "sell/"
 
+SUCCESS_URL = "http://localhost:8000/success/"
+
 from user_settings import *
