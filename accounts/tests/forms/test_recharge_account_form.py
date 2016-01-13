@@ -9,7 +9,7 @@ class RechargeAccountFormTest(FormsTestCase):
 
     def setUp(self, *args, **kwargs):
         super(RechargeAccountFormTest, self).setUp(*args, **kwargs)
-        self.data = {'pin': '12345678901234'}
+        self.data = {'pin': '12345678901234', 'voucher_type': 'STD'}
 
         # Insert stub recharge card
         self.voucher = send_api_request(settings.VOUCHER_STUB_INSERT_URL, self.data)
@@ -41,4 +41,5 @@ class RechargeAccountFormTest(FormsTestCase):
 
     def tearDown(self):
         # Delete card
-        send_api_request(settings.VOUCHER_STUB_DELETE_URL, self.data)
+        data = {'voucher_type': self.data['voucher_type'], 'voucher_id': self.voucher['id']}
+        send_api_request(settings.VOUCHER_STUB_DELETE_URL, data)

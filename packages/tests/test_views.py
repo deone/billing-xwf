@@ -42,7 +42,7 @@ class ViewsTests(TestCase):
             data={'package_type': 'Daily', 'volume': '3', 'speed': '1.5', 'price': 4})
         value = json.loads(response.content)
 
-        self.assertTrue(value.has_key('package_type'))
+        self.assertTrue(value['result'].has_key('package_type'))
 
     def test_delete_stub_get(self):
         response = self.c.get(reverse('packages:delete_stub'))

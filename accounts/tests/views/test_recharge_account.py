@@ -18,10 +18,10 @@ class RechargeAccountTests(ViewsTests):
         self.assertTemplateUsed(response, 'accounts/recharge_account.html')
 
     def test_recharge_account_post(self):
-        data = {'pin': '12345678901234'}
+        data = {'pin': '12345678901234', 'voucher_type': 'STD'}
 
         # Insert stub recharge card
-        send_api_request(settings.VOUCHER_STUB_INSERT_URL, data)
+        voucher = send_api_request(settings.VOUCHER_STUB_INSERT_URL, data)
 
         # Sell stub card
         send_api_request(settings.VOUCHER_SELL_URL, data)
@@ -47,4 +47,5 @@ class RechargeAccountTests(ViewsTests):
         self.assertEqual('Account recharged successfully.', lst[0].__str__())
 
         # Delete stub recharge card
+        data.update({'voucher_id': voucher['id']})
         send_api_request(settings.VOUCHER_STUB_DELETE_URL, data)

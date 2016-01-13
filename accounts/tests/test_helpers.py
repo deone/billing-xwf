@@ -37,10 +37,11 @@ class HelpersTests(ViewsTests):
         self.assertEqual(get_balance(self.user.radcheck), 4)
 
     def test_send_api_request(self):
-        data = {'pin': 12345678901234}
+        data = {'pin': 12345678901234, 'voucher_type': 'STD'}
 
         response = send_api_request(settings.VOUCHER_STUB_INSERT_URL, data)
         self.assertEqual(response['code'], 200)
 
+        data.update({'voucher_id': response['id']})
         response = send_api_request(settings.VOUCHER_STUB_DELETE_URL, data)
         self.assertEqual(response['code'], 200)
