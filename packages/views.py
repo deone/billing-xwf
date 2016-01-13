@@ -13,7 +13,7 @@ def insert_stub(request):
         package = Package.objects.create(package_type=request.POST['package_type'],
             speed=request.POST['speed'], volume=request.POST['volume'], price=request.POST['price'])
         package.__dict__.pop("_state")
-        response.update(package.__dict__)
+        response.update({'code': 200, 'result': package.__dict__})
     else:
         response.update({'status': 'ok'})
 
