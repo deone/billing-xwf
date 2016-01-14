@@ -1,5 +1,6 @@
 from django import forms
 from django.contrib import admin
+from django.utils import timezone
 
 from .models import *
 from .helpers import *
@@ -77,10 +78,18 @@ class PackageSubscriptionAdmin(admin.ModelAdmin):
     list_display = (subscription_package, 'start', 'stop', subscription_radcheck)
     search_fields = ('package__package_type', 'radcheck__username')
 
+    def get_queryset(self, request):
+        qs = super(PackageSubscriptionAdmin, self).get_queryset(request)
+        return qs.exclude(stop__lt=timezone.now())
+
 class GroupPackageSubscriptionAdmin(admin.ModelAdmin):
     form = GroupPackageSubscriptionAdminForm
     list_display = (subscription_package, 'start', 'stop', subscription_group)
     search_fields = ('package__package_type', 'group__name')
+
+    def get_queryset(self, request):
+        qs = super(GroupPackageSubscriptionAdmin, self).get_queryset(request)
+        return qs.exclude(stop__lt=timezone.now())
 
 class PackageAdmin(admin.ModelAdmin):
     list_display = ('package_type', 'volume', 'speed', 'price')
