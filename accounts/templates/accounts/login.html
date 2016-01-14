@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Log In{% endblock %}
+{% block title %}Log In To Manage Account{% endblock %}
 
 {% block app_body %}
 <div class="row main">
@@ -29,11 +29,12 @@
       </div>
 
       <button type="submit" class="btn btn-primary">Log In</button>
-
+      
+      {% block links %}
       <p>
         <a href="{% url 'accounts:password_reset' %}">Forgot Password?</a><br>
-        <a href="{% url 'index' %}" target="_blank">Create Account</a>
       </p>
+      {% endblock %}
     </fieldset>
   </form>
 </div>

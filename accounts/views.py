@@ -34,7 +34,7 @@ def captive(request):
     else:
         raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.")
 
-    return render(request, 'accounts/login.html', context)
+    return render(request, 'captive.html', context)
 
 def success(request):
     if 'logout_url' in request.GET:
@@ -45,6 +45,11 @@ def success(request):
     return render(request, 'accounts/success.html', context)
 
 def index(request):
+    # print request.COOKIES
+    # We need to implement a logout page here. Users should be able to come here
+    # and get a logout link to terminate their browsing session. It would be really
+    # helpful if we set 'logout_url' as a cookie after user is authenticated in captive()
+    # and delete this cookie when the user clicks the link to log out.
     if request.method == 'POST':
         form = CreateUserForm(request.POST, user=AnonymousUser())
         if form.is_valid():
