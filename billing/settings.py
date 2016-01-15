@@ -41,6 +41,7 @@ INSTALLED_APPS = (
     'django.contrib.sites',
     'accounts',
     'packages',
+    'payments',
 )
 
 MIDDLEWARE_CLASSES = (
