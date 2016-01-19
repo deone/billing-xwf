@@ -246,7 +246,7 @@ def search(request):
 
     context.update({'users': found_entries})
 
-    return render(request, 'accounts/user_list.html', context)
+    return render(request, 'accounts/search_results.html', context)
 
 @login_required
 def view_users(request, page=None):
