@@ -238,8 +238,13 @@ def recharge_account(request):
 def view_users(request, page=None):
     context = {}
     user_list = User.objects.filter(subscriber__group=request.user.subscriber.group).exclude(pk=request.user.pk)
-    paginate_by = request.GET.get('paginate_by', None)
-    paginator = Paginator(user_list, paginate_by)
+
+    if not request.GET.get('paginate_by', None):
+        paginate_by = 10
+    else:
+        paginate_by = request.GET.get('paginate_by')
+
+    paginator = Paginator(user_list, int(paginate_by))
 
     if page is None:
         page = request.GET.get('page')
