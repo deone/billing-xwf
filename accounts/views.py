@@ -238,7 +238,8 @@ def recharge_account(request):
 def view_users(request, page=None):
     context = {}
     user_list = User.objects.filter(subscriber__group=request.user.subscriber.group).exclude(pk=request.user.pk)
-    paginator = Paginator(user_list, settings.PAGINATE_BY)
+    paginate_by = request.GET.get('paginate_by', None)
+    paginator = Paginator(user_list, paginate_by)
 
     if page is None:
         page = request.GET.get('page')
@@ -251,6 +252,10 @@ def view_users(request, page=None):
         users = paginator.page(paginator.num_pages)
 
     context.update({'users': users})
+
+    if paginate_by is not None:
+        context.update({'paginate_by': paginate_by})
+
     return render(request, 'accounts/user_list.html', context)
 
 def toggle_status(request, pk):

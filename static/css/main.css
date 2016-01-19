@@ -72,3 +72,8 @@ table form {
 .welcome {
   background: #fff;
 }
+
+/* View Users */
+.paginate_by {
+  text-align: right;
+}
