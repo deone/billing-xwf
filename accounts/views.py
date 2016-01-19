@@ -149,13 +149,23 @@ def edit_user(request, pk=None):
         'phone_number': phone_number
         }
 
+    request.session.set_test_cookie()
+
     if request.method == 'POST':
         form = EditUserForm(request.POST, user=request.user)
         if form.is_valid():
             form.save(user)
             messages.success(request, 'User changed successfully.')
-            return redirect('accounts:users')
+            referrer = request.session.get('referrer')
+            del request.session['referrer']
+
+            return redirect(referrer)
     else:
+        if request.session.test_cookie_worked():
+            request.session.delete_test_cookie()
+            if not request.session.get('referrer'):
+                request.session['referrer'] = request.META.get('HTTP_REFERER')
+
         form = EditUserForm(user=request.user, initial=dct)
 
     context.update({'form': form})
