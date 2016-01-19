@@ -80,7 +80,7 @@ class EditUserForm(forms.Form):
     last_name = forms.CharField(label='Last Name', max_length=20, 
         widget=forms.TextInput(attrs={'class': 'form-control'}))
     phone_number = forms.CharField(label='Phone Number', required=False, validators=[phone_regex],
-        widget=forms.NumberInput(attrs={'class': 'form-control'}))
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
