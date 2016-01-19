@@ -74,6 +74,10 @@ table form {
 }
 
 /* View Users */
-.paginate_by {
+.paginate-by {
   text-align: right;
+}
+.search-form {
+  display: inline-block;
+  margin: 20px 0;
 }

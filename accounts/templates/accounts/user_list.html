@@ -4,53 +4,69 @@
 
 {% block app_body %}
 {% if users %}
-  <nav class="paginate_by">
-    <ul class="pagination">
-      <li>
-        <span>Show up to</span>
-      </li>
-      <li><a href="?paginate_by=5">5</a></li>
-      <li><a href="?paginate_by=10">10</a></li>
-      <li><a href="?paginate_by=20">20</a></li>
-      <li><a href="?paginate_by=25">25</a></li>
-      <li>
-        <span>items</span>
-      </li>
-    </ul>
-  </nav>
+  <div class="row">
+    <div class="col-md-6">
+      <form class="search-form">
+        <div class="input-group">
+          <input type="text" class="form-control" placeholder="Search for...">
+          <span class="input-group-btn">
+            <button class="btn btn-default" type="button">
+              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+            </button>
+          </span>
+        </div>
+      </form>
+    </div>
+    <div class="col-md-6 paginate-by">
+      <ul class="pagination">
+        <li>
+          <span>Show up to</span>
+        </li>
+        <li><a href="?paginate_by=5">5</a></li>
+        <li><a href="?paginate_by=10">10</a></li>
+        <li><a href="?paginate_by=20">20</a></li>
+        <li><a href="?paginate_by=25">25</a></li>
+        <li>
+          <span>items</span>
+        </li>
+      </ul>
+    </div>
+  </div>
 
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th scope="col">ID</th>
-        <th scope="col">User Name</th>
-        <th scope="col">First Name</th>
-        <th scope="col">Last Name</th>
-        <th scope="col">Date Created</th>
-        <th scope="col">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for user in users %}
-      </tr>
-        <td>{{ user.pk }}</td>
-        <td><a href="{% url 'accounts:edit_user' pk=user.pk %}">{{ user.username }}</a></td>
-        <td>{{ user.first_name }}</td>
-        <td>{{ user.last_name }}</td>
-        <td>{{ user.date_joined }}</td>
-        <td>
-          <form action="{% url 'accounts:toggle_status' pk=user.pk %}" method="post">
-            {% csrf_token %}
-            {% if user.is_active %}
-              <button type="submit" class="btn btn-xs btn-danger">Deactivate</button>
-            {% else %}
-              <button type="submit" class="btn btn-xs btn-primary">Activate</button>
-            {% endif %}
-          </form>
-        </td>
-      {% endfor %}
-    </tbody>
-  </table>
+  <div class="row">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th scope="col">ID</th>
+          <th scope="col">User Name</th>
+          <th scope="col">First Name</th>
+          <th scope="col">Last Name</th>
+          <th scope="col">Date Created</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in users %}
+        </tr>
+          <td>{{ user.pk }}</td>
+          <td><a href="{% url 'accounts:edit_user' pk=user.pk %}">{{ user.username }}</a></td>
+          <td>{{ user.first_name }}</td>
+          <td>{{ user.last_name }}</td>
+          <td>{{ user.date_joined }}</td>
+          <td>
+            <form action="{% url 'accounts:toggle_status' pk=user.pk %}" method="post">
+              {% csrf_token %}
+              {% if user.is_active %}
+                <button type="submit" class="btn btn-xs btn-danger">Deactivate</button>
+              {% else %}
+                <button type="submit" class="btn btn-xs btn-primary">Activate</button>
+              {% endif %}
+            </form>
+          </td>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
 {% else %}
   <div class="row">
     <div class="col-sm-12 main">
