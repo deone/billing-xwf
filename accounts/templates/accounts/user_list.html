@@ -2,37 +2,6 @@
 
 {% block title %}{{ user.subscriber.group.name }} Users{% endblock %}
 
-{% block links %}
-<li><a href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
-<!-- <li class="active"><a href="{% url 'accounts:users' %}">Users <span class="sr-only">(current)</span></a></li> -->
-<li class="active dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-    Users <span class="sr-only">(current)</span>
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu">
-    <li>
-      <a href="{% url 'accounts:users' %}">
-        <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
-        View Users
-      </a>
-    </li>
-    <li>
-      <a href="{% url 'accounts:add_user' %}">
-        <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-        Add User
-      </a>
-    </li>
-    <li>
-      <a href="{% url 'accounts:upload_user_list' %}">
-        <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
-        Upload User List
-      </a>
-    </li>
-  </ul>
-</li>
-{% endblock %}
-
 {% block app_body %}
 {% if users %}
 <table class="table table-striped">
