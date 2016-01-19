@@ -7,6 +7,7 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^captive/$', views.captive, name='captive'),
     url(r'^success/$', views.success, name='success'),
+    url(r'^search/$', views.search, name='search'),
     url(r'^resend_mail/$', views.resend_mail, name='resend_mail'),
     url(r'^accounts/', include('accounts.urls', namespace="accounts")),
     url(r'^packages/', include('packages.urls', namespace="packages")),
