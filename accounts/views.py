@@ -249,14 +249,12 @@ def search(request):
     return render(request, 'accounts/search_results.html', context)
 
 @login_required
-def view_users(request, page=None):
+def view_users(request, page=None, paginate_by=10):
     context = {}
     user_list = User.objects.filter(subscriber__group=request.user.subscriber.group).exclude(pk=request.user.pk)
 
     if not request.GET.get('paginate_by', None):
-        paginate_by = 10
-    else:
-        paginate_by = request.GET.get('paginate_by')
+        paginate_by = paginate_by
 
     paginator = Paginator(user_list, int(paginate_by))
 
