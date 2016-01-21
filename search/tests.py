@@ -16,9 +16,10 @@ class SearchTests(GroupAdminViewsTests):
 
     def test_index(self):
         self.c.post(reverse('accounts:login'), {'username': 'z@z.com', 'password': '12345'})
-        response = self.c.get(reverse('search:index'), {'q': 'ooo'})
-        self.assertEqual(response.status_code, 200)
+        response = self.c.get(reverse('search:index'), {'q': 'ooo ade'})
         user = response.context['users'][0]
+
+        self.assertEqual(response.status_code, 200)
         self.assertEqual(user.first_name, self.user.first_name)
         self.assertEqual(user.last_name, self.user.last_name)
         self.assertEqual(user.username, self.user.username)
