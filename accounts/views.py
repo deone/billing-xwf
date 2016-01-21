@@ -11,7 +11,7 @@ from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from django.views.generic import ListView
 
-from billing.decorators import must_be_group_admin
+from billing.decorators import *
 from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, RechargeAccountForm
 from .models import Subscriber
 from .helpers import *
@@ -194,6 +194,7 @@ def upload_user_list(request):
     })
     return render(request, 'accounts/upload_user_list.html', context)
 
+@must_be_individual_user
 @login_required
 def buy_package(request):
     context = {}
@@ -217,6 +218,7 @@ def buy_package(request):
 
     return render(request, 'packages/buy_package.html', context)
 
+@must_be_individual_user
 @login_required
 def recharge_account(request):
     context = {}
