@@ -3,38 +3,40 @@
 {% block title %}{{ user.subscriber.group.name }} Users{% endblock %}
 
 {% block app_body %}
-{% if users %}
-  <div class="row">
-    <div class="col-md-6">
-      <form class="search-form" action="{% url 'search' %}" method="get">
-        <div class="input-group">
-          <input type="text" class="form-control" name="q" placeholder="Search for...">
-          <span class="input-group-btn">
-            <button class="btn btn-default" type="submit">
-              <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
-            </button>
-          </span>
-        </div>
-      </form>
-    </div>
-    <div class="col-md-6 paginate-by">
-      {% block paginate_by %}
-        <ul class="pagination">
-          <li>
-            <span>Show up to</span>
-          </li>
-          <li><a href="?paginate_by=5">5</a></li>
-          <li><a href="?paginate_by=10">10</a></li>
-          <li><a href="?paginate_by=20">20</a></li>
-          <li><a href="?paginate_by=25">25</a></li>
-          <li>
-            <span>items</span>
-          </li>
-        </ul>
-      {% endblock %}
-    </div>
+<div class="row">
+  <div class="col-md-6">
+    {% block search_form %}
+    <form class="search-form" action="{% url 'search:index' %}" method="get">
+      <div class="input-group">
+        <input type="text" class="form-control" name="q" placeholder="Search for...">
+        <span class="input-group-btn">
+          <button class="btn btn-default" type="submit">
+            <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+          </button>
+        </span>
+      </div>
+    </form>
+    {% endblock %}
   </div>
+  <div class="col-md-6 paginate-by">
+    {% block paginate_by %}
+    <ul class="pagination">
+      <li>
+        <span>Show up to</span>
+      </li>
+      <li><a href="?paginate_by=5">5</a></li>
+      <li><a href="?paginate_by=10">10</a></li>
+      <li><a href="?paginate_by=20">20</a></li>
+      <li><a href="?paginate_by=25">25</a></li>
+      <li>
+        <span>items</span>
+      </li>
+    </ul>
+    {% endblock %}
+  </div>
+</div>
 
+{% if users %}
   <div class="row">
     <table class="table table-striped">
       <thead>
@@ -73,6 +75,7 @@
   <div class="row">
     <div class="col-sm-12 main">
       <p class="well">
+        {% block no_results %}
         There are no users in this group.
         <a href="{% url 'accounts:add_user' %}">
           <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
@@ -82,6 +85,7 @@
           <span class="glyphicon glyphicon-upload" aria-hidden="true"></span>
           Upload User List
         </a>
+        {% endblock %}
       </p>
     </div>
   </div>

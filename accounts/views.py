@@ -14,7 +14,6 @@ from django.views.generic import ListView
 from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, RechargeAccountForm
 from .models import Subscriber
 from .helpers import *
-from .search import get_query
 
 from packages.forms import PackageSubscriptionForm
 from packages.models import Package
@@ -235,26 +234,15 @@ def recharge_account(request):
     context.update({'form': form})
     return render(request, 'accounts/recharge_account.html', context)
 
-def search(request):
-    context = {}
-    query_string = ''
-    found_entries = None
-    if ('q' in request.GET) and request.GET['q'].strip():
-        query_string = request.GET['q']
-        entry_query = get_query(query_string, ['username', 'first_name', 'last_name',])
-        found_entries = User.objects.filter(entry_query)
-
-    context.update({'users': found_entries})
-
-    return render(request, 'accounts/search_results.html', context)
-
 @login_required
-def view_users(request, page=None, paginate_by=10):
+def view_users(request, page=None):
     context = {}
     user_list = User.objects.filter(subscriber__group=request.user.subscriber.group).exclude(pk=request.user.pk)
 
-    if not request.GET.get('paginate_by', None):
-        paginate_by = paginate_by
+    paginate_by = request.GET.get('paginate_by', None)
+
+    if paginate_by is None:
+        paginate_by = 10
 
     paginator = Paginator(user_list, int(paginate_by))
 

@@ -13,5 +13,5 @@ class ViewUsersTests(ViewsTests):
         self.session.process_request(request)
         request.session.save()
 
-        response = view_users(request, page=2, paginate_by=5)
+        response = view_users(request, page=2)
         self.assertEqual(response.status_code, 200)
