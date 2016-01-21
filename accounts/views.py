@@ -269,6 +269,8 @@ def view_users(request, page=None):
 
     return render(request, 'accounts/user_list.html', context)
 
+@must_be_group_admin
+@login_required
 def toggle_status(request, pk):
     if request.user.subscriber.is_group_admin:
         user = User.objects.get(pk=pk)
