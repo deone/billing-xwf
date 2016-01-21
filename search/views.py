@@ -1,8 +1,12 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
+from django.contrib.auth.decorators import login_required
 
+from billing.decorators import must_be_group_admin
 from . import get_query
 
+@must_be_group_admin
+@login_required
 def index(request):
     context = {}
     query_string = ''

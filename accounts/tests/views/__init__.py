@@ -25,3 +25,11 @@ class ViewsTests(TestCase):
                                 op=':=',
                                 value=md5_password(password))
         self.group = GroupAccount.objects.create(name='CUG', max_no_of_users=2)
+
+class GroupAdminViewsTests(ViewsTests):
+
+    def setUp(self, *args, **kwargs):
+        super(GroupAdminViewsTests, self).setUp(*args, **kwargs)
+        self.subscriber.group = self.group
+        self.subscriber.is_group_admin = True
+        self.subscriber.save()

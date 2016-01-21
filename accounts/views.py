@@ -11,6 +11,7 @@ from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from django.views.generic import ListView
 
+from billing.decorators import must_be_group_admin
 from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, RechargeAccountForm
 from .models import Subscriber
 from .helpers import *
@@ -114,6 +115,7 @@ def resend_mail(request):
     send_verification_mail(request.user)
     return redirect('accounts:dashboard')
 
+@must_be_group_admin
 @login_required
 def add_user(request):
     context = {}
@@ -171,6 +173,7 @@ def edit_user(request, pk=None):
     context.update({'form': form})
     return render(request, 'accounts/edit_user.html', context)
 
+@must_be_group_admin
 @login_required
 def upload_user_list(request):
     context = {}
@@ -234,6 +237,7 @@ def recharge_account(request):
     context.update({'form': form})
     return render(request, 'accounts/recharge_account.html', context)
 
+@must_be_group_admin
 @login_required
 def view_users(request, page=None):
     context = {}

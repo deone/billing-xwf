@@ -5,9 +5,9 @@ from django.contrib.messages import get_messages
 from ...forms import CreateUserForm
 from ...views import add_user
 
-from . import ViewsTests
+from . import GroupAdminViewsTests
 
-class AddUserTests(ViewsTests):
+class AddUserTests(GroupAdminViewsTests):
 
     def test_add_user_get(self):
         self.c.post(reverse('accounts:login'), {'username': 'z@z.com', 'password': '12345'})

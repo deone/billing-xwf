@@ -7,11 +7,11 @@ from ...models import GroupAccount
 from ...forms import BulkUserUploadForm
 from ...views import upload_user_list
 
-from . import ViewsTests
+from . import GroupAdminViewsTests 
 
 import os
 
-class UploadUserListTests(ViewsTests):
+class UploadUserListTests(GroupAdminViewsTests):
 
     def test_upload_user_list_post(self):
         group = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
