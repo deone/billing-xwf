@@ -272,21 +272,26 @@ def view_users(request, page=None):
 @must_be_group_admin
 @login_required
 def toggle_status(request, pk):
-    if request.user.subscriber.is_group_admin:
-        user = User.objects.get(pk=pk)
+    user = User.objects.get(pk=pk)
+    
+    if not request.session.get('referrer'):
+        request.session['referrer'] = request.META.get('HTTP_REFERER')
 
-        if user.is_active:
-            user.is_active = False
+    referrer = request.session.get('referrer')
+    del request.session['referrer']
+
+    if user.is_active:
+        user.is_active = False
+    else:
+        group = request.user.subscriber.group
+        if group.max_user_count_reached() or group.available_user_slots_count() is None:
+            if not settings.EXCEED_MAX_USER_COUNT:
+                messages.error(request,
+                    "You are not allowed to create more users than your group threshold. Your group threshold is set to %s." % group.max_no_of_users)
+                return redirect(referrer)
         else:
-            group = request.user.subscriber.group
-            if group.max_user_count_reached() or group.available_user_slots_count() is None:
-                if not settings.EXCEED_MAX_USER_COUNT:
-                    messages.error(request,
-                        "You are not allowed to create more users than your group threshold. Your group threshold is set to %s." % group.max_no_of_users)
-                    return redirect('accounts:users')
-            else:
-                user.is_active = True
+            user.is_active = True
 
-        user.save()
+    user.save()
 
-    return redirect('accounts:users')
+    return redirect(referrer)
