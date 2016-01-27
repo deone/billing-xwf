@@ -108,6 +108,7 @@ class ToggleStatusTests(ViewsTests):
         request.user = self.user
 
         self.session.process_request(request)
+        request.session['referrer'] = 'accounts:users'
         request.session.save()
 
         messages = FallbackStorage(request)
