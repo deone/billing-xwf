@@ -43,39 +43,37 @@ class ToggleStatusTests(ViewsTests):
         self.user.subscriber.is_group_admin = True
         self.user.subscriber.save()
 
+    def create_request(self):
+        request = self.factory.get(reverse('accounts:login'))
+        request.user = self.user
+        self.session.process_request(request)
+        request.session['referrer'] = 'accounts:users'
+        request.session.save()
+
+        return request
+
     def test_toggle_status_inactive(self):
         """ Test that user.is_active is set to False. """
 
-        # Set group and group_admin status for user sending this request.
-        # Only group_admins are allowed to perform this action and this is ensured in the view.
         self.set_group_group_admin()
 
-        # Log user in, since login is required
-        self.c.post(reverse('accounts:login'), {'username': 'z@z.com', 'password': '12345'})
+        request = self.create_request()
 
-        # Create user. We don't need to bother with creating subscriber and group instances
-        # for this user since those are not checked when we're deactivating user.
         user = self.create_user()
 
-        # Send request and get response
-        response = self.send_request(user.pk)
+        response = toggle_status(request, user.pk)
 
-        # Fetch user instance and perform checks.
         deactivated_user = self.get_user(user.pk)
 
         self.assertFalse(deactivated_user.is_active)
-        self.check_response(response)
+        self.assertEqual(response.get('location'), reverse('accounts:users'))
 
     def test_toggle_status_active(self):
         """ Test that user.is_active is set to True. """
 
         self.set_group_group_admin()
 
-        request = self.factory.get(reverse('accounts:login'))
-        request.user = self.user
-        self.session.process_request(request)
-        request.session['referrer'] = 'accounts:users'
-        request.session.save()
+        request = self.create_request()
 
         user = self.create_user(is_active=False)
 
