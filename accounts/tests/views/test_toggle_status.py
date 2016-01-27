@@ -71,20 +71,20 @@ class ToggleStatusTests(ViewsTests):
 
         self.set_group_group_admin()
 
-        # Log user in
-        self.c.post(reverse('accounts:login'), {'username': 'z@z.com', 'password': '12345'})
+        request = self.factory.get(reverse('accounts:login'))
+        request.user = self.user
+        self.session.process_request(request)
+        request.session['referrer'] = 'accounts:users'
+        request.session.save()
 
-        # Create user
         user = self.create_user(is_active=False)
 
-        # Send request and get response
-        response = self.send_request(user.pk)
+        response = toggle_status(request, user.pk)
 
-        # Fetch user instance and perform checks
         activated_user = self.get_user(user.pk)
 
         self.assertTrue(activated_user.is_active)
-        self.check_response(response)
+        self.assertEqual(response.get('location'), reverse('accounts:users'))
 
     def test_toggle_status_active_max_user_count_reached(self):
         """ Test that group admin is unable to set user.is_active to True if group has reached its max. no of users. """
