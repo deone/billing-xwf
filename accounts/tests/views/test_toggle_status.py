@@ -30,13 +30,6 @@ class ToggleStatusTests(ViewsTests):
     def get_user(self, pk):
         return User.objects.get(pk=pk)
 
-    def send_request(self, pk):
-        return self.c.get(reverse('accounts:toggle_status', kwargs={'pk':pk}))
-
-    def check_response(self, response):
-        self.assertRedirects(response, reverse('accounts:users'))
-        self.assertEqual(response.status_code, 302)
-
     def set_group_group_admin(self):
         """ Set group and group_admin status for user. """
         self.user.subscriber.group = self.group
