@@ -38,8 +38,12 @@ def captive(request):
     return render(request, 'captive.html', context)
 
 def success(request):
+    logout_url = request.session.get('logout_url', None)
+    if logout_url is not None:
+        context = {'logout_url': logout_url}
     if 'logout_url' in request.GET:
         context = {'logout_url': request.GET['logout_url']}
+        request.session['logout_url'] = request.GET['logout_url']
     else:
         context = {}
 
@@ -67,7 +71,11 @@ def index(request):
             if auth:
                 return redirect('accounts:dashboard')
     else:
-        form = CreateUserForm(user=request.user)
+        logout_url = request.session.get('logout_url', None)
+        if logout_url is not None:
+            return redirect('success')
+        else:
+            form = CreateUserForm(user=request.user)
   
     context = {'form': form}
 
