@@ -84,6 +84,7 @@ table form {
 .indicator {
   display: block;
   margin: .3em 0 0 1em;
+  cursor: default;
 }
 .indicator-offline {
   color: #CDCDCD;
