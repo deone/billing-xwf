@@ -81,3 +81,13 @@ table form {
   display: inline-block;
   margin: 20px 0;
 }
+.indicator {
+  display: block;
+  margin: .3em 0 0 1em;
+}
+.indicator-offline {
+  color: #CDCDCD;
+}
+.indicator-online {
+  color: #76EE00;
+}

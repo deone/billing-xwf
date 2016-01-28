@@ -72,7 +72,12 @@
   </ul>
 
   <ul class="nav navbar-nav navbar-right">
-    <li><a href="{% url 'accounts:logout' %}">Logout</a></li>
+    <li>
+      <a href="{% url 'accounts:logout' %}">
+        <span class="glyphicon glyphicon-off" aria-hidden="true"></span>
+        Logout 
+      </a>
+    </li>
   </ul>
 {% endblock %}
 
