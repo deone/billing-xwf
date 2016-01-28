@@ -24,10 +24,12 @@
       <li>
         <span>Show up to</span>
       </li>
-      <li><a href="?paginate_by=5">5</a></li>
-      <li><a href="?paginate_by=10">10</a></li>
-      <li><a href="?paginate_by=20">20</a></li>
-      <li><a href="?paginate_by=25">25</a></li>
+      {% with row_count=request.GET.paginate_by %}
+      <li {% if row_count == '5' %}class="active"{% endif %}><a href="?paginate_by=5">5</a></li>
+      <li {% if row_count == '10' %}class="active"{% endif %}><a href="?paginate_by=10">10</a></li>
+      <li {% if row_count == '20' %}class="active"{% endif %}><a href="?paginate_by=20">20</a></li>
+      <li {% if row_count == '25' %}class="active"{% endif %}><a href="?paginate_by=25">25</a></li>
+      {% endwith %}
       <li>
         <span>items</span>
       </li>
@@ -69,7 +71,7 @@
             </form>
           </td>
           <td>
-            <span class="glyphicon glyphicon-ok-sign indicator indicator-online" aria-hidden="true"></span>
+            <span class="glyphicon glyphicon-ok-sign indicator indicator-offline" aria-hidden="true"></span>
           </td>
         {% endfor %}
       </tbody>
