@@ -102,6 +102,7 @@ class Radcheck(models.Model):
     attribute = models.CharField(max_length=64)
     op = models.CharField(max_length=2)
     value = models.CharField(max_length=253)
+    is_logged_in = models.BooleanField(default=False)
 
     class Meta:
         db_table = 'radcheck'
