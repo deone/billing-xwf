@@ -19,7 +19,9 @@
       <div class="page-header">
         <h1>Topup Account 
           <small>
-            Balance &mdash; <span class="balance">{{ user.radcheck.rechargeandusage_set.all.0.balance }} GHS</span>
+            {% with balance=user.radcheck.rechargeandusage_set.all.0.balance %}
+            Balance &mdash; <span class="balance">{% if balance %}{{ user.radcheck.rechargeandusage_set.all.0.balance }}{% else %}0{% endif %} GHS</span>
+            {% endwith %}
           </small>
         </h1>
       </div>
