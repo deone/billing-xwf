@@ -8,7 +8,7 @@
     <fieldset>
       <!-- <legend>Log In</legend> -->
       <div class="page-header">
-        <h1>Log In</h1>
+        <h1>{% block form_header %}Manage Account{% endblock %}</h1>
       </div>
       {% csrf_token %}
       {{ form.non_field_errors }}
