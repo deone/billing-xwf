@@ -57,7 +57,5 @@ def insert_vouchers(request):
         package = Package.objects.get(pk=package_id)
 
         InstantVoucher.objects.create(radcheck=radcheck, package=package)
-    else:
-        pass
 
     return JsonResponse({'status': 'ok'})
