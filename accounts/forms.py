@@ -21,7 +21,7 @@ class CreateUserForm(forms.Form):
     country = forms.ChoiceField(label='Country', choices=Subscriber.COUNTRY_CHOICES,
         widget=forms.Select(attrs={'class': 'form-control'}))
     phone_number = forms.CharField(label='Phone Number', validators=[phone_regex],
-        widget=forms.NumberInput(attrs={'class': 'form-control'}))
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -31,10 +31,18 @@ class CreateUserForm(forms.Form):
         cleaned_data = super(CreateUserForm, self).clean()
         password = cleaned_data.get("password")
         confirm_password = cleaned_data.get("confirm_password")
+        username = cleaned_data.get("username")
+
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            pass
+        else:
+            raise forms.ValidationError("User already exists")
 
         if password and confirm_password:
             if password != confirm_password:
-                raise forms.ValidationError("Passwords do not match.", code="password_mismatch")
+                raise forms.ValidationError("Passwords do not match", code="password_mismatch")
             
         if not self.user.is_anonymous() and self.user.subscriber.group is not None:
             group = self.user.subscriber.group
