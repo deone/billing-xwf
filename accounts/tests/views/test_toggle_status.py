@@ -36,12 +36,9 @@ class ToggleStatusTests(ViewsTests):
         self.user.subscriber.is_group_admin = True
         self.user.subscriber.save()
 
-    def create_request(self):
-        request = self.factory.get(reverse('accounts:login'))
+    def process_request(self, request):
         request.user = self.user
         self.session.process_request(request)
-        request.session['referrer'] = 'accounts:users'
-        request.session.save()
 
         return request
 
@@ -50,7 +47,7 @@ class ToggleStatusTests(ViewsTests):
 
         self.set_group_group_admin()
 
-        request = self.create_request()
+        request = self.process_request(self.factory.get(reverse('accounts:login'), {}, HTTP_REFERER='http://foo/bar'))
 
         user = self.create_user()
 
@@ -59,14 +56,16 @@ class ToggleStatusTests(ViewsTests):
         deactivated_user = self.get_user(user.pk)
 
         self.assertFalse(deactivated_user.is_active)
-        self.assertEqual(response.get('location'), reverse('accounts:users'))
+        self.assertEqual(response.get('location'), 'http://foo/bar')
 
     def test_toggle_status_active(self):
         """ Test that user.is_active is set to True. """
 
         self.set_group_group_admin()
 
-        request = self.create_request()
+        request = self.process_request(self.factory.get(reverse('accounts:login')))
+        request.session['referrer'] = 'accounts:users'
+        request.session.save()
 
         user = self.create_user(is_active=False)
 
