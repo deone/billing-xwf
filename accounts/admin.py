@@ -115,13 +115,6 @@ class AccessPointAdminForm(forms.ModelForm):
         model = AccessPoint
         fields = ('name', 'group', 'mac_address', 'status')
 
-    def clean(self):
-        cleaned_data = super(AccessPointAdminForm, self).clean()
-        if cleaned_data['group'] is not None and cleaned_data['status'] == 'PUB':
-            raise forms.ValidationError("Group Access Points cannot be public.")
-
-        return cleaned_data
-
 def ap_group(obj):
     if obj.group is not None:
         return obj.group.name

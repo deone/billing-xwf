@@ -34,13 +34,6 @@ class GroupAccountRelatedTests(TestCase):
         self.user = User.objects.create(username='b@b.com', password='12345')
         self.ga = GroupAccount.objects.create(name='CUG', max_no_of_users=10)
 
-    def test_AccessPointAdminForm_invalid(self):
-        form = AccessPointAdminForm({'name': 'HQ', 'group': self.ga.pk, 'mac_address': '00:18:0A:F2:DE:20', 'status': 'PUB'})
-        self.assertFalse(form.is_valid())
-        # print form.is_valid()
-        # with self.assertRaises(forms.ValidationError):
-            # form.clean()
-
     def test_AccessPointAdminForm_valid(self):
         form = AccessPointAdminForm({'name': 'HQ', 'group': self.ga.pk, 'mac_address': '00:18:0A:F2:DE:20', 'status': 'PRV'})
         self.assertTrue(form.is_valid())
