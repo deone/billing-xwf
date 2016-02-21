@@ -49,8 +49,8 @@ class GroupAccountRelatedTests(TestCase):
     def test_SubscriberAdminForm_invalid(self):
         form = SubscriberAdminForm({
           'phone_number': '0542751610',
-          'group': self.ga.pk,
-          'is_group_admin': False,
+          'group': None,
+          'is_group_admin': True,
           'country': 'GHA',
           'date_verified': None,
           'user': self.user.pk,

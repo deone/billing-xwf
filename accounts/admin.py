@@ -21,8 +21,8 @@ class SubscriberAdminForm(forms.ModelForm):
     def clean(self):
         cleaned_data = super(SubscriberAdminForm, self).clean()
 
-        if cleaned_data['group'] is None or cleaned_data['is_group_admin'] is False:
-            raise forms.ValidationError("You must set the group and group admin status of this user.")
+        if cleaned_data['group'] is None and cleaned_data['is_group_admin'] is True:
+            raise forms.ValidationError("User must belong to a group to be group admin.")
 
         return cleaned_data
 
