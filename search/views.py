@@ -14,7 +14,12 @@ def index(request):
     if ('q' in request.GET) and request.GET['q'].strip():
         query_string = request.GET['q']
         entry_query = get_query(query_string, ['username', 'first_name', 'last_name',])
-        found_entries = User.objects.filter(entry_query)
+        all_users = User.objects.filter(entry_query)
+
+        found_entries = []
+        for user in all_users:
+            if user.subscriber.group.name == request.user.subscriber.group.name:
+                found_entries.append(user)
 
     context.update({'users': found_entries})
 
