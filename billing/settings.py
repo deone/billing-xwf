@@ -151,6 +151,8 @@ SUCCESS_URL = "http://localhost:8000/success/"
 # More settings
 
 # Speed variants 
+STARTER = '0.128'
+BASIC = '0.256'
 REGULAR = '0.512'
 LITE = '1'
 DELUXE = '1.5'
@@ -160,6 +162,8 @@ SUPREME = '4'
 
 # Speed names
 SPEED_NAME_MAP = {
+    STARTER: '128Kbps Starter',
+    BASIC: '256Kbps Basic',
     REGULAR: '512Kbps Regular',
     LITE: '1Mbps Lite',
     DELUXE: '1.5Mbps Deluxe',
@@ -169,6 +173,8 @@ SPEED_NAME_MAP = {
 }
 
 SPEED_CHOICES = (
+    (STARTER, SPEED_NAME_MAP[STARTER]),
+    (BASIC, SPEED_NAME_MAP[BASIC]),
     (REGULAR, SPEED_NAME_MAP[REGULAR]),
     (LITE, SPEED_NAME_MAP[LITE]),
     (DELUXE, SPEED_NAME_MAP[DELUXE]),
