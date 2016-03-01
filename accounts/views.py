@@ -31,6 +31,7 @@ def captive(request):
     if 'login_url' in request.GET:
         context.update({
           'login_url': request.GET['login_url'],
+          'logout_url': request.session['logout_url'],
           'success_url': settings.SUCCESS_URL,
         })
     else:
