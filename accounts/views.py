@@ -41,8 +41,8 @@ def captive(request):
 
 def success(request):
     if 'logout_url' in request.GET:
-        context = {'logout_url': request.GET['logout_url']}
         request.session['logout_url'] = request.GET['logout_url']
+        context = {'logout_url': request.session.get('logout_url', None)
     else:
         context = {}
 

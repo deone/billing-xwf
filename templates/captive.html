@@ -6,7 +6,7 @@
 
 {% block links %}
 <p>
-  {{ logout_url }}
+  Logout URL: {{ logout_url }}<br>
   <a href="{% url 'accounts:password_reset' %}">Forgot Password?</a><br>
   <a href="{% url 'index' %}" target="_blank">Create Account</a><br>
   <a href="{% url 'accounts:login' %}" target="_blank">Manage Account</a>
