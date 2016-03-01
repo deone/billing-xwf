@@ -21,6 +21,7 @@ from packages.models import Package
 
 def captive(request):
     context = {'form': LoginForm()}
+    request.session['logout_url'] = None
 
     if 'error_message' in request.GET:
         context.update({
