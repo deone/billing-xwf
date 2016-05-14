@@ -9,7 +9,6 @@ from django.http import Http404
 from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
-from django.views.generic import ListView
 
 from billing.decorators import *
 from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, RechargeAccountForm
