@@ -74,7 +74,7 @@ form {
 }
 .messages {
   list-style: none;
-  background: #e7e7e7;
+  background: #fff;
   font-weight: bold;
 }
 .messages li {

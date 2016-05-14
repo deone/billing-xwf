@@ -10,10 +10,9 @@ TODO
 - Add hideShowPassword to password fields on 'Add User' page. Is this absolutely necessary.
 - Test decorators when user is not logged in and fix AnonymousUser error.
 - Validate package purchase form. Users get an error when they do not select any package and attempt paying with account balance.
-- Dashboard should display vital information including user's package - for individual users.
+- Dashboard should display vital information for all user types including user's package.
 - Integrate MPower.
 
 Urgent
 ======
-- Email is sent every time a user is saved in admin. Email should be sent upon user creation only. Fix this.
-- Now, a group admin can deactivate users in other groups. Ensure that this never happens. There was a fix for group admin's ability to search and find users in other groups. Check whether this fixes the deactivation bug.
+- Email is sent every time a user is saved in admin, but only after editing subscriber info. Email should be sent upon user creation only. Fix this.

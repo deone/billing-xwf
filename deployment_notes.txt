@@ -1,0 +1,62 @@
+Server + Text Editor
+====================
+1. dnf install freeradius freeradius-utils freeradius-client freeradius-mysql freeradius-python mariadb mariadb-server mariadb-devel gcc python-virtualenv redhat-rpm-config git httpd vim
+2. rm /usr/bin/vi; ln -s /usr/bin/vim /usr/bin/vi
+3. `hostnamectl set-hostname --static "production"` OR `hostnamectl set-hostname --static "test"`
+
+RADIUS Server
+=============
+1. vi /etc/raddb/users; `testing Cleartext-Password := "password"`
+2. radiusd -X
+3. radtest testing password localhost 0 testing123
+4. cd /etc/raddb/mods-enabled; ln -s /etc/raddb/mods-available/sql
+5. cd /etc/raddb/mods-enabled; ln -s /etc/raddb/mods-available/python
+6. Add 'python' to /etc/raddb/sites-available/default under '-sql'
+7. Configure clients -> /etc/raddb/clients.conf
+8. Configure radius python (/etc/raddb/mods-enabled/python) and sql (/etc/raddb/mods-enabled/sql) modules
+
+RADIUS Billing Module
+=====================
+1. cd ~; git clone https://github.com/deone/radius-dev.git
+2. cd radius-dev; ./deploy
+3. pip install Django==1.8.2 MySQL-python==1.2.5 requests coverage
+4. coverage run --source="." tests.py
+
+Database
+=========
+1. systemctl enable mariadb.service
+2. systemctl disable firewalld.service
+3. systemctl start mariadb.service; mysql -u root
+    -> create database radius;
+    -> GRANT ALL ON radius.* TO 'radius'@'localhost' identified by 'radpass';
+
+HTTPD
+=====
+1. systemctl start httpd.service
+2. systemctl enable httpd.service
+3. dnf install mod_wsgi
+4. systemctl restart httpd.service
+5. Create billing.conf or copy existing one into /etc/httpd/conf.d/
+
+Billing
+=======
+1. virtualenv billing
+2. cd billing; git clone https://github.com/deone/billing.git; cd billing; source bin/activate
+3. pip install Django==1.8.2 MySQL-python==1.2.5 requests
+4. ./manage.py migrate; deactivate
+5. Migrate data if need be.
+6. setenforce 0; cd /; chmod -R +x root
+7. Change ALLOWED_HOSTS to new IP or hostname in billing/billing/settings_live.
+8. cd /root/billing/billing/; source ../bin/activate; ./manage.py collectstatic
+
+Security - /etc/ssh/sshd_config
+===============================
+1. Create new user deone and always log in with this user. Add `AllowUsers deone` to bottom of file.
+2. Disable root login by changing PermitRootLogin from yes to no.
+3. Remember to restart sshd after making changes.
+
+Check these when server reboots
+===============================
+- Application files are executable.
+- Firewall is shutdown.
+- SELinux is disabled. `setenforce 0`
