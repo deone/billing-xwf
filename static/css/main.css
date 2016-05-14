@@ -1,3 +1,11 @@
+@font-face {
+  font-family: DidactGothic;
+  src: url('../fonts/DidactGothic.ttf');
+}
+html, body {
+  font-family: 'DidactGothic', Arial, Helvetica, sans-serif;
+}
+
 /* Header */
 .header {
   border: none;
