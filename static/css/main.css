@@ -27,6 +27,13 @@ body > .container-fluid {
 .header .navbar-brand {
   color: #fff;
 }
+.header .navbar-brand:hover,
+.navbar-default .navbar-nav li a:hover {
+  color: #777;
+}
+.navbar-default .navbar-nav li a {
+  color: #fff;
+}
 
 /* Forms */
 form {
@@ -88,7 +95,7 @@ table form {
 
 /* Dashboard */
 .welcome {
-  background: #fff;
+  background: #e9ece5;
 }
 
 /* View Users */
