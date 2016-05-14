@@ -37,6 +37,7 @@
               <th>Select</th>
               <th>Package</th>
               <th>Price</th>
+              <th>Checkout</th>
             </tr>
           </thead>
           <tbody>
@@ -57,12 +58,16 @@
                 {{ v.price }} GHS
               </td>
               {% endwith %}
+              <td>
+                <button type="submit" class="disabled btn btn-xs btn-primary">MPower</button>
+                <button type="submit" class="disabled btn btn-xs btn-primary">SlydePay</button>
+              </td>
             </tr>
           {% endfor %}
           </tbody>
         </table>
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Pay With Account Balance</button>
       </fieldset>
     </form>
   {% endwith %}
