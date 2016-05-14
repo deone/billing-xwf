@@ -7,7 +7,7 @@
   <form method="post" action="{{ login_url }}" class="login-form">
     <fieldset>
       <div class="page-header">
-        <h1>{% block form_header %}Manage Account{% endblock %}</h1>
+        <h2>{% block form_header %}Manage Account{% endblock %}</h2>
       </div>
       {% csrf_token %}
       {{ form.non_field_errors }}

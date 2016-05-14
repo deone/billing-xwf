@@ -4,6 +4,15 @@
 }
 html, body {
   font-family: 'DidactGothic', Arial, Helvetica, sans-serif;
+  height: 100%;
+}
+body > .container-fluid {
+  height: auto;
+  min-height: 100%;
+  background: #e9ece5;
+}
+.page-header {
+  border-bottom: solid 1px #777;
 }
 
 /* Header */
@@ -13,9 +22,10 @@ html, body {
   margin-bottom: 0;
   box-shadow: 0 0 8px rgba(0,0,0,0.5);
   -webkit-box-shadow: 0 0 8px rgba(0,0,0,0.5);
+  background: #3b3a36;
 }
 .header .navbar-brand {
-  color: #000;
+  color: #fff;
 }
 
 /* Forms */
@@ -99,4 +109,14 @@ table form {
 }
 .indicator-online {
   color: #4DBD33;
+}
+
+/* Footer */
+.footer {
+  background: #b3c2bf;
+  color: #fff;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  padding-left: 20px;
+  position: relative;
 }
