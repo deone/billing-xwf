@@ -85,6 +85,14 @@ form {
 .main {
   margin-top: 2.5em;
 }
+.table-bordered,
+.table-bordered thead tr th,
+.table-bordered tbody tr td {
+  border: solid 1px #aaa;
+}
+.table-bordered thead tr th {
+  border-bottom-width: 2px;
+}
 table form {
   width: 100%;
 }
