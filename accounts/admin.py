@@ -28,6 +28,13 @@ class SubscriberAdminForm(forms.ModelForm):
 
     def save(self, commit=True):
         subscriber = super(SubscriberAdminForm, self).save(commit=False)
+        try:
+            existing_subscriber = Subscriber.objects.get(pk=subscriber.id)
+        except Subscriber.DoesNotExist:
+            is_new = True
+        else:
+            is_new = False
+            
         country_code = Subscriber.COUNTRY_CODES_MAP[subscriber.country]
 
         if not subscriber.phone_number.startswith(country_code):
@@ -35,7 +42,8 @@ class SubscriberAdminForm(forms.ModelForm):
 
         subscriber.save()
 
-        send_verification_mail(subscriber.user)
+        if is_new:
+            send_verification_mail(subscriber.user)
 
         return subscriber
 
