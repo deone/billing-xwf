@@ -17,13 +17,13 @@
     <fieldset>
       <!-- <legend>Topup Account</legend> -->
       <div class="page-header">
-        <h1>Topup Account 
+        <h2>Topup Account 
           <small>
             {% with balance=user.radcheck.rechargeandusage_set.all.0.balance %}
             Balance &mdash; <span class="balance">{% if balance %}{{ user.radcheck.rechargeandusage_set.all.0.balance }}{% else %}0{% endif %} GHS</span>
             {% endwith %}
           </small>
-        </h1>
+        </h2>
       </div>
       {% csrf_token %}
       {{ form.non_field_errors }}

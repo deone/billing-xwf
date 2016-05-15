@@ -20,7 +20,13 @@
       <fieldset>
         <!-- <legend>Select Package</legend> -->
         <div class="page-header">
-          <h1>Select Package <small>Balance &mdash; <span class="balance">{{ balance }} GHS</span></small></h1>
+          <h2>Select Package 
+            <small>
+              {% with balance=user.radcheck.rechargeandusage_set.all.0.balance %}
+              Balance &mdash; <span class="balance">{% if balance %}{{ user.radcheck.rechargeandusage_set.all.0.balance }}{% else %}0{% endif %} GHS</span>
+              {% endwith %}
+            </small>
+          </h2>
         </div>
         {% csrf_token %}
         {{ form.non_field_errors }}
@@ -31,6 +37,7 @@
               <th>Select</th>
               <th>Package</th>
               <th>Price</th>
+              <th>Checkout</th>
             </tr>
           </thead>
           <tbody>
@@ -51,12 +58,16 @@
                 {{ v.price }} GHS
               </td>
               {% endwith %}
+              <td>
+                <button type="submit" class="disabled btn btn-xs btn-primary">MPower</button>
+                <button type="submit" class="disabled btn btn-xs btn-primary">SlydePay</button>
+              </td>
             </tr>
           {% endfor %}
           </tbody>
         </table>
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="submit" class="btn btn-primary">Pay With Account Balance</button>
       </fieldset>
     </form>
   {% endwith %}

@@ -1,3 +1,20 @@
+@font-face {
+  font-family: DidactGothic;
+  src: url('../fonts/DidactGothic.ttf');
+}
+html, body {
+  font-family: 'DidactGothic', Arial, Helvetica, sans-serif;
+  height: 100%;
+}
+body > .container-fluid {
+  height: auto;
+  min-height: 100%;
+  background: #e9ece5;
+}
+.page-header {
+  border-bottom: solid 1px #777;
+}
+
 /* Header */
 .header {
   border: none;
@@ -5,9 +22,17 @@
   margin-bottom: 0;
   box-shadow: 0 0 8px rgba(0,0,0,0.5);
   -webkit-box-shadow: 0 0 8px rgba(0,0,0,0.5);
+  background: #3b3a36;
 }
 .header .navbar-brand {
-  color: #000;
+  color: #fff;
+}
+.header .navbar-brand:hover,
+.navbar-default .navbar-nav li a:hover {
+  color: #777;
+}
+.navbar-default .navbar-nav li a {
+  color: #fff;
 }
 
 /* Forms */
@@ -49,7 +74,7 @@ form {
 }
 .messages {
   list-style: none;
-  background: #e7e7e7;
+  background: #fff;
   font-weight: bold;
 }
 .messages li {
@@ -59,6 +84,14 @@ form {
 /* Main */
 .main {
   margin-top: 2.5em;
+}
+.table-bordered,
+.table-bordered thead tr th,
+.table-bordered tbody tr td {
+  border: solid 1px #aaa;
+}
+.table-bordered thead tr th {
+  border-bottom-width: 2px;
 }
 table form {
   width: 100%;
@@ -70,7 +103,7 @@ table form {
 
 /* Dashboard */
 .welcome {
-  background: #fff;
+  background: #e9ece5;
 }
 
 /* View Users */
@@ -91,4 +124,14 @@ table form {
 }
 .indicator-online {
   color: #4DBD33;
+}
+
+/* Footer */
+.footer {
+  background: #b3c2bf;
+  color: #fff;
+  padding-top: 30px;
+  padding-bottom: 30px;
+  padding-left: 20px;
+  position: relative;
 }

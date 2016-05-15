@@ -1,0 +1,18 @@
+TODO
+====
+- Plan to phase out Subscriber model. Start by storing all extra info like phone_number in Radcheck.
+- Remove the user_list variable from BulkUserUploadForm.save() if we don't need it.
+- Add instructions to captive portal to aid standard and instant users, Windows and Mac users.
+- Add __str__() to RechargeAndUsage model.
+- Fix UI bug on 'View Users' page.
+- Make phone number field on 'Add User' page TextInput.
+- Group admin should get a welcome email similar to group member's. The current one is similar to individual user's.
+- Add hideShowPassword to password fields on 'Add User' page. Is this absolutely necessary.
+- Test decorators when user is not logged in and fix AnonymousUser error.
+- Validate package purchase form. Users get an error when they do not select any package and attempt paying with account balance.
+- Dashboard should display vital information for all user types including user's package.
+- Integrate MPower.
+
+Urgent
+======
+- Email is sent every time a user is saved in admin, but only after editing subscriber info. Email should be sent upon user creation only. Fix this.
