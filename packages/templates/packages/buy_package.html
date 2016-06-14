@@ -18,7 +18,6 @@
   {% with balance=user.radcheck.rechargeandusage_set.all.0.balance %}
     <form action="" method="post" class="buy-package-form">
       <fieldset>
-        <!-- <legend>Select Package</legend> -->
         <div class="page-header">
           <h2>Select Package 
             <small>
@@ -37,7 +36,7 @@
               <th>Select</th>
               <th>Package</th>
               <th>Price</th>
-              <th>Checkout</th>
+              <th>Pay With</th>
             </tr>
           </thead>
           <tbody>
@@ -59,7 +58,7 @@
               </td>
               {% endwith %}
               <td>
-                <button type="submit" class="disabled btn btn-xs btn-primary">MPower</button>
+                <a href="{% url 'pay:index' k %}" class="btn btn-xs btn-primary">MPower</a>
                 <button type="submit" class="disabled btn btn-xs btn-primary">SlydePay</button>
               </td>
             </tr>

@@ -9,10 +9,7 @@ TODO
 - Group admin should get a welcome email similar to group member's. The current one is similar to individual user's.
 - Add hideShowPassword to password fields on 'Add User' page. Is this absolutely necessary.
 - Test decorators when user is not logged in and fix AnonymousUser error.
-- Validate package purchase form. Users get an error when they do not select any package and attempt paying with account balance.
 - Dashboard should display vital information for all user types including user's package.
-- Integrate MPower.
 
-Urgent
-======
-- Email is sent every time a user is saved in admin, but only after editing subscriber info. Email should be sent upon user creation only. Fix this.
+- Validate package purchase form. Users get an error when they do not select any package and attempt paying with account balance.
+- Integrate MPower.

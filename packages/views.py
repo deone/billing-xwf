@@ -59,3 +59,9 @@ def insert_vouchers(request):
         InstantVoucher.objects.create(radcheck=radcheck, package=package)
 
     return JsonResponse({'status': 'ok'})
+
+@must_be_individual_user
+@login_required
+def create_package(request):
+    # create package and redirect to /accounts/buy_package/
+    pass

@@ -11,5 +11,6 @@ urlpatterns = [
     url(r'^search/', include('search.urls', namespace='search')),
     url(r'^accounts/', include('accounts.urls', namespace="accounts")),
     url(r'^packages/', include('packages.urls', namespace="packages")),
+    url(r'^pay/', include('pay.urls', namespace='pay')),
     url(r'^admin/', include(admin.site.urls)),
 ]
