@@ -1,6 +1,10 @@
 from django.http import JsonResponse
+from django.shortcuts import redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 
+from billing.decorators import must_be_individual_user
 from accounts.models import Radcheck
 from accounts.helpers import md5_password
 from .models import Package, InstantVoucher
@@ -62,6 +66,8 @@ def insert_vouchers(request):
 
 @must_be_individual_user
 @login_required
-def create_package(request):
+def create_package(request, pk):
     # create package and redirect to /accounts/buy_package/
-    pass
+    print pk
+    messages.success(request, 'Package purchased successfully.')
+    return redirect('accounts:buy_package')

@@ -12,4 +12,5 @@ TODO
 - Dashboard should display vital information for all user types including user's package.
 
 - Validate package purchase form. Users get an error when they do not select any package and attempt paying with account balance.
+- Display package info on dashboard.
 - Integrate MPower.

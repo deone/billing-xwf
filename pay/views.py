@@ -23,7 +23,7 @@ def index(request, pk):
         'MP-Token': '84ca940ca8ad14a592d4',
     }
 
-    return_url = 'http://%s/accounts/buy_package/' % current_site.domain
+    return_url = 'http://%s/packages/create/%s/' % (current_site.domain, pk)
 
     data = '{"invoice": {"total_amount": "' + str(package.price) + '", "description": "' + settings.PAYMENT_DESCRIPTION + '"}, "store": {"name": "' + settings.STORE_NAME + '"}, "actions": {"return_url": "' + return_url + '"}}'
 
