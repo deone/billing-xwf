@@ -13,6 +13,9 @@ class PackageSubscriptionForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(PackageSubscriptionForm, self).clean()
+        if cleaned_data == {}:
+            raise forms.ValidationError("Please select a package.", code="selection_empty")
+
         package = Package.objects.get(pk=cleaned_data.get('package_choice'))
 
         start, amount, balance = check_balance_and_subscription(self.user.radcheck, package)
