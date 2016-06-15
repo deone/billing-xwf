@@ -5,9 +5,12 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
 from billing.decorators import must_be_individual_user
+
 from accounts.models import Radcheck
 from accounts.helpers import md5_password
+
 from .models import Package, InstantVoucher
+from .helpers import check_subscription, create_package
 
 @ensure_csrf_cookie
 def insert_stub(request):
@@ -66,8 +69,12 @@ def insert_vouchers(request):
 
 @must_be_individual_user
 @login_required
-def create_package(request, pk):
-    # create package and redirect to /accounts/buy_package/
-    print pk
+def create(request, pk):
+    # Store payment in table with token
+    package = Package.objects.get(pk=pk)
+
+    start = check_subscription(radcheck=request.user.radcheck)
+    create_package(request.user.radcheck, package, start)
+
     messages.success(request, 'Package purchased successfully.')
     return redirect('accounts:buy_package')

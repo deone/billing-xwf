@@ -4,6 +4,15 @@ from django.utils import timezone
 from accounts.helpers import get_balance
 from accounts.models import RechargeAndUsage
 
+from .models import PackageSubscription, compute_stop
+
+def create_package(radcheck, package, start):
+    subscription = PackageSubscription.objects.create(radcheck=radcheck, package=package, start=start)
+    subscription.stop = compute_stop(subscription.start, package.package_type)
+    subscription.save()
+    
+    return subscription
+
 def check_subscription(radcheck=None, group=None):
     now = timezone.now()
 

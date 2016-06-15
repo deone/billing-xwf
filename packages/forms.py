@@ -1,6 +1,6 @@
 from django import forms
 
-from .models import Package, PackageSubscription, compute_stop
+from .models import Package
 from .helpers import *
 
 class PackageSubscriptionForm(forms.Form):
@@ -26,10 +26,6 @@ class PackageSubscriptionForm(forms.Form):
         amount = self.cleaned_data['amount']
         start = self.cleaned_data['start']
 
-        charge_subscriber(self.user.radcheck, amount, balance, package)
+        charge_subscriber(self.user.radcheck, amount, balance, package) 
 
-        subscription = PackageSubscription.objects.create(radcheck=self.user.radcheck, package=package, start=start)
-        subscription.stop = compute_stop(subscription.start, package.package_type)
-        subscription.save()
-
-        return subscription
+        return create_package(self.user.radcheck, package, start)
