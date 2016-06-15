@@ -121,8 +121,8 @@ def resend_mail(request):
     send_verification_mail(request.user)
     return redirect('accounts:dashboard')
 
-@must_be_group_admin
 @login_required
+@must_be_group_admin
 def add_user(request):
     context = {}
 
@@ -179,8 +179,8 @@ def edit_user(request, pk=None):
     context.update({'form': form})
     return render(request, 'accounts/edit_user.html', context)
 
-@must_be_group_admin
 @login_required
+@must_be_group_admin
 def upload_user_list(request):
     context = {}
 
@@ -200,8 +200,8 @@ def upload_user_list(request):
     })
     return render(request, 'accounts/upload_user_list.html', context)
 
-@must_be_individual_user
 @login_required
+@must_be_individual_user
 def buy_package(request):
     context = {}
     packages = [(p.id, p) for p in Package.objects.all()]
@@ -224,8 +224,8 @@ def buy_package(request):
 
     return render(request, 'packages/buy_package.html', context)
 
-@must_be_individual_user
 @login_required
+@must_be_individual_user
 def recharge_account(request):
     context = {}
 
@@ -245,8 +245,8 @@ def recharge_account(request):
     context.update({'form': form})
     return render(request, 'accounts/recharge_account.html', context)
 
-@must_be_group_admin
 @login_required
+@must_be_group_admin
 def view_users(request, page=None):
     context = {}
     user_list = User.objects.filter(subscriber__group=request.user.subscriber.group).exclude(pk=request.user.pk)
@@ -275,8 +275,8 @@ def view_users(request, page=None):
 
     return render(request, 'accounts/user_list.html', context)
 
-@must_be_group_admin
 @login_required
+@must_be_group_admin
 def toggle_status(request, pk):
     user = User.objects.get(pk=pk)
     
