@@ -10,11 +10,11 @@ from packages.models import Package
 import json
 import requests
 
-@must_be_individual_user
 @login_required
-def index(request, pk):
+@must_be_individual_user
+def index(request, package_pk):
     current_site = Site.objects.get_current()
-    package = Package.objects.get(pk=pk)
+    package = Package.objects.get(pk=package_pk)
 
     headers = {
         'Content-Type': 'application/json',
@@ -23,7 +23,7 @@ def index(request, pk):
         'MP-Token': '84ca940ca8ad14a592d4',
     }
 
-    return_url = 'http://%s/packages/create/%s/' % (current_site.domain, pk)
+    return_url = 'http://%s%s' % (current_site.domain, reverse('packages:create_subscription', kwargs={'package_pk': package_pk}))
 
     data = '{"invoice": {"total_amount": "' + str(package.price) + '", "description": "' + settings.PAYMENT_DESCRIPTION + '"}, "store": {"name": "' + settings.STORE_NAME + '"}, "actions": {"return_url": "' + return_url + '"}}'
 

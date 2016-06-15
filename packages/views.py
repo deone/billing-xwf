@@ -71,10 +71,10 @@ def insert_vouchers(request):
 
 @login_required
 @must_be_individual_user
-def create(request, pk):
+def create_subscription(request, package_pk):
     token = request.GET.get('token', None)
 
-    package = Package.objects.get(pk=pk)
+    package = Package.objects.get(pk=package_pk)
 
     start = check_subscription(radcheck=request.user.radcheck)
     subscription = save_subscription(request.user.radcheck, package, start)
