@@ -28,4 +28,4 @@ class PackageSubscriptionForm(forms.Form):
 
         charge_subscriber(self.user.radcheck, amount, balance, package) 
 
-        return create_package(self.user.radcheck, package, start)
+        return save_subscription(self.user.radcheck, package, start)

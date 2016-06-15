@@ -6,7 +6,7 @@ from accounts.models import RechargeAndUsage
 
 from .models import PackageSubscription, compute_stop
 
-def create_package(radcheck, package, start):
+def save_subscription(radcheck, package, start):
     subscription = PackageSubscription.objects.create(radcheck=radcheck, package=package, start=start)
     subscription.stop = compute_stop(subscription.start, package.package_type)
     subscription.save()

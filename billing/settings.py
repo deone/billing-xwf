@@ -43,7 +43,6 @@ INSTALLED_APPS = (
     'packages',
     'payments',
     'search',
-    'pay',
 )
 
 MIDDLEWARE_CLASSES = (

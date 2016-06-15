@@ -1,5 +1,5 @@
 from django.contrib import admin
 
-from .models import Payment
+from .models import GroupAccountPayment
 
-admin.site.register(Payment)
+admin.site.register(GroupAccountPayment)
