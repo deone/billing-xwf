@@ -13,8 +13,10 @@ class Package(models.Model):
     price = models.PositiveSmallIntegerField()
 
     def __str__(self):
-        return "%s %s %s" % (settings.SPEED_NAME_MAP[self.speed],
-            self.package_type, settings.VOLUME_NAME_MAP[self.volume])
+        return "%s %s" % (settings.SPEED_NAME_MAP[self.speed],
+            self.package_type,
+            # settings.VOLUME_NAME_MAP[self.volume]
+            )
 
 class InstantVoucher(models.Model):
     radcheck = models.ForeignKey(Radcheck)
@@ -24,6 +26,7 @@ def compute_stop(start, package_type):
     return start + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[package_type])
 
 class AbstractPackageSubscription(models.Model):
+    # Add date of purchase
     package = models.ForeignKey(Package)
     start = models.DateTimeField(default=timezone.now) # do we need this default?
     stop = models.DateTimeField(blank=True, null=True, help_text="The time this subscription expires. You are not allowed to set this.")
