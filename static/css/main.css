@@ -38,6 +38,8 @@ body > .container-fluid {
 /* Forms */
 form {
   width: 35%;
+}
+form, .welcome {
   margin: 0 auto;
 }
 .topup-form {
@@ -104,8 +106,6 @@ table form {
 /* Dashboard */
 .welcome {
   width: 70%;
-  margin: 0 auto;
-  margin-top: 50px;
 }
 
 /* View Users */
