@@ -82,20 +82,16 @@
 {% endblock %}
 
 {% block app_body %}
-<div class="row">
-  <div class="jumbotron welcome">
-    <h1>
-      {% if user.first_name %}
-        Welcome {{ user.first_name }}
-      {% else %}
-        Welcome {{ user.username }}
-      {% endif %}
-    </h1>
-
-    {% if not verified %}
-    <p>Please verify your account. Can't find verification mail?</p>
-    <p><a class="btn btn-primary btn-lg" href="{% url 'resend_mail' %}">Resend</a></p>
-    {% endif %}
+<div class="welcome row">
+  <div class="col-lg-12">
+    <div class="panel panel-default">
+      <div class="panel-body">
+        Welcome {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}. 
+        {% if not verified %}
+          Please verify your account. <a class="btn btn-primary btn-xs pull-right" href="{% url 'resend_mail' %}">Resend verification mail</a>
+        {% endif %}
+      </div>
+    </div>
   </div>
 </div>
 {% endblock %}
