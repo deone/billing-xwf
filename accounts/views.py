@@ -91,10 +91,40 @@ def dashboard(request):
 
     context = {}
 
+    # Get active subscription for both individual and group users.
+    subscription_history = active_subscription = None
+
+    if request.user.subscriber.group == None:
+        # Individual user
+        try:
+            subscription_history = request.user.radcheck.packagesubscription_set.all()
+        except IndexError:
+            pass
+        else:
+            if check_active(subscription_history[0]):
+                active_subscription = subscription_history[0]
+    else:
+        # Group member
+        try:
+            subscription_history = request.user.subscriber.group.grouppackagesubscription_set.all()
+        except IndexError:
+            pass
+        else:
+            if check_active(subscription_history[0]):
+                active_subscription = subscription_history[0]
+
+    context.update({'active_subscription': active_subscription})
+    if request.user.subscriber.group == None or request.user.subscriber.is_group_admin:
+        context.update({'subscription_history': subscription_history})
+
     if request.user.subscriber.email_verified:
         context.update({'verified': True})
 
     return render(request, 'accounts/dashboard.html', context)
+
+def check_active(subscription):
+    if subscription.stop > timezone.now():
+        return True
 
 def verify_email(request, uidb64=None, token=None):
     assert uidb64 is not None and token is not None

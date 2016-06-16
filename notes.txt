@@ -8,10 +8,11 @@ TODO
 - Group admin should get a welcome email similar to group member's. The current one is similar to individual user's.
 
 - Raise PermissionDenied error in decorators instead of 404.
-- Redirect user to home page if they are logged in, even if they explicitly specify login url.
+- Redirect user to home page if they are logged in, even if they explicitly specify login url. Move account creation from / to /accounts/create and move dashboard to /.
 
 - Dashboard should display vital information for all user types including user's package.
 - Update tests.
 - Ideally we should not just hide expired subscriptions. Instead, we should have a filter for this in admin.
 - Add date of purchase to package subscription and display it on dashboard.
-- Don't display active subscription in subscription history on dashboard.
+- Should we display active subscription in subscription history on dashboard?
+- Move buy_package view into packages app.

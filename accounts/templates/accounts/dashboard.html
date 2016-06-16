@@ -81,52 +81,69 @@
   </ul>
 {% endblock %}
 
+
+
+
+
+
+
 {% block app_body %}
 <div class="welcome row">
-  <div class="col-lg-12">
-    <div class="panel panel-default">
-      <div class="panel-body">
-        Welcome {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}. 
-        {% if not verified %}
-          Please verify your account. <a class="btn btn-primary btn-xs pull-right" href="{% url 'resend_mail' %}">Resend verification mail</a>
-        {% endif %}
-      </div>
+  <div class="panel panel-default">
+    <div class="panel-body">
+      Welcome {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}. 
+      {% if not verified %}
+        Please verify your account. <a class="btn btn-primary btn-xs pull-right" href="{% url 'resend_mail' %}">Resend verification mail</a>
+      {% endif %}
     </div>
-
+  </div>
+  
+  {% if active_subscription %}
     <div class="page-header">
       <h2>Active Subscription</h2>
     </div>
+    <table class="table table-condensed table-striped">
+      <thead>
+        <tr>
+          <th>Package</th>
+          <th>Start</th>
+          <th>Stop</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>{{ active_subscription.package }}</td>
+          <td>{{ active_subscription.start }}</td>
+          <td>{{ active_subscription.stop }}</td>
+        </tr>
+      </tbody>
+    </table>
+  {% else %}
+    <p>You do not have an active subscription. {% if user.subscriber.group == None %}<a href="{% url 'accounts:buy_package' %}">Buy Package</a>.{% endif %}</p>
+  {% endif %}
 
+  {% if subscription_history %}
     <div class="page-header">
       <h2>Package Subscription History</h2>
     </div>
-    {% if user.subscriber.group == None %}
-      {% with ps=user.radcheck.packagesubscription_set.all %}
-        {% if ps %}
-          <table class="table table-condensed table-striped">
-            <thead>
-              <tr>
-                <th>Package</th>
-                <th>Start</th>
-                <th>Stop</th>
-              </tr>
-            </thead>
-            <tbody>
-              {% for p in ps %}
-                <tr>
-                  <td>{{ p.package }}</td>
-                  <td>{{ p.start }}</td>
-                  <td>{{ p.stop }}</td>
-                </tr>
-              {% endfor %}
-            </tbody>
-          </table>
-        {% else %}
-          <!-- This should check active subscriptions -->
-          <p>You do not have any subscriptions. <a href="">Buy Package</a>
-        {% endif %}
-      {% endwith %}
-    {% endif %}
-  </div>
+    <table class="table table-condensed table-striped">
+      <thead>
+        <tr>
+          <th>Package</th>
+          <th>Start</th>
+          <th>Stop</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in subscription_history %}
+          <tr>
+            <td>{{ s.package }}</td>
+            <td>{{ s.start }}</td>
+            <td>{{ s.stop }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endif %}
 </div>
 {% endblock %}
