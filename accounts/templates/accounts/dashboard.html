@@ -14,7 +14,7 @@
         {% endif %}
       </a>
     </li>
-    {% if request.user.subscriber.group == None %}
+    {% if user.subscriber.group == None %}
       <!-- <li>
         <a href="#">
           <span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span>
@@ -39,7 +39,7 @@
           {% endif %}
         </a>
       </li>
-    {% elif request.user.subscriber.is_group_admin %}
+    {% elif user.subscriber.is_group_admin %}
       <li {% if urlname == 'users' %}class="active"{% endif %}>
         <a href="{% url 'accounts:users' %}">
           <span class="glyphicon glyphicon-th-list" aria-hidden="true"></span>
@@ -92,6 +92,41 @@
         {% endif %}
       </div>
     </div>
+
+    <div class="page-header">
+      <h2>Active Subscription</h2>
+    </div>
+
+    <div class="page-header">
+      <h2>Package Subscription History</h2>
+    </div>
+    {% if user.subscriber.group == None %}
+      {% with ps=user.radcheck.packagesubscription_set.all %}
+        {% if ps %}
+          <table class="table table-condensed table-striped">
+            <thead>
+              <tr>
+                <th>Package</th>
+                <th>Start</th>
+                <th>Stop</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for p in ps %}
+                <tr>
+                  <td>{{ p.package }}</td>
+                  <td>{{ p.start }}</td>
+                  <td>{{ p.stop }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <!-- This should check active subscriptions -->
+          <p>You do not have any subscriptions. <a href="">Buy Package</a>
+        {% endif %}
+      {% endwith %}
+    {% endif %}
   </div>
 </div>
 {% endblock %}

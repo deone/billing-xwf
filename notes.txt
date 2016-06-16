@@ -12,3 +12,6 @@ TODO
 
 - Dashboard should display vital information for all user types including user's package.
 - Update tests.
+- Ideally we should not just hide expired subscriptions. Instead, we should have a filter for this in admin.
+- Add date of purchase to package subscription and display it on dashboard.
+- Don't display active subscription in subscription history on dashboard.

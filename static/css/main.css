@@ -103,7 +103,9 @@ table form {
 
 /* Dashboard */
 .welcome {
-  margin-top: 15px;
+  width: 70%;
+  margin: 0 auto;
+  margin-top: 50px;
 }
 
 /* View Users */
