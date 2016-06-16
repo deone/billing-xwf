@@ -122,7 +122,7 @@
     <p>You do not have an active subscription. {% if user.subscriber.group == None %}<a href="{% url 'accounts:buy_package' %}">Buy Package</a>.{% endif %}</p>
   {% endif %}
 
-  {% if subscription_history %}
+  {% if subscriptions %}
     <div class="page-header">
       <h2>Package Subscription History</h2>
     </div>
@@ -135,7 +135,7 @@
         </tr>
       </thead>
       <tbody>
-        {% for s in subscription_history %}
+        {% for s in subscriptions %}
           <tr>
             <td>{{ s.package }}</td>
             <td>{{ s.start }}</td>

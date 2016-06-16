@@ -11,6 +11,9 @@ from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 
 from billing.decorators import *
+
+from utils import get_subscriptions
+
 from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, RechargeAccountForm
 from .models import Subscriber
 from .helpers import *
@@ -91,31 +94,19 @@ def dashboard(request):
 
     context = {}
 
-    # Get active subscription for both individual and group users.
-    subscription_history = active_subscription = None
+    # Get subscriptions.
+    subscriptions = get_subscriptions(request.user, request.user.subscriber.group)
 
-    if request.user.subscriber.group == None:
-        # Individual user
-        try:
-            subscription_history = request.user.radcheck.packagesubscription_set.all()
-        except IndexError:
-            pass
-        else:
-            if check_active(subscription_history[0]):
-                active_subscription = subscription_history[0]
-    else:
-        # Group member
-        try:
-            subscription_history = request.user.subscriber.group.grouppackagesubscription_set.all()
-        except IndexError:
-            pass
-        else:
-            if check_active(subscription_history[0]):
-                active_subscription = subscription_history[0]
+    # Get active subscription
+    active_subscription = None
+    if subscriptions[0].stop > timezone.now():
+        active_subscription = subscriptions[0]
 
     context.update({'active_subscription': active_subscription})
+
+    # Group member don't see subscription history
     if request.user.subscriber.group == None or request.user.subscriber.is_group_admin:
-        context.update({'subscription_history': subscription_history})
+        context.update({'subscriptions': subscriptions})
 
     if request.user.subscriber.email_verified:
         context.update({'verified': True})

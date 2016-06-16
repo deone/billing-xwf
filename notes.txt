@@ -16,3 +16,4 @@ TODO
 - Add date of purchase to package subscription and display it on dashboard.
 - Should we display active subscription in subscription history on dashboard?
 - Move buy_package view into packages app.
+- Move helper functions in all apps to a central utils package.
