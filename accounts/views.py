@@ -82,7 +82,7 @@ def create(request):
 
     return render(request, 'accounts/create.html', context)
 
-def index(request):
+""" def index(request):
     # print request.COOKIES
     # We need to implement a logout page here. Users should be able to come here
     # and get a logout link to terminate their browsing session. It would be really
@@ -112,7 +112,7 @@ def index(request):
   
     context = {'form': form}
 
-    return render(request, 'accounts/index.html', context)
+    return render(request, 'accounts/index.html', context) """
 
 @login_required
 def dashboard(request):

@@ -13,7 +13,7 @@ class EmailTests(ViewsTests):
         self.subscriber.date_verified = None
         self.subscriber.save()
 
-        request = self.factory.get(reverse('index'))
+        request = self.factory.get(reverse('accounts:create'))
         context = make_context(self.user)
 
         response = self.c.get(reverse('accounts:verify_email',
@@ -33,7 +33,7 @@ class EmailTests(ViewsTests):
         self.assertEqual(response.status_code, 404)
 
     def test_resend_mail(self):
-        request = self.factory.get(reverse('index'))
+        request = self.factory.get(reverse('accounts:create'))
         request.user = self.user
         response = resend_mail(request)
         self.assertEqual(response.status_code, 302)
