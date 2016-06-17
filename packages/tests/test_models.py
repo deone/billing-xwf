@@ -31,8 +31,8 @@ class PackagesModelsTests(TestCase):
             stop=now + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[self.package.package_type]))
 
     def test_package__str__(self):
-        string = '%s %s %s' % (settings.SPEED_NAME_MAP[self.package.speed],
-            self.package.package_type, settings.VOLUME_NAME_MAP[self.package.volume])
+        string = '%s %s' % (settings.SPEED_NAME_MAP[self.package.speed],
+            self.package.package_type)
         self.assertEqual(self.package.__str__(), string)
 
     def test_gps__str__(self):

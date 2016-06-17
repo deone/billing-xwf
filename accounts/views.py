@@ -99,8 +99,9 @@ def dashboard(request):
 
     # Get active subscription
     active_subscription = None
-    if subscriptions[0].stop > timezone.now():
-        active_subscription = subscriptions[0]
+    if subscriptions:
+        if subscriptions[0].stop > timezone.now():
+            active_subscription = subscriptions[0]
 
     context.update({'active_subscription': active_subscription})
 

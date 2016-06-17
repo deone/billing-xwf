@@ -54,7 +54,7 @@ class PackageSubscriptionAdminTests(AdminTests):
             stop=self.now + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[self.package.package_type]))
 
         self.assertEqual(subscription_radcheck(ps), 'a@a.com')
-        self.assertEqual(subscription_package(ps), '1.5Mbps Deluxe Monthly 3GB')
+        self.assertEqual(subscription_package(ps), '1.5Mbps Deluxe Monthly')
 
     def test_PackageSubscriptionAdminForm_save(self):
         RechargeAndUsage.objects.create(

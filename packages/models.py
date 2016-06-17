@@ -14,9 +14,7 @@ class Package(models.Model):
 
     def __str__(self):
         return "%s %s" % (settings.SPEED_NAME_MAP[self.speed],
-            self.package_type,
-            # settings.VOLUME_NAME_MAP[self.volume]
-            )
+            self.package_type)
 
 class InstantVoucher(models.Model):
     radcheck = models.ForeignKey(Radcheck)
