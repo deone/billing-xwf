@@ -50,6 +50,38 @@ def success(request):
 
     return render(request, 'accounts/success.html', context)
 
+def create(request):
+    # print request.COOKIES
+    # We need to implement a logout page here. Users should be able to come here
+    # and get a logout link to terminate their browsing session. It would be really
+    # helpful if we set 'logout_url' as a cookie after user is authenticated in captive()
+    # and delete this cookie when the user clicks the link to log out.
+    if request.method == 'POST':
+        form = CreateUserForm(request.POST, user=AnonymousUser())
+        if form.is_valid():
+            user = form.save()
+
+            # Send verification mail here - we might
+            # need to wrap this in a try - except block
+            send_verification_mail(user)
+
+            # We need to call login here so that our
+            # dashboard can have user's details.
+            auth = auth_and_login(request, user.username,
+                form.cleaned_data['password'])
+            if auth:
+                return redirect('accounts:dashboard')
+    else:
+        logout_url = request.session.get('logout_url', None)
+        if logout_url is not None:
+            return render(request, 'accounts/captive_logout.html', {'logout_url': logout_url})
+        else:
+            form = CreateUserForm(user=request.user)
+  
+    context = {'form': form}
+
+    return render(request, 'accounts/create.html', context)
+
 def index(request):
     # print request.COOKIES
     # We need to implement a logout page here. Users should be able to come here

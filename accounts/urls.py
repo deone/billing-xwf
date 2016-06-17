@@ -27,6 +27,7 @@ urlpatterns = [
     url(r'^toggle_status/(?P<pk>\d+)/$', views.toggle_status, name='toggle_status'),
     url(r'^edit_user/(?P<pk>\d+)/$', views.edit_user, name='edit_user'),
     url(r'^dashboard/$', views.dashboard, name='dashboard'),
+    url(r'^create/$', views.create, name='create'),
     url(r'^upload_user_list/$', views.upload_user_list, name='upload_user_list'),
     url(r'^recharge/$', views.recharge_account, name='recharge_account'),
     url(r'^buy_package/$', views.buy_package, name='buy_package'),
