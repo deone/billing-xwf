@@ -3,6 +3,8 @@ from django.shortcuts import redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.conf import settings
+from django.shortcuts import render, redirect
 
 from billing.decorators import must_be_individual_user
 
@@ -11,6 +13,7 @@ from accounts.helpers import md5_password
 
 from payments.models import IndividualPayment
 
+from .forms import PackageSubscriptionForm
 from .models import Package, InstantVoucher
 from .helpers import check_subscription, save_subscription
 
@@ -83,4 +86,28 @@ def create_subscription(request, package_pk):
         IndividualPayment.objects.create(subscription=subscription, token=token)
 
     messages.success(request, 'Package purchased successfully.')
-    return redirect('accounts:buy_package')
+    return redirect('packages:buy')
+
+@login_required
+@must_be_individual_user
+def buy_package(request):
+    context = {}
+    packages = [(p.id, p) for p in Package.objects.all()]
+    if request.method == "POST":
+        form = PackageSubscriptionForm(request.POST, user=request.user, packages=packages)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Package purchased successfully.')
+            return redirect('packages:buy')
+    else:
+        form = PackageSubscriptionForm(user=request.user, packages=packages)
+
+    context.update(
+        {
+          'form': form,
+          'speed_map': settings.SPEED_NAME_MAP,
+          # 'volume_map': settings.VOLUME_NAME_MAP
+          }
+        )
+
+    return render(request, 'packages/buy_package.html', context)

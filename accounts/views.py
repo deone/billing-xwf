@@ -18,9 +18,6 @@ from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, 
 from .models import Subscriber
 from .helpers import *
 
-from packages.forms import PackageSubscriptionForm
-from packages.models import Package
-
 def captive(request):
     context = {'form': LoginForm()}
     request.session['logout_url'] = None
@@ -221,30 +218,6 @@ def upload_user_list(request):
       'file_length': settings.MAX_FILE_LENGTH
     })
     return render(request, 'accounts/upload_user_list.html', context)
-
-@login_required
-@must_be_individual_user
-def buy_package(request):
-    context = {}
-    packages = [(p.id, p) for p in Package.objects.all()]
-    if request.method == "POST":
-        form = PackageSubscriptionForm(request.POST, user=request.user, packages=packages)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Package purchased successfully.')
-            return redirect('accounts:buy_package')
-    else:
-        form = PackageSubscriptionForm(user=request.user, packages=packages)
-
-    context.update(
-        {
-          'form': form,
-          'speed_map': settings.SPEED_NAME_MAP,
-          # 'volume_map': settings.VOLUME_NAME_MAP
-          }
-        )
-
-    return render(request, 'packages/buy_package.html', context)
 
 @login_required
 @must_be_individual_user

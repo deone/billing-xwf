@@ -5,10 +5,10 @@
 {% block title %}Recharge Account{% endblock %}
 
 {% block links %}
-<li><a href="{% url 'accounts:dashboard' %}">Dashboard</a></li>
+<li><a href="{% url 'index' %}">Dashboard</a></li>
 <li><a href="#">Payment Options</a></li>
 <li class="active"><a href="{% url 'accounts:recharge_account' %}">Topup Account <span class="sr-only">(current)</span></a></li>
-<li><a href="{% url 'accounts:buy_package' %}">Buy Package</a></li>
+<li><a href="{% url 'packages:buy' %}">Buy Package</a></li>
 {% endblock %}
 
 {% block app_body %}

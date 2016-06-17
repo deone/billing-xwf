@@ -30,11 +30,11 @@
           {% endif %}
         </a>
       </li>
-      <li {% if urlname == 'buy_package' %}class="active"{% endif %}>
-        <a href="{% url 'accounts:buy_package' %}">
+      <li {% if urlname == 'buy' %}class="active"{% endif %}>
+        <a href="{% url 'packages:buy' %}">
           <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
           Buy Package 
-          {% if urlname == 'buy_package' %}
+          {% if urlname == 'buy' %}
             <span class="sr-only">(current)</span></a>
           {% endif %}
         </a>
@@ -120,7 +120,7 @@
         </tbody>
       </table>
     {% else %}
-      <p>You do not have an active subscription. {% if user.subscriber.group == None %}<a href="{% url 'accounts:buy_package' %}">Buy Package</a>.{% endif %}</p>
+      <p>You do not have an active subscription. {% if user.subscriber.group == None %}<a href="{% url 'packages:buy' %}">Buy Package</a>.{% endif %}</p>
     {% endif %}
 
     {% if subscriptions %}

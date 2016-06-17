@@ -2,18 +2,17 @@ from django.core.urlresolvers import reverse
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.messages import get_messages
 
-from ...models import RechargeAndUsage
+from accounts.models import RechargeAndUsage
+from accounts.tests.views import ViewsTests
+
 from ...views import buy_package
-
-from packages.models import Package
-
-from . import ViewsTests
+from ...models import Package
 
 class BuyPackageTests(ViewsTests):
 
     def test_buy_package_get(self):
         self.c.post(reverse('accounts:login'), {'username': 'z@z.com', 'password': '12345'})
-        response = self.c.get(reverse('accounts:buy_package'))
+        response = self.c.get(reverse('packages:buy'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue('form' in response.context)
         self.assertTemplateUsed(response, 'packages/buy_package.html')
@@ -27,7 +26,7 @@ class BuyPackageTests(ViewsTests):
             activity_id=20
         )
         package = Package.objects.create(package_type='Daily', volume='3', speed='1.5', price=4)
-        request = self.factory.post(reverse('accounts:buy_package'),
+        request = self.factory.post(reverse('packages:buy'),
             data={
               'package_choice': str(package.pk)
               })
@@ -47,5 +46,5 @@ class BuyPackageTests(ViewsTests):
             lst.append(message)
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.get('location'), reverse('accounts:buy_package'))
+        self.assertEqual(response.get('location'), reverse('packages:buy'))
         self.assertEqual('Package purchased successfully.', lst[0].__str__())
