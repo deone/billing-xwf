@@ -26,7 +26,6 @@ urlpatterns = [
     url(r'^verify/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', views.verify_email, {}, name='verify_email'),
     url(r'^toggle_status/(?P<pk>\d+)/$', views.toggle_status, name='toggle_status'),
     url(r'^edit_user/(?P<pk>\d+)/$', views.edit_user, name='edit_user'),
-    url(r'^dashboard/$', views.dashboard, name='dashboard'),
     url(r'^create/$', views.create, name='create'),
     url(r'^upload_user_list/$', views.upload_user_list, name='upload_user_list'),
     url(r'^recharge/$', views.recharge_account, name='recharge_account'),

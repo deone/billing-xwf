@@ -4,7 +4,7 @@ from django.contrib import admin
 from accounts import views
 
 urlpatterns = [
-    # url(r'^$', views.index, name='index'),
+    url(r'^$', views.index, name='index'),
     url(r'^captive/$', views.captive, name='captive'),
     url(r'^success/$', views.success, name='success'),
     url(r'^resend_mail/$', views.resend_mail, name='resend_mail'),

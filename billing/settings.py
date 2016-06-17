@@ -119,7 +119,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static_live")
 
 LOGIN_URL = 'accounts:login'
 
-LOGIN_REDIRECT_URL = 'accounts:dashboard'
+LOGIN_REDIRECT_URL = 'index'
 
 DEFAULT_FROM_EMAIL = 'test@example.com'
 

@@ -5,7 +5,7 @@ from ...views import create
 from ...forms import CreateUserForm
 from . import ViewsTests
 
-class IndexTests(ViewsTests):
+class CreateTests(ViewsTests):
 
     def test_create_get(self):
         response = self.c.get(reverse('accounts:create'))
@@ -14,7 +14,7 @@ class IndexTests(ViewsTests):
         self.assertTemplateUsed(response, 'accounts/create.html')
         self.assertTrue(isinstance(response.context['form'], CreateUserForm))
 
-    def test_index_post(self):
+    def test_create_post(self):
         request = self.factory.post(reverse('accounts:create'),
             data={
               'username': 'b@b.com',
@@ -32,4 +32,4 @@ class IndexTests(ViewsTests):
         response = create(request)
 
         self.assertTrue(response.status_code, 302)
-        self.assertEqual(response.get('location'), reverse('accounts:dashboard'))
+        self.assertEqual(response.get('location'), reverse('index'))

@@ -8,7 +8,6 @@ TODO
 - Group admin should get a welcome email similar to group member's. The current one is similar to individual user's.
 
 - Raise PermissionDenied error in decorators instead of 404.
-- Redirect user to home page if they are logged in, even if they explicitly specify login url. Move account creation from / to /accounts/create and move dashboard to /.
 
 - Dashboard should display vital information for all user types including user's package.
 - Update tests.

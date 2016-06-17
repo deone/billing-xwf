@@ -22,7 +22,7 @@ class EmailTests(ViewsTests):
         subscriber = Subscriber.objects.get(pk=self.subscriber.pk)
 
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, reverse('accounts:dashboard'),
+        self.assertRedirects(response, reverse('index'),
             status_code=302, target_status_code=302)
         self.assertEqual(subscriber.email_verified, True)
         self.assertNotEqual(subscriber.date_verified, None)
