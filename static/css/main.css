@@ -46,6 +46,12 @@ label {
 form, .welcome {
   margin: 0 auto;
 }
+.user-upload-form {
+  width: 50%;
+}
+.user-upload-form .file-upload {
+  padding-top: 5px;
+}
 .topup-form {
   width: 37%;
 }
@@ -109,7 +115,7 @@ table form {
 
 /* Dashboard */
 .welcome {
-  width: 70%;
+  width: 67%;
 }
 
 /* View Users */
