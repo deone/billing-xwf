@@ -132,6 +132,11 @@ table form {
   color: #4DBD33;
 }
 
+/* Buttons */
+.upload-btn {
+  margin-right: 1em;
+}
+
 /* Footer */
 .footer {
   background: #b3c2bf;
