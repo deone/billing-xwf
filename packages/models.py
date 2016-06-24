@@ -13,8 +13,8 @@ class Package(models.Model):
     price = models.PositiveSmallIntegerField()
 
     def __str__(self):
-        return "%s %s" % (settings.SPEED_NAME_MAP[self.speed],
-            self.package_type)
+        return "%s %s %s%s" % (settings.SPEED_NAME_MAP[self.speed],
+            self.package_type, self.volume, 'GB')
 
 class InstantVoucher(models.Model):
     radcheck = models.ForeignKey(Radcheck)

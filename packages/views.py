@@ -106,7 +106,7 @@ def buy_package(request):
         {
           'form': form,
           'speed_map': settings.SPEED_NAME_MAP,
-          # 'volume_map': settings.VOLUME_NAME_MAP
+          'volume_map': settings.VOLUME_NAME_MAP
           }
         )
 

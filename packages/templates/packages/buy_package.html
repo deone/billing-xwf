@@ -47,11 +47,9 @@
                   <input id="id_package_choice_{{ forloop.counter }}" name="package_choice" type="radio" value="{{ k }}">
                 </label>
               </td>
-              {# {% with speed=v.speed vol=v.volume %} #}
-              {% with speed=v.speed %}
+              {% with speed=v.speed vol=v.volume %}
               <td>
-                {# {{ speed_map|get_item:speed }} {{ v.package_type }} {{ volume_map|get_item:vol }} #}
-                {{ speed_map|get_item:speed }} {{ v.package_type }}
+                {{ speed_map|get_item:speed }} {{ v.package_type }} {{ volume_map|get_item:vol }}
               </td>
               <td>
                 {{ v.price }} GHS

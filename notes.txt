@@ -11,8 +11,15 @@ TODO
 
 - Dashboard should display vital information for all user types including user's package.
 - Update tests.
-- Ideally we should not just hide expired subscriptions. Instead, we should have a filter for this in admin.
+- Ideally we should not just hide expired subscriptions in admin. Create a filter for this.
 - Add date of purchase to package subscription and display it on dashboard.
 - Should we display active subscription in subscription history on dashboard?
 - Move helper functions in all apps to a central utils package.
-- Implement volume billing with sqlcounter Freeradius module.
+- When individual users purchase packages upfront, dashboard displays last subscription purchased as active. Ideally, we should find the subscription that expires first after timezone.now() among all the upfront subscriptions. And we should have a header for unused subscriptions or pending subscriptions, and put expired subscriptions in 'Package Subscription History' and future subscriptions in 'Unused Subscriptions'.
+
+Volume Billing
+==============
+Implement volume billing with sqlcounter Freeradius module.
+Set Acct-Input-Octets and Acct-Output-Octets to 0;
+- when individual user buys a package.
+- when a group package subscription is created.
