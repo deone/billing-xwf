@@ -23,3 +23,14 @@ Implement volume billing with sqlcounter Freeradius module.
 Set Acct-Input-Octets and Acct-Output-Octets to 0;
 - when individual user buys a package.
 - when a group package subscription is created.
+
+
+Better user experience
+======================
+- Disable captive portal on Mac computers for all networks.
+- Don't open the account creation page in a new tab.
+- Have them create account in the same tab and give them a tour of the billing system upon first login. Also mention that they can always come back to the dashboard by clicking 'Manage Account' on the captive portal.
+- Give them instructions on how to purchase their first package. List all payment methods MPower supports.
+- After they purchase their first package, display a link that says continue here. This link should attempt to open a site (e.g. google.com) in a new tab. They would see the captive portal and log in to continue surfing the net.
+
+- Ensure footer stays at bottom of page on all systems.

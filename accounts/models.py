@@ -98,7 +98,7 @@ class Radusergroup(models.Model):
 
 class Radcheck(models.Model):
     user = models.OneToOneField(User, null=True)
-    username = models.CharField(max_length=64, unique=True)
+    username = models.CharField(max_length=100)
     attribute = models.CharField(max_length=64)
     op = models.CharField(max_length=2)
     value = models.CharField(max_length=253)
