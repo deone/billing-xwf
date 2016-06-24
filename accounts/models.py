@@ -97,7 +97,7 @@ class Radusergroup(models.Model):
         db_table = 'radusergroup'
 
 class Radcheck(models.Model):
-    user = models.OneToOneField(User, null=True)
+    user = models.ForeignKey(User, null=True)
     username = models.CharField(max_length=100)
     attribute = models.CharField(max_length=64)
     op = models.CharField(max_length=2)
