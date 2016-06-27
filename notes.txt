@@ -16,6 +16,7 @@ TODO
 - Should we display active subscription in subscription history on dashboard?
 - Move helper functions in all apps to a central utils package.
 - When individual users purchase packages upfront, dashboard displays last subscription purchased as active. Ideally, we should find the subscription that expires first after timezone.now() among all the upfront subscriptions. And we should have a header for unused subscriptions or pending subscriptions, and put expired subscriptions in 'Package Subscription History' and future subscriptions in 'Unused Subscriptions'.
+- Should we use the user object in PackageSubscription instead of radcheck? Since user already has the radcheck object.
 
 Volume Billing
 ==============
@@ -23,6 +24,9 @@ Implement volume billing with sqlcounter Freeradius module.
 Set Acct-Input-Octets and Acct-Output-Octets to 0;
 - when individual user buys a package.
 - when a group package subscription is created.
+
+Increment data usage in Radcheck on radius stop.
+Ensure data usage is set to zero whenever a package subscription or group package subscription is created.
 
 
 Better user experience

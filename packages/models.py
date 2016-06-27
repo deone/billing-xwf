@@ -5,6 +5,7 @@ from django.utils import timezone
 from datetime import timedelta
 
 from accounts.models import (Subscriber, GroupAccount, Radcheck)
+from utils import check_data_balance
 
 class Package(models.Model):
     package_type = models.CharField(max_length=7, choices=settings.PACKAGE_TYPES)
@@ -33,7 +34,11 @@ class AbstractPackageSubscription(models.Model):
         abstract = True
 
     def is_valid(self, now=timezone.now()):
-        return self.stop > now
+        stop_date_in_future = self.stop > now
+        has_data_left = check_data_balance(self)
+
+        if stop_date_in_future and has_data_left:
+            return True
 
 class PackageSubscription(AbstractPackageSubscription):
     radcheck = models.ForeignKey(Radcheck)
