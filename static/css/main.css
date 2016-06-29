@@ -87,7 +87,6 @@ form, .welcome {
 .messages {
   list-style: none;
   background: #fff;
-  font-weight: bold;
 }
 .messages li {
   padding: .5em 0 .5em .5em;
