@@ -184,6 +184,7 @@ SPEED_CHOICES = (
 )
 
 # Volume variants
+TEST = '0.0005'
 ONE = '1'
 THREE = '3'
 FIVE = '5'
@@ -197,6 +198,7 @@ UNLTD = 'Unlimited'
 
 # Volume names
 VOLUME_NAME_MAP = {
+    TEST: '0.0005GB',
     ONE: '1GB',
     THREE: '3GB',
     FIVE: '5GB',
@@ -210,6 +212,7 @@ VOLUME_NAME_MAP = {
 }
 
 VOLUME_CHOICES = (
+    (TEST, VOLUME_NAME_MAP[TEST]),
     (ONE, VOLUME_NAME_MAP[ONE]),
     (THREE, VOLUME_NAME_MAP[THREE]),
     (FIVE, VOLUME_NAME_MAP[FIVE]),
