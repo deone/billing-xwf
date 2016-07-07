@@ -90,14 +90,13 @@
 {% block app_body %}
 <div class="row main">
   <div class="welcome">
-    <div class="panel panel-default">
-      <div class="panel-body">
-        Welcome {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}.
-        {% if not verified %}
-          Please verify your account. <a class="btn btn-primary btn-xs pull-right" href="{% url 'resend_mail' %}">Resend verification mail</a>
-        {% endif %}
+    {% if not verified %}
+      <div class="panel panel-default">
+        <div class="panel-body">
+          Welcome {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}. Please verify your account. <a class="btn btn-primary btn-xs pull-right" href="{% url 'resend_mail' %}">Resend verification mail</a>
+        </div>
       </div>
-    </div>
+    {% endif %}
 
     {% if active_subscription %}
       <div class="page-header">
