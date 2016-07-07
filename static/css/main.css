@@ -35,6 +35,9 @@ body > .container-fluid {
 .navbar-default .navbar-nav li a {
   color: #fff;
 }
+.dropdown-menu > li > a {
+  color: #777 !important;
+}
 
 /* Forms */
 form {
