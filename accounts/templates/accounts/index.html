@@ -103,18 +103,13 @@
         <h2>Active Subscription</h2>
       </div>
       <table class="table table-condensed table-striped">
-        <thead>
-          <tr>
-            <th>Package</th>
-            <th>Start</th>
-            <th>Stop</th>
-          </tr>
-        </thead>
+        {% include 'accounts/_table_header.html' %}
         <tbody>
           <tr>
             <td>{{ active_subscription.package }}</td>
             <td>{{ active_subscription.start }}</td>
             <td>{{ active_subscription.stop }}</td>
+            <td>{{ active_subscription.purchase_date }}</td>
           </tr>
         </tbody>
       </table>
@@ -127,19 +122,14 @@
         <h2>Unused Subscriptions</h2>
       </div>
       <table class="table table-condensed table-striped">
-        <thead>
-          <tr>
-            <th>Package</th>
-            <th>Start</th>
-            <th>Stop</th>
-          </tr>
-        </thead>
+        {% include 'accounts/_table_header.html' %}
         <tbody>
           {% for s in unused_subscriptions %}
             <tr>
               <td>{{ s.package }}</td>
               <td>{{ s.start }}</td>
               <td>{{ s.stop }}</td>
+              <td>{{ s.purchase_date }}</td>
             </tr>
           {% endfor %}
         </tbody>
@@ -151,19 +141,14 @@
         <h2>Package Subscription History</h2>
       </div>
       <table class="table table-condensed table-striped">
-        <thead>
-          <tr>
-            <th>Package</th>
-            <th>Start</th>
-            <th>Stop</th>
-          </tr>
-        </thead>
+        {% include 'accounts/_table_header.html' %}
         <tbody>
           {% for s in expired_subscriptions %}
             <tr>
               <td>{{ s.package }}</td>
               <td>{{ s.start }}</td>
               <td>{{ s.stop }}</td>
+              <td>{{ s.purchase_date }}</td>
             </tr>
           {% endfor %}
         </tbody>

@@ -20,7 +20,7 @@ Urgent
 - We can display daily data usage info on dashboard. Ask whether this should be done or left as a reporting feature.
 - Add some colour and info to 'logout' screen.
 
-- Replace commas on vouchers with tabs.
+- Replace commas on vouchers with tabs. Add column headers.
 - Do up VMS and Vendor UI. Use different colors and fonts.
 
 
