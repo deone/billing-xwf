@@ -68,7 +68,8 @@ class PackageSubscriptionAdminTests(AdminTests):
             'stop': None,
             'start': self.now,
             'radcheck': self.radcheck.pk,
-            'package': self.package.pk
+            'package': self.package.pk,
+            'purchase_date': self.now
         })
         form.is_valid()
         ps = form.save()
@@ -83,7 +84,8 @@ class GroupPackageSubscriptionAdminTests(AdminTests):
             'stop': None,
             'start': self.now,
             'group': ga.pk,
-            'package': self.package.pk
+            'package': self.package.pk,
+            'purchase_date': self.now
         })
         gps = form.save()
         self.assertEqual((gps.stop - gps.start).days,
