@@ -13,8 +13,6 @@ TODO
 
 Urgent
 ======
-- We should not just hide expired subscriptions in admin. Create a filter for this.
-- Add date of purchase to package subscription and display it on dashboard.
 - Set data usage to zero whenever a package subscription or group package subscription is created. Radacct contains usage info for reporting purposes.
 - Check the logout link retrieval feature. Users should be able to get the Logout link when they visit the home page.
 - We can display daily data usage info on dashboard. Ask whether this should be done or left as a reporting feature.

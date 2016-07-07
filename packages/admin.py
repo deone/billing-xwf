@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib import admin
 from django.utils import timezone
+from django.utils.translation import ugettext_lazy as _
 
 from .models import *
 from .helpers import *
@@ -73,23 +74,35 @@ def subscription_radcheck(obj):
 subscription_radcheck.short_description = 'Subscriber'
 subscription_radcheck.admin_order_field = 'radcheck__username'
 
+class StopBooleanListFilter(admin.SimpleListFilter):
+
+    title = _('expired?')
+    parameter_name = 'is_expired'
+
+    def lookups(self, request, model_admin):
+        return (
+                  ('0', _('No')),
+                  ('1', _('Yes')),
+              )
+
+    def queryset(self, request, queryset):
+        if self.value() == '1':
+            return queryset.filter(stop__lt=timezone.now())
+
+        if self.value() == '0':
+            return queryset.filter(stop__gt=timezone.now())
+
 class PackageSubscriptionAdmin(admin.ModelAdmin):
     form = PackageSubscriptionAdminForm
     list_display = (subscription_package, 'start', 'stop', subscription_radcheck)
+    list_filter = (StopBooleanListFilter,)
     search_fields = ('package__package_type', 'radcheck__username')
-
-    def get_queryset(self, request):
-        qs = super(PackageSubscriptionAdmin, self).get_queryset(request)
-        return qs.exclude(stop__lt=timezone.now())
 
 class GroupPackageSubscriptionAdmin(admin.ModelAdmin):
     form = GroupPackageSubscriptionAdminForm
     list_display = (subscription_package, 'start', 'stop', subscription_group)
+    list_filter = (StopBooleanListFilter,)
     search_fields = ('package__package_type', 'group__name')
-
-    def get_queryset(self, request):
-        qs = super(GroupPackageSubscriptionAdmin, self).get_queryset(request)
-        return qs.exclude(stop__lt=timezone.now())
 
 class PackageAdmin(admin.ModelAdmin):
     list_display = ('package_type', 'volume', 'speed', 'price')
