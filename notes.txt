@@ -6,27 +6,22 @@ TODO
 - Add __str__() to RechargeAndUsage model.
 - Fix UI bug on 'View Users' page.
 - Group admin should get a welcome email similar to group member's. The current one is similar to individual user's.
-
 - Raise PermissionDenied error in decorators instead of 404.
-
 - Dashboard should display vital information for all user types including user's package.
 - Update tests.
-- Ideally we should not just hide expired subscriptions in admin. Create a filter for this.
-- Add date of purchase to package subscription and display it on dashboard.
-- Should we display active subscription in subscription history on dashboard?
 - Move helper functions in all apps to a central utils package.
-- When individual users purchase packages upfront, dashboard displays last subscription purchased as active. Ideally, we should find the subscription that expires first after timezone.now() among all the upfront subscriptions. And we should have a header for unused subscriptions or pending subscriptions, and put expired subscriptions in 'Package Subscription History' and future subscriptions in 'Unused Subscriptions'.
-- Should we use the user object in PackageSubscription instead of radcheck? Since user already has the radcheck object.
 
-Volume Billing
-==============
-Implement volume billing with sqlcounter Freeradius module.
-Set Acct-Input-Octets and Acct-Output-Octets to 0;
-- when individual user buys a package.
-- when a group package subscription is created.
+Urgent
+======
+- We should not just hide expired subscriptions in admin. Create a filter for this.
+- Add date of purchase to package subscription and display it on dashboard.
+- Set data usage to zero whenever a package subscription or group package subscription is created. Radacct contains usage info for reporting purposes.
+- Check the logout link retrieval feature. Users should be able to get the Logout link when they visit the home page.
+- We can display daily data usage info on dashboard. Ask whether this should be done or left as a reporting feature.
+- Add some colour and info to 'logout' screen.
 
-Increment data usage in Radcheck on radius stop.
-Ensure data usage is set to zero whenever a package subscription or group package subscription is created.
+- Replace commas on vouchers with tabs.
+- Do up VMS and Vendor UI. Use different colors and fonts.
 
 
 Better user experience

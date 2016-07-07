@@ -123,7 +123,31 @@
       <p>You do not have an active subscription. {% if user.subscriber.group == None %}<a href="{% url 'packages:buy' %}">Buy Package</a>.{% endif %}</p>
     {% endif %}
 
-    {% if subscriptions %}
+    {% if unused_subscriptions %}
+      <div class="page-header">
+        <h2>Unused Subscriptions</h2>
+      </div>
+      <table class="table table-condensed table-striped">
+        <thead>
+          <tr>
+            <th>Package</th>
+            <th>Start</th>
+            <th>Stop</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for s in unused_subscriptions %}
+            <tr>
+              <td>{{ s.package }}</td>
+              <td>{{ s.start }}</td>
+              <td>{{ s.stop }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endif %}
+
+    {% if expired_subscriptions %}
       <div class="page-header">
         <h2>Package Subscription History</h2>
       </div>
@@ -136,7 +160,7 @@
           </tr>
         </thead>
         <tbody>
-          {% for s in subscriptions %}
+          {% for s in expired_subscriptions %}
             <tr>
               <td>{{ s.package }}</td>
               <td>{{ s.start }}</td>

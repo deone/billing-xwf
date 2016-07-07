@@ -92,28 +92,33 @@ def index(request):
     context = {}
 
     # Get subscriptions.
-    subscriptions = get_subscriptions(request.user, request.user.subscriber.group)
+    subscriptions = list(get_subscriptions(request.user, request.user.subscriber.group))
+
+    # Get subscriptions with stop time < now.
+    expired_subscriptions = [s for s in subscriptions if s.stop < timezone.now()]
+
+    # Remove expired subscriptions from subscriptions list so we have active and unused subscriptions
+    for es in expired_subscriptions:
+        subscriptions.remove(es)
 
     # Get active subscription
     active_subscription = None
     if subscriptions:
-        if subscriptions[0].stop > timezone.now():
-            active_subscription = subscriptions[0]
+        active_subscription = subscriptions.pop()
 
     context.update({'active_subscription': active_subscription})
 
     # Group member don't see subscription history
     if request.user.subscriber.group == None or request.user.subscriber.is_group_admin:
-        context.update({'subscriptions': subscriptions})
+        context.update({
+          'expired_subscriptions': expired_subscriptions,
+          'unused_subscriptions': subscriptions
+          })
 
     if request.user.subscriber.email_verified:
         context.update({'verified': True})
 
     return render(request, 'accounts/index.html', context)
-
-def check_active(subscription):
-    if subscription.stop > timezone.now():
-        return True
 
 def verify_email(request, uidb64=None, token=None):
     assert uidb64 is not None and token is not None
