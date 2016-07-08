@@ -103,7 +103,7 @@ class Radcheck(models.Model):
     op = models.CharField(max_length=2)
     value = models.CharField(max_length=253)
     is_logged_in = models.BooleanField(default=False)
-    data_usage = models.DecimalField(default=0.0, max_digits=5, decimal_places=4)
+    data_balance = models.DecimalField(default=0.0, max_digits=5, decimal_places=4)
 
     class Meta:
         db_table = 'radcheck'
