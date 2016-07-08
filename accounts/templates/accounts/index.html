@@ -102,70 +102,77 @@
 {% block app_body %}
 <div class="row main">
   <div class="welcome">
-    {% if not verified %}
-      <div class="panel panel-default">
-        <div class="panel-body">
-          Welcome {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}. Please verify your account. <a class="btn btn-primary btn-xs pull-right" href="{% url 'resend_mail' %}">Resend verification mail</a>
+    <div class="col-lg-9">
+      {% if not verified %}
+        <div class="panel panel-default">
+          <div class="panel-body">
+            Welcome {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}. Please verify your account. <a class="btn btn-primary btn-xs pull-right" href="{% url 'resend_mail' %}">Resend verification mail</a>
+          </div>
         </div>
-      </div>
-    {% endif %}
+      {% endif %}
 
-    {% if active_subscription %}
-      <div class="page-header">
-        <h2>Active Subscription</h2>
-      </div>
-      <table class="table table-condensed table-striped">
-        {% include 'accounts/_table_header.html' %}
-        <tbody>
-          <tr>
-            <td>{{ active_subscription.package }}</td>
-            <td>{{ active_subscription.start }}</td>
-            <td>{{ active_subscription.stop }}</td>
-            <td>{{ active_subscription.purchase_date }}</td>
-          </tr>
-        </tbody>
-      </table>
-    {% else %}
-      <p>You do not have an active subscription. {% if user.subscriber.group == None %}<a href="{% url 'packages:buy' %}">Buy Package</a>.{% endif %}</p>
-    {% endif %}
-
-    {% if unused_subscriptions %}
-      <div class="page-header">
-        <h2>Unused Subscriptions</h2>
-      </div>
-      <table class="table table-condensed table-striped">
-        {% include 'accounts/_table_header.html' %}
-        <tbody>
-          {% for s in unused_subscriptions %}
+      {% if active_subscription %}
+        <div class="page-header">
+          <h2>Active Subscription</h2>
+        </div>
+        <table class="table table-condensed table-striped">
+          {% include 'accounts/_table_header.html' %}
+          <tbody>
             <tr>
-              <td>{{ s.package }}</td>
-              <td>{{ s.start }}</td>
-              <td>{{ s.stop }}</td>
-              <td>{{ s.purchase_date }}</td>
+              <td>{{ active_subscription.package }}</td>
+              <td>{{ active_subscription.purchase_date }}</td>
+              <td>{{ active_subscription.start }}</td>
+              <td>{{ active_subscription.stop }}</td>
             </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% endif %}
+          </tbody>
+        </table>
+      {% else %}
+        <p>You do not have an active subscription. {% if user.subscriber.group == None %}<a href="{% url 'packages:buy' %}">Buy Package</a>.{% endif %}</p>
+      {% endif %}
 
-    {% if expired_subscriptions %}
-      <div class="page-header">
-        <h2>Package Subscription History</h2>
+      {% if unused_subscriptions %}
+        <div class="page-header">
+          <h2>Unused Subscriptions</h2>
+        </div>
+        <table class="table table-condensed table-striped">
+          {% include 'accounts/_table_header.html' %}
+          <tbody>
+            {% for s in unused_subscriptions %}
+              <tr>
+                <td>{{ s.package }}</td>
+                <td>{{ s.purchase_date }}</td>
+                <td>{{ s.start }}</td>
+                <td>{{ s.stop }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+
+      {% if expired_subscriptions %}
+        <div class="page-header">
+          <h2>Package Subscription History</h2>
+        </div>
+        <table class="table table-condensed table-striped">
+          {% include 'accounts/_table_header.html' %}
+          <tbody>
+            {% for s in expired_subscriptions %}
+              <tr>
+                <td>{{ s.package }}</td>
+                <td>{{ s.purchase_date }}</td>
+                <td>{{ s.start }}</td>
+                <td>{{ s.stop }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+    </div>
+    <div class="col-lg-3">
+      <div class="data-balance">
+        Data Balance<br><span>50.45 GB</span>
       </div>
-      <table class="table table-condensed table-striped">
-        {% include 'accounts/_table_header.html' %}
-        <tbody>
-          {% for s in expired_subscriptions %}
-            <tr>
-              <td>{{ s.package }}</td>
-              <td>{{ s.start }}</td>
-              <td>{{ s.stop }}</td>
-              <td>{{ s.purchase_date }}</td>
-            </tr>
-          {% endfor %}
-        </tbody>
-      </table>
-    {% endif %}
+    </div>
   </div>
 </div>
 {% endblock %}

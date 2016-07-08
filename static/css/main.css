@@ -23,6 +23,10 @@ body > .container-fluid {
   margin-bottom: 0;
   box-shadow: 0 0 8px rgba(0,0,0,0.5);
   -webkit-box-shadow: 0 0 8px rgba(0,0,0,0.5);
+}
+.header,
+.data-balance,
+.footer {
   background: #3b3a36;
 }
 .header .navbar-brand {
@@ -118,7 +122,7 @@ table form {
 
 /* Dashboard */
 .welcome {
-  width: 67%;
+  width: 90%;
 }
 
 /* View Users */
@@ -146,9 +150,20 @@ table form {
   margin-right: 1em;
 }
 
+/* Data Balance */
+.data-balance {
+  padding-top: .5em;
+  padding-bottom: 1em;
+  margin-top: 40px;
+  text-align: center;
+  color: #fff;
+}
+.data-balance span {
+  font-size: 200%;
+}
+
 /* Footer */
 .footer {
-  background: #3b3a36;
   color: #fff;
   padding-top: 30px;
   padding-bottom: 30px;

@@ -13,14 +13,61 @@ TODO
 
 Urgent
 ======
-- Set data usage to zero whenever a package subscription or group package subscription is created. Radacct contains usage info for reporting purposes.
+
+Grace period: 3 days
+
+When is a user denied access to the service?
+============================================
+- When he exhausts his data.
+- When he exceeds grace period without renewing subscription. In this case, he loses his remaining data.
+
+What happens if subscription is not renewed after stop time?
+============================================================
+- Nothing happens. Grace period starts.
+
+What happens if subscription is not renewed after grace period?
+===============================================================
+- Data balance is zeroed.
+
+What happens when user renews subscription before current one expires or within grace period?
+=============================================================================================
+- Carry data balance forward and extend subscription time from current subscription stop time.
+
+When does data balance ever get zeroed?
+=======================================
+- Grace period stop time.
+
+
 - Check the logout link retrieval feature. Users should be able to get the Logout link when they visit the home page.
 - We can display daily data usage info on dashboard. Ask whether this should be done or left as a reporting feature.
-- Add some colour and info to 'logout' screen.
+- Add some colour and info to 'logout' screen. We can make this screen a replica of the dashboard.
 
 - Replace commas on vouchers with tabs. Add column headers.
 - Do up VMS and Vendor UI. Use different colors and fonts.
 
+New features
+============
+- Group Package Subscription expiry email notification.
+- Distributed group volume billing.
+- Automatic subscription renewal - Hold on.
+
+We can save all the records sent in the 'Accounting Start' Response, just because. Investigate whether this is already done by FreeRadius SQL module.
+
+Reports - should be available in PDF, CSV and XLS formats (according to scope document)
+=======
+Individual
+----------
+- Account Topup History - Standard Voucher
+- Subscription Purchase History
+- Session Duration History
+- Data Usage History
+
+Group
+-----
+- Payment History
+- Subscription Purchase History
+- Group/Group Member Session Duration History
+- Group/Group Member Data Usage History
 
 Better user experience
 ======================
@@ -31,4 +78,3 @@ Better user experience
 - After they purchase their first package, display a link that says continue here. This link should attempt to open a site (e.g. google.com) in a new tab. They would see the captive portal and log in to continue surfing the net.
 
 - Ensure footer stays at bottom of page on all systems.
-- Remember to zero Acct-Input-Octets and Acct-Output-Octets for all entries in Radacct when this update is deployed.
