@@ -25,7 +25,7 @@ body > .container-fluid {
   -webkit-box-shadow: 0 0 8px rgba(0,0,0,0.5);
 }
 .header,
-.data-balance,
+.balance-pane,
 .footer {
   background: #3b3a36;
 }
@@ -151,14 +151,14 @@ table form {
 }
 
 /* Data Balance */
-.data-balance {
+.balance-pane {
   padding-top: .5em;
   padding-bottom: 1em;
   margin-top: 40px;
   text-align: center;
   color: #fff;
 }
-.data-balance span {
+.balance-pane span {
   font-size: 200%;
 }
 
