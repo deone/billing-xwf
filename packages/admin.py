@@ -5,9 +5,8 @@ from django.utils.translation import ugettext_lazy as _
 
 from .models import *
 from .helpers import *
-from utils import get_volume
 
-from decimal import Decimal
+from utils import get_volume, increment_data_balance
 
 class PackageSubscriptionAdminForm(forms.ModelForm):
 
@@ -33,9 +32,7 @@ class PackageSubscriptionAdminForm(forms.ModelForm):
         charge_subscriber(radcheck, amount, balance, package)
 
         # Increment data balance
-        volume = get_volume(package)
-        radcheck.data_balance += Decimal(volume)
-        radcheck.save()
+        increment_data_balance(radcheck, package)
 
         package_subscription = super(PackageSubscriptionAdminForm, self).save(commit=False)
         package_subscription.stop = compute_stop(package_subscription.start,

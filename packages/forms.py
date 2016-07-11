@@ -4,9 +4,7 @@ from .models import Package
 from .helpers import *
 
 from accounts.models import Radcheck
-from utils import get_volume
-
-from decimal import Decimal
+from utils import get_volume, increment_data_balance
 
 class PackageSubscriptionForm(forms.Form):
 
@@ -37,9 +35,7 @@ class PackageSubscriptionForm(forms.Form):
         charge_subscriber(self.user.radcheck, amount, balance, package) 
 
         # Increment data balance
-        volume = get_volume(package)
         radcheck = Radcheck.objects.get(username__exact=self.user.username)
-        radcheck.data_balance += Decimal(volume)
-        radcheck.save()
+        increment_data_balance(radcheck, package)
 
         return save_subscription(radcheck, package, start)

@@ -1,7 +1,5 @@
 from decimal import Decimal
 
-from accounts.models import Radacct
-
 def get_volume(package):
     if package.volume != 'Unlimited':
         volume = package.volume
@@ -9,6 +7,11 @@ def get_volume(package):
         volume = 100000
 
     return volume
+
+def increment_data_balance(radcheck, package):
+    volume = get_volume(package)
+    radcheck.data_balance += Decimal(volume)
+    radcheck.save()
 
 def get_subscriptions(user, flag):
     if flag == None:
