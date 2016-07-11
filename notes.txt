@@ -13,6 +13,7 @@ TODO
 
 - Display 0 (zero) on template if data balance is negative.
 - Set package volume to 100000 for unlimited plans (get_volume in utils/__init__.py)
+- Display 'Cash Balance' on dashboard.
 
 - Check how data billing works for instant vouchers.
 
