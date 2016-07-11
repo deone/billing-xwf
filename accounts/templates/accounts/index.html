@@ -170,16 +170,35 @@
     </div>
     <div class="col-lg-3">
       <div class="balance-pane">
-        Data Balance<br><span>{{ user.radcheck.data_balance }} GB</span>
-      </div>
-      <div class="balance-pane">
-        Cash Balance<br>
-        <span>
-          {% with balance=user.radcheck.rechargeandusage_set.all.0.balance %}
-            {% if balance %}{{ user.radcheck.rechargeandusage_set.all.0.balance }}{% else %}0{% endif %} GHS
+        Data Balance<br>
+        {% if user.subscriber.group == None %}
+          {% with balance=user.radcheck.data_balance %}
+            <span>
+              {% if balance < 0 %}
+                0.00
+              {% else %}
+                {{ balance }}
+              {% endif %} GB
+            </span>
           {% endwith %}
-        </span>
+        {% else %}
+          Data Balance<br><span></span>
+        {% endif %}
       </div>
+      {% if user.subscriber.group == None %}
+        <div class="balance-pane">
+          Cash Balance<br>
+          <span>
+            {% with balance=user.radcheck.rechargeandusage_set.all.0.balance %}
+              {% if balance %}
+                {{ user.radcheck.rechargeandusage_set.all.0.balance }}
+              {% else %}
+                0
+              {% endif %} GHS
+            {% endwith %}
+          </span>
+        </div>
+      {% endif %}
     </div>
   </div>
 </div>
