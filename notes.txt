@@ -16,6 +16,9 @@ TODO
 - Display 'Cash Balance' on dashboard.
 
 - Check how data billing works for instant vouchers.
+- Start time test cases:
+  - Buy with MPower first, then buy with account balance.
+  - Buy with account balance first, then buy with MPower. --- Pass
 
 Implement data balance for groups.
 ==================================

@@ -5,8 +5,9 @@ from django.contrib.auth.models import User
 
 from accounts.models import Radcheck 
 from accounts.helpers import md5_password
-from ..models import Package, PackageSubscription, compute_stop
-from ..helpers import check_subscription
+from ..models import Package, PackageSubscription
+
+from utils import compute_stop_time, check_subscription
 
 from datetime import timedelta
 
@@ -24,7 +25,7 @@ class PackageHelpersTest(TestCase):
                                 data_balance=1)
         package = Package.objects.create(package_type='Daily', volume='Unlimited', speed='1.5', price=5)
         self.ps = PackageSubscription.objects.create(radcheck=self.radcheck, package=package, start=timezone.now())
-        self.ps.stop = compute_stop(self.ps.start, self.ps.package.package_type)
+        self.ps.stop = compute_stop_time(self.ps.start, self.ps.package.package_type)
         self.ps.save()
 
     def test_check_subscription(self):

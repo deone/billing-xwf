@@ -2,10 +2,32 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 
-from datetime import timedelta
-
 from accounts.models import (Subscriber, GroupAccount, Radcheck)
-from utils import check_data_balance
+
+def check_data_balance(subscription):
+    """ data_usage = 0
+    if subscription.package.volume != 'Unlimited':
+        data_limit = Decimal(subscription.package.volume)
+    else:
+        # Set a data limit of 100000GB for Unlimited plans
+        data_limit = 100000
+
+    if 'group' in dir(subscription):
+        group_users_usage = [s.user.radcheck.data_usage for s in subscription.group.subscriber_set.all()]
+        for du in group_users_usage:
+            data_usage += du
+    else:
+        data_usage = subscription.radcheck.data_usage
+
+    return data_limit > data_usage """
+
+    if 'group' in dir(subscription):
+        data_balance = 1
+        # data_balance = subscription.group.data_balance
+    else:
+        data_balance = subscription.radcheck.data_balance
+
+    return data_balance > 0
 
 class Package(models.Model):
     package_type = models.CharField(max_length=7, choices=settings.PACKAGE_TYPES)
@@ -14,15 +36,14 @@ class Package(models.Model):
     price = models.PositiveSmallIntegerField()
 
     def __str__(self):
-        return "%s %s %s%s" % (settings.SPEED_NAME_MAP[self.speed],
-            self.package_type, self.volume, 'GB')
+        if self.volume != 'Unlimited':
+            return "%s %s %s%s" % (settings.SPEED_NAME_MAP[self.speed], self.package_type, self.volume, 'GB')
+        else:
+            return "%s %s %s" % (settings.SPEED_NAME_MAP[self.speed], self.package_type, self.volume)
 
 class InstantVoucher(models.Model):
     radcheck = models.ForeignKey(Radcheck)
     package = models.ForeignKey(Package)
-
-def compute_stop(start, package_type):
-    return start + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[package_type])
 
 class AbstractPackageSubscription(models.Model):
     # Add date of purchase

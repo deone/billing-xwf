@@ -3,8 +3,9 @@ from django.conf import settings
 from django.test import Client
 
 from ..helpers import (
-    auth_and_login, get_balance, send_api_request
+    auth_and_login, send_api_request
 )
+from utils import get_balance 
 
 from views import ViewsTests
 from ..models import RechargeAndUsage

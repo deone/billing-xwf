@@ -4,7 +4,10 @@ from .models import Package
 from .helpers import *
 
 from accounts.models import Radcheck
-from utils import get_volume, increment_data_balance
+from utils import save_subscription, check_balance_and_subscription
+
+def update_cleaned_data(data, dct):
+    return data.update(dct)
 
 class PackageSubscriptionForm(forms.Form):
 
@@ -20,22 +23,17 @@ class PackageSubscriptionForm(forms.Form):
             raise forms.ValidationError("Please select a package.", code="selection_empty")
 
         package = Package.objects.get(pk=cleaned_data.get('package_choice'))
-
-        start, amount, balance = check_balance_and_subscription(self.user.radcheck, package)
-        update_cleaned_data(cleaned_data, {
-          'start': start, 'amount': amount, 'balance': balance, 'package': package
+        start, amount, balance = check_balance_and_subscription(self.user.radcheck, package) 
+        update_cleaned_data(cleaned_data, { 
+            'start': start, 'amount': amount, 'balance': balance, 'package': package 
         })
 
     def save(self):
         package = self.cleaned_data['package']
-        balance = self.cleaned_data['balance']
-        amount = self.cleaned_data['amount']
         start = self.cleaned_data['start']
+        amount = self.cleaned_data['amount']
+        balance = self.cleaned_data['balance']
 
-        charge_subscriber(self.user.radcheck, amount, balance, package) 
-
-        # Increment data balance
         radcheck = Radcheck.objects.get(username__exact=self.user.username)
-        increment_data_balance(radcheck, package)
 
-        return save_subscription(radcheck, package, start)
+        return save_subscription(radcheck, package, start, amount=amount, balance=balance, token=None)

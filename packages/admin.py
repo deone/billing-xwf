@@ -3,10 +3,11 @@ from django.contrib import admin
 from django.utils import timezone
 from django.utils.translation import ugettext_lazy as _
 
+from .forms import update_cleaned_data
 from .models import *
 from .helpers import *
 
-from utils import get_volume, increment_data_balance
+from utils import increment_data_balance, compute_stop_time, check_balance_and_subscription, charge_subscriber, check_subscription
 
 class PackageSubscriptionAdminForm(forms.ModelForm):
 
@@ -35,7 +36,7 @@ class PackageSubscriptionAdminForm(forms.ModelForm):
         increment_data_balance(radcheck, package)
 
         package_subscription = super(PackageSubscriptionAdminForm, self).save(commit=False)
-        package_subscription.stop = compute_stop(package_subscription.start,
+        package_subscription.stop = compute_stop_time(package_subscription.start,
             package_subscription.package.package_type)
         package_subscription.save()
 
@@ -55,7 +56,7 @@ class GroupPackageSubscriptionAdminForm(forms.ModelForm):
 
     def save(self, commit=True):
         group_package_subscription = super(GroupPackageSubscriptionAdminForm, self).save(commit=False)
-        group_package_subscription.stop = compute_stop(group_package_subscription.start,
+        group_package_subscription.stop = compute_stop_time(group_package_subscription.start,
             group_package_subscription.package.package_type)
         group_package_subscription.save()
 

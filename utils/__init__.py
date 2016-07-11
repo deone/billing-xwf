@@ -1,4 +1,13 @@
+from django.utils import timezone
+from django.forms import ValidationError
+from django.conf import settings
+
+from accounts.models import RechargeAndUsage
+from packages.models import PackageSubscription
+from payments.models import IndividualPayment
+
 from decimal import Decimal
+from datetime import timedelta
 
 def get_volume(package):
     if package.volume != 'Unlimited':
@@ -21,27 +30,72 @@ def get_subscriptions(user, flag):
 
     return queryset()
 
-def check_data_balance(subscription):
-    """ data_usage = 0
-    if subscription.package.volume != 'Unlimited':
-        data_limit = Decimal(subscription.package.volume)
+def get_balance(radcheck):
+    try:
+        last_activity = RechargeAndUsage.objects.filter(radcheck=radcheck)[0]
+    except IndexError, RechargeAndUsage.DoesNotExist:
+        last_activity = None
+
+    if last_activity is not None:
+        balance = last_activity.balance
     else:
-        # Set a data limit of 100000GB for Unlimited plans
-        data_limit = 100000
+        balance = 0
 
-    if 'group' in dir(subscription):
-        group_users_usage = [s.user.radcheck.data_usage for s in subscription.group.subscriber_set.all()]
-        for du in group_users_usage:
-            data_usage += du
+    return balance
+
+def charge_subscriber(radcheck, amount, balance, package):
+    RechargeAndUsage.objects.create(
+        radcheck=radcheck,
+        amount=amount,
+        balance=balance,
+        action='USG',
+        activity_id=package.pk
+    )
+
+    return True
+
+def check_subscription(radcheck=None, group=None):
+    now = timezone.now()
+
+    try:
+        if radcheck is not None:
+            existing_subscription = radcheck.packagesubscription_set.all()[0]
+        if group is not None:
+            existing_subscription = group.grouppackagesubscription_set.all()[0]
+    except IndexError:
+        start = now
     else:
-        data_usage = subscription.radcheck.data_usage
+        if existing_subscription.is_valid():
+            start = existing_subscription.stop
+        else:
+            start = now
 
-    return data_limit > data_usage """
+    return start
 
-    if 'group' in dir(subscription):
-        data_balance = 1
-        # data_balance = subscription.group.data_balance
+def compute_stop_time(start, package_type):
+    return start + timedelta(hours=settings.PACKAGE_TYPES_HOURS_MAP[package_type])
+
+def check_balance_and_subscription(radcheck, package):
+    amount = -package.price
+    balance = get_balance(radcheck)
+    if (balance - package.price) >= 0:
+        balance = balance - package.price
     else:
-        data_balance = subscription.radcheck.data_balance
+        raise ValidationError('Package price is more than balance.', code='insufficient-funds')
 
-    return data_balance > 0
+    return (check_subscription(radcheck=radcheck), amount, balance)
+
+def save_subscription(radcheck, package, start, amount=None, balance=None, token=None):
+    if token is None:
+        charge_subscriber(radcheck, amount, balance, package)
+
+    increment_data_balance(radcheck, package)
+    subscription = PackageSubscription.objects.create(radcheck=radcheck, package=package, start=start)
+
+    if token is not None:
+        IndividualPayment.objects.create(subscription=subscription, token=token)
+
+    subscription.stop = compute_stop_time(start, package.package_type)
+    subscription.save()
+
+    return subscription

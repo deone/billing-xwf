@@ -10,12 +10,10 @@ from billing.decorators import must_be_individual_user
 
 from accounts.models import Radcheck
 from accounts.helpers import md5_password
-
-from payments.models import IndividualPayment
+from utils import save_subscription, check_subscription
 
 from .forms import PackageSubscriptionForm
 from .models import Package, InstantVoucher
-from .helpers import check_subscription, save_subscription
 
 @ensure_csrf_cookie
 def insert_stub(request):
@@ -78,12 +76,10 @@ def create_subscription(request, package_pk):
     token = request.GET.get('token', None)
 
     package = Package.objects.get(pk=package_pk)
+    radcheck = Radcheck.objects.get(username__exact=request.user.username)
+    start = check_subscription(radcheck=radcheck)
 
-    start = check_subscription(radcheck=request.user.radcheck)
-    subscription = save_subscription(request.user.radcheck, package, start)
-
-    if token is not None:
-        IndividualPayment.objects.create(subscription=subscription, token=token)
+    subscription = save_subscription(radcheck, package, start, amount=None, balance=None, token=token)
 
     messages.success(request, 'Package purchased successfully.')
     return redirect('packages:buy')

@@ -4,8 +4,9 @@ from django.conf import settings
 from django.utils import timezone
 
 from .models import *
-from .helpers import md5_password, send_api_request, get_balance
+from .helpers import md5_password, send_api_request
 
+from utils import get_balance
 
 class CreateUserForm(forms.Form):
     username = forms.EmailField(label='Email Address', max_length=254,
