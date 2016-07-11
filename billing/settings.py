@@ -184,7 +184,7 @@ SPEED_CHOICES = (
 )
 
 # Volume variants
-TEST = '0.0005'
+TEST = '0.01'
 ONE = '1'
 THREE = '3'
 FIVE = '5'
