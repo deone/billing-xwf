@@ -198,7 +198,7 @@ UNLTD = 'Unlimited'
 
 # Volume names
 VOLUME_NAME_MAP = {
-    TEST: '0.0005GB',
+    TEST: '0.01GB',
     ONE: '1GB',
     THREE: '3GB',
     FIVE: '5GB',
