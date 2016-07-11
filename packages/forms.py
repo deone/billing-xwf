@@ -3,6 +3,11 @@ from django import forms
 from .models import Package
 from .helpers import *
 
+from accounts.models import Radcheck
+from utils import get_volume
+
+from decimal import Decimal
+
 class PackageSubscriptionForm(forms.Form):
 
     def __init__(self, *args, **kwargs):
@@ -31,4 +36,10 @@ class PackageSubscriptionForm(forms.Form):
 
         charge_subscriber(self.user.radcheck, amount, balance, package) 
 
-        return save_subscription(self.user.radcheck, package, start)
+        # Increment data balance
+        volume = get_volume(package)
+        radcheck = Radcheck.objects.get(username__exact=self.user.username)
+        radcheck.data_balance += Decimal(volume)
+        radcheck.save()
+
+        return save_subscription(radcheck, package, start)

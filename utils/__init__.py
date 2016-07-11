@@ -2,6 +2,14 @@ from decimal import Decimal
 
 from accounts.models import Radacct
 
+def get_volume(package):
+    if package.volume != 'Unlimited':
+        volume = package.volume
+    else:
+        volume = 100000
+
+    return volume
+
 def get_subscriptions(user, flag):
     if flag == None:
         queryset = user.radcheck.packagesubscription_set.all
@@ -11,7 +19,7 @@ def get_subscriptions(user, flag):
     return queryset()
 
 def check_data_balance(subscription):
-    data_usage = 0
+    """ data_usage = 0
     if subscription.package.volume != 'Unlimited':
         data_limit = Decimal(subscription.package.volume)
     else:
@@ -23,7 +31,14 @@ def check_data_balance(subscription):
         for du in group_users_usage:
             data_usage += du
     else:
-        # Change this to subscription.user.radcheck.data_usage
         data_usage = subscription.radcheck.data_usage
 
-    return data_limit > data_usage
+    return data_limit > data_usage """
+
+    if 'group' in dir(subscription):
+        data_balance = 1
+        # data_balance = subscription.group.data_balance
+    else:
+        data_balance = subscription.radcheck.data_balance
+
+    return data_balance > 0

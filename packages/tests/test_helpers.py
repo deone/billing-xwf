@@ -20,7 +20,8 @@ class PackageHelpersTest(TestCase):
                                 username=username,
                                 attribute='MD5-Password',
                                 op=':=',
-                                value=md5_password(password))
+                                value=md5_password(password),
+                                data_balance=1)
         package = Package.objects.create(package_type='Daily', volume='Unlimited', speed='1.5', price=5)
         self.ps = PackageSubscription.objects.create(radcheck=self.radcheck, package=package, start=timezone.now())
         self.ps.stop = compute_stop(self.ps.start, self.ps.package.package_type)
