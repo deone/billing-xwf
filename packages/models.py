@@ -61,6 +61,7 @@ class AbstractPackageSubscription(models.Model):
 
         if stop_date_in_future and has_data_left:
             return True
+        return False
 
 class PackageSubscription(AbstractPackageSubscription):
     radcheck = models.ForeignKey(Radcheck)
