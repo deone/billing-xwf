@@ -19,7 +19,7 @@ class PackagesModelsTests(TestCase):
                                 op=':=',
                                 value=md5_password(password))
         self.group = GroupAccount.objects.create(name='CUG',
-            max_no_of_users=10)
+            max_no_of_users=10, data_balance=1)
         self.package = Package.objects.create(package_type='Daily',
             volume='3', speed='1.5', price=4)
         now = timezone.now()
