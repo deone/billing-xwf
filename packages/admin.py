@@ -120,7 +120,7 @@ class GroupPackageSubscriptionAdmin(admin.ModelAdmin):
     search_fields = ('package__package_type', 'group__name')
 
 class PackageAdmin(admin.ModelAdmin):
-    list_display = ('package_type', 'volume', 'speed', 'price')
+    list_display = ('package_type', 'volume', 'speed', 'price', 'is_public')
     search_fields = ('package_type', 'volume', 'speed')
 
 admin.site.register(Package, PackageAdmin)

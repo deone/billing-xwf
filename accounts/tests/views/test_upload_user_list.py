@@ -41,7 +41,7 @@ class UploadUserListTests(GroupAdminViewsTests):
         self.assertEqual(response.get('location'), reverse('accounts:upload_user_list'))
 
     def test_upload_user_list_get(self):
-        self.c.post(reverse('accounts:login'), {'username': 'z@z.com', 'password': '12345'})
+        self.c.post(reverse('accounts:login'), {'username': '0542751610', 'password': '12345'})
         response = self.c.get(reverse('accounts:upload_user_list'))
 
         self.assertEqual(response.status_code, 200)

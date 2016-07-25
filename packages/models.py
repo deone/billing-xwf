@@ -2,7 +2,9 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 
-from accounts.models import (Subscriber, GroupAccount, Radcheck)
+from accounts.models import GroupAccount, Radcheck
+
+import time
 
 def check_data_balance(subscription):
     if hasattr(subscription, 'group'):
@@ -18,7 +20,8 @@ class Package(models.Model):
     package_type = models.CharField(max_length=7, choices=settings.PACKAGE_TYPES)
     volume = models.CharField(max_length=9, choices=settings.VOLUME_CHOICES)
     speed = models.CharField(max_length=5, choices=settings.SPEED_CHOICES, default='1.5')
-    price = models.PositiveSmallIntegerField()
+    price = models.DecimalField(max_digits=4, decimal_places=2)
+    is_public = models.BooleanField(default=False)
 
     def __str__(self):
         if self.volume != 'Unlimited':
@@ -47,7 +50,7 @@ class PackageSubscription(AbstractPackageSubscription):
 
     class Meta:
         verbose_name = "Package Subscription"
-        ordering = ['-stop'] 
+        ordering = ['-stop']
 
     def __str__(self):
         return "%s %s %s" % (self.radcheck.username, self.package.package_type, self.stop.strftime('%B %d %Y, %I:%M%p'))

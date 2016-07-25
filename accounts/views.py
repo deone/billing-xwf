@@ -1,50 +1,117 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, resolve_url
 from django.contrib.auth.models import User, AnonymousUser
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
 from django.contrib import messages
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
+from django.template.response import TemplateResponse
+from django.utils.deprecation import RemovedInDjango20Warning
+from django.views.decorators.csrf import ensure_csrf_cookie
+
+import requests
+from decimal import Decimal
 
 from billing.decorators import *
 
-from utils import get_subscriptions
+from utils import get_subscriptions, get_captive_url, get_balance
 
-from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, RechargeAccountForm
-from .models import Subscriber
+from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, ResetPasswordForm
+from .models import Subscriber, RechargeAndUsage, Radcheck, Radpostauth
 from .helpers import *
 
+"""
+Meraki
+<QueryDict: {
+u'client_ip': [u'10.8.0.78'], 
+u'login_url': [u'https://n110.network-auth.com/splash/login?mauth=MMNsInqn8ksWBR7PgbfBkWG8PawzJm1wi4PE9pDEUdU1qFuHtYczZmRJFJ3dD7AJvl9DRppZnJAZOTA7L3KbzaX4WgwU74t5ibpIJBwHJ-eg5RnL4Hct5hs7i1UIRBH6kbeL9X4hlcFLZKvkaV2mpeP_hX9hxs5jGl_C0N6oWtoQtUjskrMcnBaA&continue_url=http%3A%2F%2Fgoogle.com%2F'], 
+u'continue_url': [u'http://google.com/'], 
+u'ap_tags': [u'office-accra recently-added'], 
+u'ap_mac': [u'00:18:0a:f2:de:20'], 
+u'ap_name': [u'Spectra-HQ-NOC'], 
+u'client_mac': [u'4c:eb:42:ce:6c:3d']
+}>
+
+Cambium
+<QueryDict: {
+u'ga_cmac': [u'30-F7-C5-C6-4E-3B'],
+u'ga_nas_id': [u'Office Test AP'],
+u'ga_ap_mac': [u'00-04-56-CA-C1-5C'],
+u'ga_srvr': [u'10.8.0.40'],
+u'ga_ssid': [u'Express_WF'],
+u'ga_Qv': [u'yDN%05%1F%3A%1C%18%00%181%04V%04%00%1B%0E%14Y%15%02%00%26%152%01O7%5EY%2AV_S%22F%5C-EV%0FYCRK%06%13%143%0C']
+}>
+<QueryDict: {
+u'ga_Qv': [u'yDN\x05\x1f:\x1c\x18\x00\x181\x04V\x04\x00\x1b\x0e\x14Y\x15\x02\x00&\x152\x01O1^Y,T_ "F[ZE#\x0cY0UK\x06\x13\x143\x0c']
+}>
+"""
 def captive(request):
-    context = {'form': LoginForm()}
+    params = request.GET.urlencode().replace('&amp;', '&').replace('+', '%20')
+    ap_ip = request.GET.get('ga_srvr', None)
+
+    if ap_ip:
+        login_url = 'http://%s:880/cgi-bin/hotspot_login.cgi?%s' % (ap_ip, params)
+    else:
+        login_url = request.GET.get('login_url', None)
+
+    request.session['params'] = params
     request.session['logout_url'] = None
+    request.session['login_url'] = login_url
 
-    if 'error_message' in request.GET:
-        context.update({
-            'error_message': request.GET['error_message']
-        })
+    context = ({
+        'login_url': request.session['login_url'],
+    })
 
-    if 'login_url' in request.GET:
+    if ap_ip:
+        context.update({'form': LoginForm(label_suffix='', is_cambium=True)})
+
+        error_message = ''
+        if 'ga_error_code' in request.GET:
+            qs = Radpostauth.objects.filter(client_mac=request.GET['ga_cmac'], reply='Access-Reject').order_by('pk')
+            error_message = qs.reverse()[0].message
+    
         context.update({
-          'login_url': request.GET['login_url'],
-          'logout_url': request.session['logout_url'],
-          'success_url': settings.SUCCESS_URL,
+            'error_message': error_message
         })
     else:
-        raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.")
+        context.update({'form': LoginForm(label_suffix='')})
+
+        # Store request.GET parameters in session
+        if not 'continue_url' in request.session:
+            request.session['continue_url'] = request.GET['continue_url']
+            request.session['ap_mac'] = request.GET['ap_mac']
+            request.session['ap_name'] = request.GET['ap_name']
+            request.session['ap_tags'] = request.GET['ap_tags']
+            request.session['client_mac'] = request.GET['client_mac']
+            request.session['client_ip'] = request.GET['client_ip']
+
+        if 'error_message' in request.GET:
+            context.update({
+                'error_message': request.GET['error_message']
+            })
+
+        context.update({
+          'success_url': settings.SUCCESS_URL,
+        })
 
     return render(request, 'captive.html', context)
 
 def success(request):
     if 'logout_url' in request.GET:
-        request.session['logout_url'] = request.GET['logout_url']
-        context = {'logout_url': request.session.get('logout_url', None)}
+        logout_url = request.GET['logout_url']
     else:
-        context = {}
+        ap_ip = request.GET.get('ga_srvr', None)
+        params = request.GET.urlencode().replace('&amp;', '&').replace('+', '%20')
 
+        logout_url = 'http://%s:880/cgi-bin/hotspot_logout.cgi?%s' % (ap_ip, params)
+
+    request.session['logout_url'] = logout_url
+    context = {'logout_url': logout_url}
     return render(request, 'accounts/success.html', context)
 
 def create(request):
@@ -57,10 +124,12 @@ def create(request):
         form = CreateUserForm(request.POST, user=AnonymousUser())
         if form.is_valid():
             user = form.save()
-
-            # Send verification mail here - we might
-            # need to wrap this in a try - except block
-            send_verification_mail(user)
+            
+            # Send verification sms
+            phone_number = user.subscriber.phone_number
+            params = settings.SMS_PARAMS
+            params.update({'To': phone_number})
+            response = requests.get(settings.SMS_URL, params)
 
             # We need to call login here so that our
             # dashboard can have user's details.
@@ -77,14 +146,6 @@ def create(request):
 
 @login_required
 def index(request):
-    # Let's remember to use User methods here and in the template, instead of attributes.
-    """
-    if new_user:
-        welcome_msg = ""
-        context = {'message': welcome_msg}
-    else:
-        context = {}"""
-
     context = {}
 
     # Get subscriptions.
@@ -117,10 +178,35 @@ def index(request):
     if request.user.subscriber.email_verified:
         context.update({'verified': True})
 
+    # Open captive portal from dashboard.
+    captive_url = get_captive_url(request.session)
+    if captive_url is not None:
+        context.update({'captive_url': captive_url})
+
+    # End browsing session from dashboard.
     logout_url = request.session.get('logout_url', None)
     context.update({'logout_url': logout_url})
 
     return render(request, 'accounts/index.html', context)
+
+def password_reset_complete(request,
+                            template_name='registration/password_reset_complete.html',
+                            current_app=None, extra_context=None):
+    context = {
+        'login_url': resolve_url(settings.LOGIN_URL),
+        'title': 'Password reset complete',
+    }
+
+    captive_url = get_captive_url(request.session)
+    context.update({'captive_url': captive_url})
+
+    if extra_context is not None:
+        context.update(extra_context)
+
+    if current_app is not None:
+        request.current_app = current_app
+
+    return TemplateResponse(request, template_name, context)
 
 def verify_email(request, uidb64=None, token=None):
     assert uidb64 is not None and token is not None
@@ -226,7 +312,56 @@ def upload_user_list(request):
     })
     return render(request, 'accounts/upload_user_list.html', context)
 
-@login_required
+@ensure_csrf_cookie
+def create_test(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        try:
+            radcheck = Radcheck.objects.get(username=username)
+        except Radcheck.DoesNotExist:
+            Radcheck.objects.create(username=username,
+                                    attribute='MD5-Password',
+                                    op=':=',
+                                    value=md5_password('12345'))
+
+    return JsonResponse({'status': 'ok'})
+
+@ensure_csrf_cookie
+def topup(request):
+    response = {}
+    if request.method == 'POST':
+        phone_number = request.POST['phone_number']
+        amount = request.POST['amount']
+        serial_no = request.POST['serial_no']
+
+        # Check whether account exists and return error if it doesn't
+        try:
+            radcheck = Radcheck.objects.get(username=phone_number)
+        except Radcheck.DoesNotExist:
+            # return error
+            return JsonResponse({'code': 500, 'message': 'Account does not exist.'})
+
+        balance = get_balance(radcheck)
+
+        amount = amount
+        balance = balance + Decimal(amount)
+        activity_id = serial_no
+
+        RechargeAndUsage.objects.create(
+            radcheck=radcheck,
+            amount=amount,
+            balance=balance,
+            action='REC',
+            activity_id=activity_id
+        )
+
+        response.update({'code': 200, 'message': 'Account recharge successful.'})
+    else:
+        response.update({'status': 'ok'})
+
+    return JsonResponse(response)
+
+""" @login_required
 @must_be_individual_user
 def recharge_account(request):
     context = {}
@@ -239,13 +374,14 @@ def recharge_account(request):
             response = send_api_request(url, {'id': voucher['serial_number']})
 
             if response['code'] == 200:
-                messages.success(request, "Account recharged successfully.")
+                messages.success(request, 
+                    "%s%s" % ('Account recharged successfully. ', "<a class='btn btn-primary' href=" + reverse('packages:buy') + ">Purchase a package</a>"))
                 return redirect('accounts:recharge_account')
     else:
         form = RechargeAccountForm(user=request.user)
 
     context.update({'form': form})
-    return render(request, 'accounts/recharge_account.html', context)
+    return render(request, 'accounts/recharge_account.html', context) """
 
 @login_required
 @must_be_group_admin

@@ -15,21 +15,6 @@
       </a>
     </li>
     {% if user.subscriber.group == None %}
-      <!-- <li>
-        <a href="#">
-          <span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span>
-          Payment Options 
-        </a>
-      </li> -->
-      <li {% if urlname == 'recharge_account' %}class="active"{% endif %}>
-        <a href="{% url 'accounts:recharge_account' %}">
-          <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
-          Topup Account 
-          {% if urlname == 'recharge_account' %}
-            <span class="sr-only">(current)</span></a>
-          {% endif %}
-        </a>
-      </li>
       <li {% if urlname == 'buy' %}class="active"{% endif %}>
         <a href="{% url 'packages:buy' %}">
           <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
@@ -103,13 +88,13 @@
 <div class="row main">
   <div class="welcome">
     <div class="col-lg-9">
-      {% if not verified %}
+      <!--- {% if not verified %}
         <div class="panel panel-default">
           <div class="panel-body">
             Welcome {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}. Please verify your account. <a class="btn btn-primary btn-xs pull-right" href="{% url 'resend_mail' %}">Resend verification mail</a>
           </div>
         </div>
-      {% endif %}
+      {% endif %} -->
 
       {% if active_subscription %}
         <div class="page-header">
@@ -127,7 +112,16 @@
           </tbody>
         </table>
       {% else %}
-        <p>You do not have an active subscription. {% if user.subscriber.group == None %}<a href="{% url 'packages:buy' %}">Buy Package</a>.{% endif %}</p>
+        <p>
+          You do not have an active subscription. 
+          {% with balance=user.radcheck.rechargeandusage_set.all.0.balance %}
+            {% if balance %}
+              {% if user.subscriber.group == None %}
+                <strong><a href="{% url 'packages:buy' %}">Buy Package</a></strong>.
+              {% endif %}
+            {% endif %}
+          {% endwith %}
+        </p>
       {% endif %}
 
       {% if unused_subscriptions %}
@@ -201,8 +195,13 @@
           </span>
         </div>
       {% endif %}
+      {% if active_subscription %}
+        {% if not logout_url and captive_url %}
+  	      <a class="btn btn-primary end-session" role="button" href="{{ captive_url }}">Log In To Browse</a>
+        {% endif %}
+      {% endif %}
       {% if logout_url %}
-	<a class="btn btn-primary end-session" role="button" href="{{ logout_url }}">End Browsing Session</a>
+	      <a class="btn btn-primary end-session" role="button" href="{{ logout_url }}">End Browsing Session</a>
       {% endif %}
     </div>
   </div>
