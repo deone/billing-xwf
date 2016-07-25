@@ -13,6 +13,7 @@ TODO
 
 - Set package volume to 100000 for unlimited plans (get_volume in utils/__init__.py)
 - Display 'Cash Balance' on dashboard.
+- Email verification pane should span page width.
 
 - Check how data billing works for instant vouchers.
 - Start time test cases:

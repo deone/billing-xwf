@@ -171,9 +171,13 @@
     <div class="col-lg-3">
       <div class="balance-pane">
         Data Balance<br>
-        {% if user.subscriber.group == None %}
-          <span>{{ user.radcheck.data_balance }}</span>
-        {% endif %}
+        <span>
+          {% if user.subscriber.group == None %}
+            {{ user.radcheck.data_balance }}
+          {% else %}
+            {{ user.subscriber.group.data_balance }}
+          {% endif %}
+        </span>
       </div>
       {% if user.subscriber.group == None %}
         <div class="balance-pane">
