@@ -7,7 +7,11 @@ from .forms import update_cleaned_data
 from .models import *
 from .helpers import *
 
+from accounts.models import GroupAccount
+
 from utils import increment_data_balance, compute_stop_time, check_balance_and_subscription, charge_subscriber, check_subscription
+
+from decimal import Decimal
 
 class PackageSubscriptionAdminForm(forms.ModelForm):
 
@@ -59,6 +63,10 @@ class GroupPackageSubscriptionAdminForm(forms.ModelForm):
         group_package_subscription.stop = compute_stop_time(group_package_subscription.start,
             group_package_subscription.package.package_type)
         group_package_subscription.save()
+
+        group = GroupAccount.objects.get(pk=group_package_subscription.group.pk)
+        group.data_balance += Decimal(group_package_subscription.package.volume)
+        group.save()
 
         return group_package_subscription
 
