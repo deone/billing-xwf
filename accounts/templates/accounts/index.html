@@ -173,10 +173,18 @@
         Data Balance<br>
         <span>
           {% if user.subscriber.group == None %}
-            {{ user.radcheck.data_balance }}
+            {% if subscription_is_unlimited %}
+              Unlimited
+            {% else %}
+              {{ user.radcheck.data_balance }} GB
+            {% endif %}
           {% else %}
-            {{ user.subscriber.group.data_balance }}
-          {% endif %} GB
+            {% if subscription_is_unlimited %}
+              Unlimited
+            {% else %}
+              {{ user.subscriber.group.data_balance }} GB
+            {% endif %}
+          {% endif %}
         </span>
       </div>
       {% if user.subscriber.group == None %}

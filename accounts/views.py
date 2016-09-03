@@ -102,9 +102,11 @@ def index(request):
         subscriptions.remove(es)
 
     # Get active subscription
-    active_subscription = None
+    active_subscription = subscription_is_unlimited = None
     if subscriptions:
         active_subscription = subscriptions.pop()
+        if active_subscription.package.volume == 'Unlimited':
+            subscription_is_unlimited = True
 
     context.update({'active_subscription': active_subscription})
 
@@ -112,7 +114,8 @@ def index(request):
     if request.user.subscriber.group == None or request.user.subscriber.is_group_admin:
         context.update({
           'expired_subscriptions': expired_subscriptions,
-          'unused_subscriptions': subscriptions
+          'unused_subscriptions': subscriptions,
+          'subscription_is_unlimited': subscription_is_unlimited
           })
 
     if request.user.subscriber.email_verified:
