@@ -9,17 +9,8 @@ from payments.models import IndividualPayment
 from decimal import Decimal
 from datetime import timedelta
 
-def get_volume(package):
-    if package.volume != 'Unlimited':
-        volume = package.volume
-    else:
-        volume = 100000
-
-    return volume
-
 def increment_data_balance(radcheck, package):
-    volume = get_volume(package)
-    radcheck.data_balance += Decimal(volume)
+    radcheck.data_balance += Decimal(package.volume)
     radcheck.save()
 
 def get_subscriptions(user, flag):
@@ -89,7 +80,8 @@ def save_subscription(radcheck, package, start, amount=None, balance=None, token
     if token is None:
         charge_subscriber(radcheck, amount, balance, package)
 
-    increment_data_balance(radcheck, package)
+    if package.volume != 'Unlimited':
+        increment_data_balance(radcheck, package)
     subscription = PackageSubscription.objects.create(radcheck=radcheck, package=package, start=start)
 
     if token is not None:

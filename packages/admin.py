@@ -9,7 +9,7 @@ from .helpers import *
 
 from accounts.models import GroupAccount
 
-from utils import increment_data_balance, compute_stop_time, check_balance_and_subscription, charge_subscriber, check_subscription
+from utils import *
 
 from decimal import Decimal
 
@@ -37,7 +37,8 @@ class PackageSubscriptionAdminForm(forms.ModelForm):
         charge_subscriber(radcheck, amount, balance, package)
 
         # Increment data balance
-        increment_data_balance(radcheck, package)
+        if package.volume != 'Unlimited':
+            increment_data_balance(radcheck, package)
 
         package_subscription = super(PackageSubscriptionAdminForm, self).save(commit=False)
         package_subscription.stop = compute_stop_time(package_subscription.start,
