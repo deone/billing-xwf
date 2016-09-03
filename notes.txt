@@ -14,6 +14,9 @@ TODO
 - Set package volume to 100000 for unlimited plans (get_volume in utils/__init__.py)
 - Display 'Cash Balance' on dashboard.
 - Email verification pane should span page width.
+- Catch 'SMTPClientsRefused. Not a real domain error' in user creation parts e.g Add user. Roll back user creation if this error is thrown.
+- User is_logged_in status is not set to False on stop. Investigate this.
+- Display group admin in user list.
 
 - Check how data billing works for instant vouchers.
 - Start time test cases:
@@ -24,6 +27,8 @@ Implement data balance for groups.
 ==================================
 - Create a new column data_balance on GroupAccount model.
 - Deduct group member usage from GroupAccount data balance in the same way we deduct individual usage from Radcheck data balance.
+- Make package volume configurable by Spectra admin.
+- Implement distributed data balance for groups and give every group member their own dashboard.
 
 Implement data balance instead of usage.
 ========================================
@@ -99,3 +104,8 @@ Better user experience
 - After they purchase their first package, display a link that says continue here. This link should attempt to open a site (e.g. google.com) in a new tab. They would see the captive portal and log in to continue surfing the net.
 
 - Ensure footer stays at bottom of page on all systems.
+
+Billable stuff
+==============
+- Filter for expired individual and group subscriptions in admin.
+- User interface upgrade in billing.

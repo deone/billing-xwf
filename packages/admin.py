@@ -65,7 +65,8 @@ class GroupPackageSubscriptionAdminForm(forms.ModelForm):
         group_package_subscription.save()
 
         group = GroupAccount.objects.get(pk=group_package_subscription.group.pk)
-        group.data_balance += Decimal(group_package_subscription.package.volume)
+        if group_package_subscription.package.volume != 'Unlimited':
+            group.data_balance += Decimal(group_package_subscription.package.volume)
         group.save()
 
         return group_package_subscription
