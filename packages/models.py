@@ -40,9 +40,9 @@ class AbstractPackageSubscription(models.Model):
 
     def is_valid(self, now=timezone.now()):
         stop_date_in_future = self.stop > now
-        has_data_left = check_data_balance(self)
+        # has_data_left = check_data_balance(self)
 
-        if stop_date_in_future and has_data_left:
+        if stop_date_in_future:# and has_data_left:
             return True
         return False
 
