@@ -104,6 +104,7 @@ class Radcheck(models.Model):
     value = models.CharField(max_length=253)
     is_logged_in = models.BooleanField(default=False)
     data_balance = models.DecimalField(default=0.0, max_digits=8, decimal_places=2)
+    data_usage = models.DecimalField(default=0.0, max_digits=8, decimal_places=2)
 
     class Meta:
         db_table = 'radcheck'
@@ -114,7 +115,9 @@ class Radcheck(models.Model):
 class GroupAccount(models.Model):
     name = models.CharField(max_length=50)
     max_no_of_users = models.IntegerField(verbose_name="Max. No. of users")
-    data_balance = models.DecimalField(blank=True, editable=False, default=0.0, max_digits=8, decimal_places=2)
+    # For customer support, admins should be able to see these values but unable to edit it.
+    data_balance = models.DecimalField(editable=False, default=0.0, max_digits=8, decimal_places=2)
+    data_usage = models.DecimalField(editable=False, default=0.0, max_digits=8, decimal_places=2)
 
     class Meta:
         verbose_name = "Group Account"
