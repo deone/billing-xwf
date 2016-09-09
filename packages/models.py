@@ -10,7 +10,9 @@ def check_data_balance(subscription):
     else:
         data_balance = subscription.radcheck.data_balance
 
-    return data_balance > 0
+    if subscription.package.volume != 'Unlimited':
+        return data_balance > 0
+    return True
 
 class Package(models.Model):
     package_type = models.CharField(max_length=7, choices=settings.PACKAGE_TYPES)
@@ -29,7 +31,6 @@ class InstantVoucher(models.Model):
     package = models.ForeignKey(Package)
 
 class AbstractPackageSubscription(models.Model):
-    # Add date of purchase
     package = models.ForeignKey(Package)
     start = models.DateTimeField(default=timezone.now) # do we need this default?
     stop = models.DateTimeField(blank=True, null=True, help_text="The time this subscription expires. You are not allowed to set this.")
@@ -40,9 +41,9 @@ class AbstractPackageSubscription(models.Model):
 
     def is_valid(self, now=timezone.now()):
         stop_date_in_future = self.stop > now
-        # has_data_left = check_data_balance(self)
+        has_data_left = check_data_balance(self)
 
-        if stop_date_in_future:# and has_data_left:
+        if stop_date_in_future and has_data_left:
             return True
         return False
 
