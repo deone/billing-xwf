@@ -188,7 +188,7 @@
         </span>
       </div>
       {% if user.subscriber.group == None %}
-        <div class="balance-pane">
+        <div class="cash balance-pane">
           Cash Balance<br>
           <span>
             {% with balance=user.radcheck.rechargeandusage_set.all.0.balance %}

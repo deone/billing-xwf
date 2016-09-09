@@ -150,16 +150,18 @@ table form {
   margin-right: 1em;
 }
 
-/* Data Balance */
+/* Balance Panes */
 .balance-pane {
   padding-top: .5em;
   padding-bottom: 1em;
-  margin-top: 40px;
   text-align: center;
   color: #fff;
 }
 .balance-pane span {
   font-size: 200%;
+}
+.cash {
+  margin-top: 20px;
 }
 
 /* Footer */
