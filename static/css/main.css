@@ -160,8 +160,12 @@ table form {
 .balance-pane span {
   font-size: 200%;
 }
-.cash {
+.cash, .end-session {
   margin-top: 20px;
+}
+
+.end-session {
+  width: 100%;
 }
 
 /* Footer */
