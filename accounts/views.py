@@ -69,11 +69,7 @@ def create(request):
             if auth:
                 return redirect('index')
     else:
-        logout_url = request.session.get('logout_url', None)
-        if logout_url is not None:
-            return render(request, 'accounts/captive_logout.html', {'logout_url': logout_url})
-        else:
-            form = CreateUserForm(user=request.user)
+    	form = CreateUserForm(user=request.user)
   
     context = {'form': form}
 
@@ -120,6 +116,9 @@ def index(request):
 
     if request.user.subscriber.email_verified:
         context.update({'verified': True})
+
+    logout_url = request.session.get('logout_url', None)
+    context.update({'logout_url': logout_url})
 
     return render(request, 'accounts/index.html', context)
 

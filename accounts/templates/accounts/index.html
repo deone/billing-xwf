@@ -201,6 +201,9 @@
           </span>
         </div>
       {% endif %}
+      {% if logout_url %}
+	<a class="btn btn-primary" style="margin-top: 20px; width: 100%;" role="button" href="{{ logout_url }}">End Browsing Session</a>
+      {% endif %}
     </div>
   </div>
 </div>
