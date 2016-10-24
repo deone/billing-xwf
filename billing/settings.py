@@ -83,8 +83,8 @@ WSGI_APPLICATION = 'billing.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'radius',
-        'USER': 'radius',
+        'NAME': 'radius_xwf',
+        'USER': 'radius_xwf',
         'PASSWORD': 'radpass',
         'HOST': '127.0.0.1',
         'PORT': '3306'
