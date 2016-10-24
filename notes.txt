@@ -104,8 +104,4 @@ Better user experience
 - After they purchase their first package, display a link that says continue here. This link should attempt to open a site (e.g. google.com) in a new tab. They would see the captive portal and log in to continue surfing the net.
 
 - Ensure footer stays at bottom of page on all systems.
-
-Billable stuff
-==============
-- Filter for expired individual and group subscriptions in admin.
-- User interface upgrade in billing.
+- Remove fields from account creation form leaving email address, password, confirm password and country??. Leave phone number, password, confirm password and country?? in XWF. Users can add other details under 'Edit Profile' in the dashboard.
