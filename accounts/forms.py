@@ -39,14 +39,6 @@ class CreateUserForm(forms.Form):
             if password != confirm_password:
                 raise forms.ValidationError("Passwords do not match", code="password_mismatch")
             
-        if not self.user.is_anonymous() and self.user.subscriber.group is not None:
-            group = self.user.subscriber.group
-            if group.max_user_count_reached():
-                if not settings.EXCEED_MAX_USER_COUNT:
-                    raise forms.ValidationError(
-                        "You are not allowed to create more users than your group threshold. Your group threshold is set to %s."
-                      % str(group.max_no_of_users))
-
     def save(self):
         username = self.cleaned_data['username']
         password = self.cleaned_data['password']
