@@ -42,23 +42,16 @@ class CreateUserForm(forms.Form):
     def save(self):
         username = self.cleaned_data['username']
         password = self.cleaned_data['password']
-        first_name = self.cleaned_data['first_name']
-        last_name = self.cleaned_data['last_name']
-        country = self.cleaned_data['country']
-        country_code = Subscriber.COUNTRY_CODES_MAP[country]
-        phone_number = country_code + self.cleaned_data['phone_number'][1:]
+        phone_number = '+233' + self.cleaned_data['phone_number'][1:]
 
         user = User.objects.create_user(username, username, password)
-        user.first_name = first_name
-        user.last_name = last_name
-        user.save()
 
         if not self.user.is_anonymous():
             if self.user.subscriber and self.user.subscriber.is_group_admin:
                 Subscriber.objects.create(user=user, group=self.user.subscriber.group,
                     country=country, phone_number=phone_number)
         else:
-            Subscriber.objects.create(user=user, country=country, phone_number=phone_number)
+            Subscriber.objects.create(user=user, phone_number=phone_number)
 
         Radcheck.objects.create(user=user,
                                 username=username,

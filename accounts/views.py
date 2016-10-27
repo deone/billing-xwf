@@ -58,10 +58,6 @@ def create(request):
         if form.is_valid():
             user = form.save()
 
-            # Send verification mail here - we might
-            # need to wrap this in a try - except block
-            send_verification_mail(user)
-
             # We need to call login here so that our
             # dashboard can have user's details.
             auth = auth_and_login(request, user.username,
