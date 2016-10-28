@@ -34,6 +34,7 @@ def captive(request):
     # Store request.GET parameters in session
     request.session['login_url'] = request.GET['login_url']
     request.session['continue_url'] = request.GET['continue_url']
+    request.session['ap_mac'] = request.GET['ap_mac']
     request.session['ap_name'] = request.GET['ap_name']
     request.session['ap_tags'] = request.GET['ap_tags']
     request.session['client_mac'] = request.GET['client_mac']
