@@ -18,27 +18,28 @@ from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, 
 from .models import Subscriber
 from .helpers import *
 
-# http://154.117.8.19:7700/captive/?
-# login_url=https%3A%2F%2Fn110.network-auth.com%2Fsplash%2Flogin%3Fmauth%3DMMsZpCSqxZ2L2rm632E6xwH20P36xhfNn1a0K4ODxSRHepGkUFID26iKjWQNhzfJNYZtdXOTzitDBKGRfisryvnyqiB-BT4kiowWn1jqTyZbZV93r7i-kBxth1AgwUEAJi_g8fJbJZzRgLbD9N4rlozNnYFd2xiXT8h-vPUSoYJEQBGWomOiwSMA%26continue_url%3Dhttp%253A%252F%252Fgoogle.com%252F
-# &continue_url=http%3A%2F%2Fgoogle.com%2F
-# &ap_mac=00%3A18%3A0a%3Af2%3Ade%3A20
-# &ap_name=Spectra-HQ-NOC
-# &ap_tags=office-accra+recently-added
-# &client_mac=4c%3Aeb%3A42%3Ace%3A6c%3A3d
-# &client_ip=10.8.0.78
+""" <QueryDict: {
+u'client_ip': [u'10.8.0.78'], 
+u'login_url': [u'https://n110.network-auth.com/splash/login?mauth=MMNsInqn8ksWBR7PgbfBkWG8PawzJm1wi4PE9pDEUdU1qFuHtYczZmRJFJ3dD7AJvl9DRppZnJAZOTA7L3KbzaX4WgwU74t5ibpIJBwHJ-eg5RnL4Hct5hs7i1UIRBH6kbeL9X4hlcFLZKvkaV2mpeP_hX9hxs5jGl_C0N6oWtoQtUjskrMcnBaA&continue_url=http%3A%2F%2Fgoogle.com%2F'], 
+u'continue_url': [u'http://google.com/'], 
+u'ap_tags': [u'office-accra recently-added'], 
+u'ap_mac': [u'00:18:0a:f2:de:20'], 
+u'ap_name': [u'Spectra-HQ-NOC'], 
+u'client_mac': [u'4c:eb:42:ce:6c:3d']}> """
 
 def captive(request):
     context = {'form': LoginForm()}
     request.session['logout_url'] = None
     
     # Store request.GET parameters in session
-    request.session['login_url'] = request.GET['login_url']
-    request.session['continue_url'] = request.GET['continue_url']
-    request.session['ap_mac'] = request.GET['ap_mac']
-    request.session['ap_name'] = request.GET['ap_name']
-    request.session['ap_tags'] = request.GET['ap_tags']
-    request.session['client_mac'] = request.GET['client_mac']
-    request.session['client_ip'] = request.GET['client_ip']
+    if not 'login_url' in request.session:
+        request.session['login_url'] = request.GET['login_url']
+        request.session['continue_url'] = request.GET['continue_url']
+        request.session['ap_mac'] = request.GET['ap_mac']
+        request.session['ap_name'] = request.GET['ap_name']
+        request.session['ap_tags'] = request.GET['ap_tags']
+        request.session['client_mac'] = request.GET['client_mac']
+        request.session['client_ip'] = request.GET['client_ip']
 
     if 'error_message' in request.GET:
         context.update({
