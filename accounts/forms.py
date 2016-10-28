@@ -9,14 +9,12 @@ from .helpers import md5_password, send_api_request
 from utils import get_balance
 
 class CreateUserForm(forms.Form):
-    username = forms.CharField(label='Username', max_length=254,
+    phone_number = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex],
         widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
     confirm_password = forms.CharField(label='Confirm Password', max_length=20, 
       widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    phone_number = forms.CharField(label='Phone Number', validators=[phone_regex],
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
@@ -26,10 +24,10 @@ class CreateUserForm(forms.Form):
         cleaned_data = super(CreateUserForm, self).clean()
         password = cleaned_data.get("password")
         confirm_password = cleaned_data.get("confirm_password")
-        username = cleaned_data.get("username")
+        phone_number = cleaned_data.get("phone_number")
 
         try:
-            user = User.objects.get(username=username)
+            user = User.objects.get(username=phone_number)
         except User.DoesNotExist:
             pass
         else:
@@ -40,7 +38,7 @@ class CreateUserForm(forms.Form):
                 raise forms.ValidationError("Passwords do not match", code="password_mismatch")
             
     def save(self):
-        username = self.cleaned_data['username']
+        username = self.cleaned_data['phone_number']
         password = self.cleaned_data['password']
         phone_number = '+233' + self.cleaned_data['phone_number'][1:]
 
