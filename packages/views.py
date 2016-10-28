@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
@@ -81,7 +82,8 @@ def create_subscription(request, package_pk):
 
     subscription = save_subscription(radcheck, package, start, amount=None, balance=None, token=token)
 
-    messages.success(request, "%s%s" % ('Package purchased successfully. You may ', """<a href="{% url 'captive' %}">log in</a> to browse."""))
+    messages.success(request, 
+        "%s%s" % ('Package purchased successfully. You may ', "<a href=" + reverse('captive') + ">log in</a> to browse."))
     return redirect('packages:buy')
 
 @login_required
