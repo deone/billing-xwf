@@ -103,13 +103,13 @@
 <div class="row main">
   <div class="welcome">
     <div class="col-lg-9">
-      {% if not verified %}
+      <!--- {% if not verified %}
         <div class="panel panel-default">
           <div class="panel-body">
             Welcome {% if user.first_name %}{{ user.first_name }}{% else %}{{ user.username }}{% endif %}. Please verify your account. <a class="btn btn-primary btn-xs pull-right" href="{% url 'resend_mail' %}">Resend verification mail</a>
           </div>
         </div>
-      {% endif %}
+      {% endif %} -->
 
       {% if active_subscription %}
         <div class="page-header">
