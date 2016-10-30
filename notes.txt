@@ -106,3 +106,4 @@ Better user experience
 - Ensure footer stays at bottom of page on all systems.
 
 - Make billing at port 80 to solve DNS resolution problem - temporarily.
+- Use template inheritance properly for nav, like NVB.
