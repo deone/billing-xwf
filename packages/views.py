@@ -11,7 +11,7 @@ from billing.decorators import must_be_individual_user
 
 from accounts.models import Radcheck
 from accounts.helpers import md5_password
-from utils import save_subscription, check_subscription
+from utils import save_subscription, check_subscription, get_captive_url_message
 
 from .forms import PackageSubscriptionForm
 from .models import Package, InstantVoucher
@@ -82,19 +82,7 @@ def create_subscription(request, package_pk):
 
     subscription = save_subscription(radcheck, package, start, amount=None, balance=None, token=token)
     
-    captive_url = '%s?login_url=%s&continue_url=%s&ap_mac=%s&ap_name=%s&ap_tags=%s&client_mac=%s&client_ip=%s' % (
-        reverse('captive'), 
-        request.session['login_url'], 
-        request.session['continue_url'],
-        request.session['ap_mac'],
-        request.session['ap_name'],
-        request.session['ap_tags'],
-        request.session['client_mac'],
-        request.session['client_ip']
-        )
-
-    messages.success(request, 
-        "%s%s" % ('Package purchased successfully. You may ', "<a href=" + captive_url + ">log in</a> to browse."))
+    messages.success(request, get_captive_url_message(request))
     return redirect('packages:buy')
 
 @login_required
@@ -106,7 +94,7 @@ def buy_package(request):
         form = PackageSubscriptionForm(request.POST, user=request.user, packages=packages)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Package purchased successfully.')
+            messages.success(request, get_captive_url_message(request))
             return redirect('packages:buy')
     else:
         form = PackageSubscriptionForm(user=request.user, packages=packages)

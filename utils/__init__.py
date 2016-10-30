@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.forms import ValidationError
 from django.conf import settings
+from django.core.urlresolvers import reverse
 
 from accounts.models import RechargeAndUsage
 from packages.models import PackageSubscription
@@ -8,6 +9,20 @@ from payments.models import IndividualPayment
 
 from decimal import Decimal
 from datetime import timedelta
+
+def get_captive_url_message(request):
+    captive_url = '%s?login_url=%s&continue_url=%s&ap_mac=%s&ap_name=%s&ap_tags=%s&client_mac=%s&client_ip=%s' % (
+        reverse('captive'), 
+        request.session['login_url'], 
+        request.session['continue_url'],
+        request.session['ap_mac'],
+        request.session['ap_name'],
+        request.session['ap_tags'],
+        request.session['client_mac'],
+        request.session['client_ip']
+        )
+        
+    return "%s%s" % ('Package purchased successfully. You may ', "<a href=" + captive_url + ">log in</a> to browse.")
 
 def increment_data_balance(radcheck, package):
     radcheck.data_balance += Decimal(package.volume)
