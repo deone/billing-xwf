@@ -4,7 +4,7 @@ IP = '154.117.8.19'
 
 ALLOWED_HOSTS = [IP]
 
-SUCCESS_URL = "http://" + IP + ":8080/success/"
+SUCCESS_URL = "http://" + IP + ":7700/success/"
 
 DEFAULT_FROM_EMAIL = 'info@spectrawireless.com'
 
