@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, AnonymousUser
+from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
 from django.contrib import messages
@@ -254,7 +255,8 @@ def recharge_account(request):
             response = send_api_request(url, {'id': voucher['serial_number']})
 
             if response['code'] == 200:
-                messages.success(request, "Account recharged successfully.")
+                messages.success(request, 
+                    "%s%s" % ('Account recharged successfully. You may ', "<a href=" + reverse('packages:buy') + ">purchase a package</a> now."))
                 return redirect('accounts:recharge_account')
     else:
         form = RechargeAccountForm(user=request.user)

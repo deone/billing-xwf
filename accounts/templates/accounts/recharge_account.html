@@ -20,7 +20,13 @@
         <h2>Topup Account 
           <small>
             {% with balance=user.radcheck.rechargeandusage_set.all.0.balance %}
-            Balance &mdash; <span class="balance">{% if balance %}{{ user.radcheck.rechargeandusage_set.all.0.balance }}{% else %}0{% endif %} GHS</span>
+            Balance &mdash; 
+            <span class="balance">
+              {% if balance %}
+                {{ user.radcheck.rechargeandusage_set.all.0.balance }}
+              {% else %}
+                0
+              {% endif %} GHS</span>
             {% endwith %}
           </small>
         </h2>
