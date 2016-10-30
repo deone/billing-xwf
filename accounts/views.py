@@ -11,6 +11,8 @@ from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 
+from twilio.rest import TwilioRestClient
+
 from billing.decorators import *
 
 from utils import get_subscriptions
@@ -77,6 +79,11 @@ def create(request):
         form = CreateUserForm(request.POST, user=AnonymousUser())
         if form.is_valid():
             user = form.save()
+            
+            # Send verification sms
+            phone_number = user.subscriber.phone_number
+            client = TwilioRestClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+            client.messages.create(to=phone_number, from_=settings.TWILIO_NUMBER, body=settings.WELCOME_SMS)
 
             # We need to call login here so that our
             # dashboard can have user's details.

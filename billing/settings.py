@@ -148,6 +148,11 @@ VOUCHER_SELL_URL = VMS_URL + "sell/"
 
 SUCCESS_URL = "http://localhost:8000/success/"
 
+TWILIO_ACCOUNT_SID = 'ACe0325806bc5842a1f96a115e8c21a384'
+TWILIO_AUTH_TOKEN = '90bd6b99b70d51d97d637a98e33ce8a7'
+WELCOME_SMS = 'Welcome to Spectra Xpress WiFi!'
+TWILIO_NUMBER = '+18177569348'
+
 # More settings
 
 # Speed variants 
