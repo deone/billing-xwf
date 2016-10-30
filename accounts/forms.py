@@ -119,7 +119,7 @@ class PasswordResetEmailForm(PasswordResetForm):
             raise forms.ValidationError("Email does not exist.")
 
 class LoginForm(AuthenticationForm):
-    username = forms.CharField(label='Username', max_length=254, widget=forms.TextInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex], widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
