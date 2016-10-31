@@ -132,10 +132,10 @@
           {% with balance=user.radcheck.rechargeandusage_set.all.0.balance %}
             {% if balance %}
               {% if user.subscriber.group == None %}
-                <a href="{% url 'packages:buy' %}">Buy Package</a>.
+                <strong><a href="{% url 'packages:buy' %}">Buy Package</a></strong>.
               {% endif %}
             {% else %}
-              <a href="{% url 'accounts:recharge_account' %}">Recharge Account</a>.
+              <strong><a href="{% url 'accounts:recharge_account' %}">Recharge Account</a></strong>.
             {% endif %}
           {% endwith %}
         </p>

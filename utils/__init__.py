@@ -22,7 +22,7 @@ def get_captive_url_message(request):
         request.session['client_ip']
         )
         
-    return "%s%s" % ('Package purchased successfully. You may ', "<a href=" + captive_url + ">log in</a> to browse.")
+    return "%s%s" % ('Package purchased successfully. You may ', "<strong><a href=" + captive_url + ">log in</a></strong> to browse.")
 
 def increment_data_balance(radcheck, package):
     radcheck.data_balance += Decimal(package.volume)
