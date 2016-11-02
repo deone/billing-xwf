@@ -81,9 +81,9 @@ def create(request):
             user = form.save()
             
             # Send verification sms
-            phone_number = user.subscriber.phone_number
-            client = TwilioRestClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-            client.messages.create(to=phone_number, from_=settings.TWILIO_NUMBER, body=settings.WELCOME_SMS)
+            # phone_number = user.subscriber.phone_number
+            # client = TwilioRestClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+            # client.messages.create(to=phone_number, from_=settings.TWILIO_NUMBER, body=settings.WELCOME_SMS)
 
             # We need to call login here so that our
             # dashboard can have user's details.
