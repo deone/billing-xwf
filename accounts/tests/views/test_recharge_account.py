@@ -11,7 +11,7 @@ from . import ViewsTests
 class RechargeAccountTests(ViewsTests):
 
     def test_recharge_account_get(self):
-        self.c.post(reverse('accounts:login'), {'username': 'z@z.com', 'password': '12345'})
+        self.c.post(reverse('accounts:login'), {'username': '0542751610', 'password': '12345'})
         response = self.c.get(reverse('accounts:recharge_account'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue('form' in response.context)
@@ -44,7 +44,7 @@ class RechargeAccountTests(ViewsTests):
 
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.get('location'), reverse('accounts:recharge_account'))
-        self.assertEqual('Account recharged successfully.', lst[0].__str__())
+        self.assertEqual('Account recharged successfully. You may <strong><a href=/packages/buy/>purchase a package</a></strong> now.', lst[0].__str__())
 
         # Delete stub recharge card
         data.update({'voucher_id': voucher['id']})

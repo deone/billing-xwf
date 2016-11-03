@@ -9,17 +9,13 @@ class CreateUserFormTest(FormsTestCase):
     def setUp(self, *args, **kwargs):
         super(CreateUserFormTest, self).setUp(*args, **kwargs)
         self.data = {
-              'username': 'a@a.com',
-              'first_name': 'Ola',
-              'last_name': 'Ade',
+              'username': '0542751610',
               'password': '12345',
-              'confirm_password': '12345',
-              'country': 'NGA',
-              'phone_number': '08029299274'
+              'confirm_password': '12345'
             }
 
     def test_clean_duplicate_user(self):
-        User.objects.create_user('a@a.com', 'a@a.com', '12345')
+        User.objects.create_user('0542751610', '0542751610', '12345')
 
         form = CreateUserForm(self.data, user=AnonymousUser)
         self.assertFalse(form.is_valid())
@@ -34,27 +30,3 @@ class CreateUserFormTest(FormsTestCase):
 
         self.assertFalse(form.is_valid())
         self.assertEqual(form.errors['__all__'][0], 'Passwords do not match')
-
-    def test_clean_max_user_count_reached(self):
-        # Set group threshold to 1
-        self.group.max_no_of_users = 1
-        self.group.save()
-
-        form = CreateUserForm(self.data, user=self.user)
-
-        self.assertFalse(form.is_valid())
-        self.assertTrue(form.errors['__all__'][0].startswith(
-          'You are not allowed to create more users than your group threshold.'
-          ))
-
-    def test_save(self):
-        # Set subscriber as group admin
-        self.subscriber.is_group_admin = True
-        self.subscriber.save()
-
-        form = CreateUserForm(self.data, user=self.user)
-        form.is_valid()
-        new_user = form.save()
-
-        self.assertEqual(new_user.subscriber.group.name, self.group.name)
-        self.assertEqual(new_user.subscriber.phone_number, '+2348029299274')

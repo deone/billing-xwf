@@ -9,7 +9,7 @@ from .helpers import md5_password, send_api_request
 from utils import get_balance
 
 class CreateUserForm(forms.Form):
-    phone_number = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex],
+    username = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex],
         widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
@@ -24,10 +24,10 @@ class CreateUserForm(forms.Form):
         cleaned_data = super(CreateUserForm, self).clean()
         password = cleaned_data.get("password")
         confirm_password = cleaned_data.get("confirm_password")
-        phone_number = cleaned_data.get("phone_number")
+        username = cleaned_data.get("username")
 
         try:
-            user = User.objects.get(username=phone_number)
+            user = User.objects.get(username=username)
         except User.DoesNotExist:
             pass
         else:
@@ -38,18 +38,13 @@ class CreateUserForm(forms.Form):
                 raise forms.ValidationError("Passwords do not match", code="password_mismatch")
             
     def save(self):
-        username = self.cleaned_data['phone_number']
+        username = self.cleaned_data['username']
         password = self.cleaned_data['password']
-        phone_number = '+233' + self.cleaned_data['phone_number'][1:]
+        phone_number = '+233' + self.cleaned_data['username'][1:]
 
         user = User.objects.create_user(username, username, password)
 
-        if not self.user.is_anonymous():
-            if self.user.subscriber and self.user.subscriber.is_group_admin:
-                Subscriber.objects.create(user=user, group=self.user.subscriber.group,
-                    country=country, phone_number=phone_number)
-        else:
-            Subscriber.objects.create(user=user, phone_number=phone_number)
+        Subscriber.objects.create(user=user, phone_number=phone_number)
 
         Radcheck.objects.create(user=user,
                                 username=username,
