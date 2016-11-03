@@ -36,6 +36,15 @@ class CreateUserForm(forms.Form):
         if password and confirm_password:
             if password != confirm_password:
                 raise forms.ValidationError("Passwords do not match", code="password_mismatch")
+
+        if not self.user.is_anonymous() and self.user.subscriber.group is not None:
+            group = self.user.subscriber.group
+            # Refactor this. It is repeated in BulkUserUploadForm
+            if group.max_user_count_reached():
+                if not settings.EXCEED_MAX_USER_COUNT:
+                    raise forms.ValidationError(
+                        "You are not allowed to create more users than your group threshold. Your group threshold is set to %s."
+                      % str(group.max_no_of_users))
             
     def save(self):
         username = self.cleaned_data['username']
@@ -44,7 +53,12 @@ class CreateUserForm(forms.Form):
 
         user = User.objects.create_user(username, username, password)
 
-        Subscriber.objects.create(user=user, phone_number=phone_number)
+        if not self.user.is_anonymous():
+            if self.user.subscriber and self.user.subscriber.is_group_admin:
+                Subscriber.objects.create(user=user, group=self.user.subscriber.group,
+                    country='GHA', phone_number=phone_number)
+        else:
+            Subscriber.objects.create(user=user, country='GHA', phone_number=phone_number)
 
         Radcheck.objects.create(user=user,
                                 username=username,
