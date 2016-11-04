@@ -127,6 +127,16 @@ class PasswordResetSMSForm(forms.Form):
     username = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex],
         widget=forms.TextInput(attrs={'class': 'form-control'}))
 
+    def clean(self):
+        cleaned_data = super(PasswordResetSMSForm, self).clean()
+        username = cleaned_data.get('username')
+
+        try:
+            if username is not None:
+                user = User.objects.get(username__iexact=username)
+        except User.DoesNotExist:
+            raise forms.ValidationError("Phone number does not exist.")
+
     def send_sms(self, context):
         phone_number = '+233' + context['username'][1:]
         message = loader.render_to_string('accounts/sms.txt', context)
@@ -163,19 +173,6 @@ class PasswordResetSMSForm(forms.Form):
             }
             
             self.send_sms(context)
-
-""" class PasswordResetEmailForm(PasswordResetForm):
-    email = forms.EmailField(label='Email Address', max_length=50, widget=forms.EmailInput(attrs={'class': 'form-control'}))
-
-    def clean(self):
-        cleaned_data = super(PasswordResetForm, self).clean()
-        email = cleaned_data.get('email')
-
-        try:
-            if email is not None:
-                user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            raise forms.ValidationError("Email does not exist.") """
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex], widget=forms.TextInput(attrs={'class': 'form-control'}))
