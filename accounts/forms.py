@@ -6,6 +6,7 @@ from django.utils import timezone
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.http import urlsafe_base64_encode
 from django.utils.encoding import force_bytes
+from django.contrib.sites.shortcuts import get_current_site
 
 from twilio.rest import TwilioRestClient
 
@@ -142,7 +143,7 @@ class PasswordResetSMSForm(forms.Form):
              from_email=None, request=None, html_email_template_name=None):
 
         username = self.cleaned_data["username"]
-        """ for user in self.get_users(username):
+        for user in self.get_users(username):
             if not domain_override:
                 current_site = get_current_site(request)
                 site_name = current_site.name
@@ -157,9 +158,9 @@ class PasswordResetSMSForm(forms.Form):
                 'user': user,
                 'token': token_generator.make_token(user),
                 'protocol': 'https' if use_https else 'http',
-            } """
+            }
             
-        self.send_sms(username)
+            self.send_sms(user.username)
 
 """ class PasswordResetEmailForm(PasswordResetForm):
     email = forms.EmailField(label='Email Address', max_length=50, widget=forms.EmailInput(attrs={'class': 'form-control'}))
