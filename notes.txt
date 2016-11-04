@@ -107,7 +107,14 @@ Better user experience
 
 - Make billing at port 80 to solve DNS resolution problem - temporarily.
 - Investigate why vouchers are appended to same file when you vend in quick succession. Could be because the file names are same, since they're vended at the same time?
-- We might need to store logout_url in the database. It goes away from the session and when this happens, users will be unable to end their session.
-- Rollback creation of users with invalid email addresses. Use and SMTPException as check.
-- Refactor threshold form error in accounts/forms (CreateUserForm and BulkUploadForm) and accounts/views (toggle_status).
-- Refactor template inheritance for navigation.
+
+- We might need to store logout_url in the database. It goes away from the session and when this happens, users will be unable to end their session. **
+- Rollback creation of users with invalid email addresses. Use an SMTPException as check. **
+- Refactor threshold form error in accounts/forms (CreateUserForm and BulkUploadForm) and accounts/views (toggle_status). **
+- Refactor template inheritance for navigation. **
+- Move accounts.helpers into utils. **
+
+** Copy commit to master.
+
+
+- Make password reset with sms a separate app.

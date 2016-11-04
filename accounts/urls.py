@@ -2,7 +2,7 @@ from django.conf.urls import url
 from django.contrib.auth import views as auth_views
 
 from . import views
-from .forms import ResetPasswordForm, PasswordResetEmailForm, LoginForm
+from .forms import ResetPasswordForm, PasswordResetSMSForm, LoginForm
 
 urlpatterns = [
     url(r'^login/$', auth_views.login, {'template_name': 'accounts/login.html', 'authentication_form': LoginForm}, name='login'),
@@ -13,7 +13,7 @@ urlpatterns = [
       'template_name': 'accounts/password_reset.html',
       'post_reset_redirect': '/accounts/password_reset/done/',
       'email_template_name': 'accounts/password_reset_email.html',
-      'password_reset_form': PasswordResetEmailForm,
+      'password_reset_form': PasswordResetSMSForm,
       'subject_template_name': 'accounts/password_reset_subject.txt'
     }, name='password_reset'),
     url(r'^password_reset/done/$', auth_views.password_reset_done, {'template_name': 'accounts/password_reset_done.html'}, name='password_reset_done'),

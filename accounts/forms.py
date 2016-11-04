@@ -1,7 +1,13 @@
 from django import forms
 from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm, AuthenticationForm
+from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.utils import timezone
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+
+from twilio.rest import TwilioRestClient
 
 from .models import *
 from .helpers import md5_password, send_api_request
@@ -115,7 +121,47 @@ class ResetPasswordForm(SetPasswordForm):
         subscriber.value = md5_password(self.cleaned_data['new_password1'])
         subscriber.save()
 
-class PasswordResetEmailForm(PasswordResetForm):
+class PasswordResetSMSForm(forms.Form):
+    username = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex],
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+
+    def send_sms(self, username):
+        phone_number = '+233' + username[1:]
+        client = TwilioRestClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
+        client.messages.create(to=phone_number, from_=settings.TWILIO_NUMBER, body=settings.WELCOME_SMS)
+
+    def get_users(self, username):
+        active_users = get_user_model()._default_manager.filter(
+            username__iexact=username, is_active=True)
+        return (u for u in active_users if u.has_usable_password())
+
+    def save(self, domain_override=None,
+             subject_template_name=None,
+             email_template_name=None,
+             use_https=False, token_generator=default_token_generator,
+             from_email=None, request=None, html_email_template_name=None):
+
+        username = self.cleaned_data["username"]
+        """ for user in self.get_users(username):
+            if not domain_override:
+                current_site = get_current_site(request)
+                site_name = current_site.name
+                domain = current_site.domain
+            else:
+                site_name = domain = domain_override
+            context = {
+                'username': user.username,
+                'domain': domain,
+                'site_name': site_name,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'user': user,
+                'token': token_generator.make_token(user),
+                'protocol': 'https' if use_https else 'http',
+            } """
+            
+        self.send_sms(username)
+
+""" class PasswordResetEmailForm(PasswordResetForm):
     email = forms.EmailField(label='Email Address', max_length=50, widget=forms.EmailInput(attrs={'class': 'form-control'}))
 
     def clean(self):
@@ -126,7 +172,7 @@ class PasswordResetEmailForm(PasswordResetForm):
             if email is not None:
                 user = User.objects.get(email=email)
         except User.DoesNotExist:
-            raise forms.ValidationError("Email does not exist.")
+            raise forms.ValidationError("Email does not exist.") """
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex], widget=forms.TextInput(attrs={'class': 'form-control'}))
