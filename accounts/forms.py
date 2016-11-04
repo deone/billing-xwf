@@ -131,10 +131,11 @@ class PasswordResetSMSForm(forms.Form):
         cleaned_data = super(PasswordResetSMSForm, self).clean()
         username = cleaned_data.get('username')
 
+        model = get_user_model()
         try:
             if username is not None:
-                user = User.objects.get(username__iexact=username)
-        except User.DoesNotExist:
+                user = model._default_manager.get(username__iexact=username)
+        except model.DoesNotExist:
             raise forms.ValidationError("Phone number does not exist.")
 
     def send_sms(self, context):
