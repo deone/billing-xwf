@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, resolve_url
 from django.contrib.auth.models import User, AnonymousUser
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
@@ -6,10 +6,13 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib import messages
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import Http404
+from django.http import Http404, HttpResponseRedirect
 from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
+from django.views.decorators.csrf import csrf_protect
+from django.template.response import TemplateResponse
+from django.utils.deprecation import RemovedInDjango20Warning
 
 from twilio.rest import TwilioRestClient
 
@@ -144,6 +147,44 @@ def index(request):
     context.update({'logout_url': logout_url})
 
     return render(request, 'accounts/index.html', context)
+
+@csrf_protect
+def password_reset(request, is_admin_site=False, extra_context=None, current_app=None, 
+                        template_name=None, password_reset_form=None, post_reset_redirect=None):
+    if post_reset_redirect is None:
+        post_reset_redirect = reverse('password_reset_done')
+    else:
+        post_reset_redirect = resolve_url(post_reset_redirect)
+    if request.method == "POST":
+        form = password_reset_form(request.POST)
+        if form.is_valid():
+            opts = {
+                'use_https': request.is_secure(),
+                'request': request,
+            }
+            if is_admin_site:
+                warnings.warn(
+                    "The is_admin_site argument to "
+                    "django.contrib.auth.views.password_reset() is deprecated "
+                    "and will be removed in Django 2.0.",
+                    RemovedInDjango20Warning, 3
+                )
+                opts = dict(opts, domain_override=request.get_host())
+            form.save(**opts)
+            return HttpResponseRedirect(post_reset_redirect)
+    else:
+        form = password_reset_form()
+    context = {
+        'form': form,
+        'title': 'Password reset',
+    }
+    if extra_context is not None:
+        context.update(extra_context)
+
+    if current_app is not None:
+        request.current_app = current_app
+
+    return TemplateResponse(request, template_name, context)
 
 def verify_email(request, uidb64=None, token=None):
     assert uidb64 is not None and token is not None

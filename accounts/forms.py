@@ -149,11 +149,7 @@ class PasswordResetSMSForm(forms.Form):
             username__iexact=username, is_active=True)
         return (u for u in active_users if u.has_usable_password())
 
-    def save(self, domain_override=None,
-             subject_template_name=None,
-             email_template_name=None,
-             use_https=False, token_generator=default_token_generator,
-             from_email=None, request=None, html_email_template_name=None):
+    def save(self, domain_override=None, use_https=False, request=None):
 
         username = self.cleaned_data["username"]
         for user in self.get_users(username):
@@ -169,7 +165,7 @@ class PasswordResetSMSForm(forms.Form):
                 'site_name': site_name,
                 'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                 'user': user,
-                'token': token_generator.make_token(user),
+                'token': default_token_generator.make_token(user),
                 'protocol': 'https' if use_https else 'http',
             }
             
