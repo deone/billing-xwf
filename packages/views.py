@@ -83,7 +83,7 @@ def create_subscription(request, package_pk):
     subscription = save_subscription(radcheck, package, start, amount=None, balance=None, token=token)
     message = get_package_purchase_success_message(request)
     if message is None:
-        return return HttpResponse('Looks like your browser does not support cookies. Please disconnect and reconnect to the WiFi network to log in.')
+        return HttpResponse('Looks like your browser does not support cookies. Please disconnect and reconnect to the WiFi network to log in.')
     
     messages.success(request, get_package_purchase_success_message(request))
     return redirect('packages:buy')
