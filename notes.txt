@@ -108,7 +108,7 @@ Better user experience
 - Make billing at port 80 to solve DNS resolution problem - temporarily.
 - Investigate why vouchers are appended to same file when you vend in quick succession. Could be because the file names are same, since they're vended at the same time?
 
-- We might need to store logout_url in the database. It goes away from the session and when this happens, users will be unable to end their session. **
+- Users are unable to end their session in the dashboard if they log in to the dashboard separately instead of clicking the link on the success page. That's because the session variable logout_url doesn't exist for the new session.
 - Rollback creation of users with invalid email addresses. Use an SMTPException as check. **
 - Refactor threshold form error in accounts/forms (CreateUserForm and BulkUploadForm) and accounts/views (toggle_status). **
 - Refactor template inheritance for navigation. **
@@ -118,7 +118,6 @@ Better user experience
 
 
 - Make password reset with sms a separate app.
-- Users should not be able to authenticate with an expired package even if they have data balance.
 - Validate phone numbers extensively.
 - Unit-test extensively.
 - We have to use the same flow for all links on captive portal - when the action is completed, user should be able to click a link to open the captive portal and log in.

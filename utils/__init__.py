@@ -2,6 +2,7 @@ from django.utils import timezone
 from django.forms import ValidationError
 from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse
 
 from accounts.models import RechargeAndUsage
 from packages.models import PackageSubscription
@@ -15,16 +16,19 @@ def get_package_purchase_success_message(request):
     return "%s%s" % ('Package purchased successfully. You may ', "<strong><a href=" + captive_url + ">log in</a></strong> to browse.")
 
 def get_captive_url(request):
-    return '%s?login_url=%s&continue_url=%s&ap_mac=%s&ap_name=%s&ap_tags=%s&client_mac=%s&client_ip=%s' % (
-        reverse('captive'), 
-        request.session['login_url'], 
-        request.session['continue_url'],
-        request.session['ap_mac'],
-        request.session['ap_name'],
-        request.session['ap_tags'],
-        request.session['client_mac'],
-        request.session['client_ip']
-        )
+    if not 'login_url' in request.session:
+        return HttpResponse('Looks like your browser does not support cookies. Please disconnect and reconnect to the WiFi network to log in.')
+    else:
+        return '%s?login_url=%s&continue_url=%s&ap_mac=%s&ap_name=%s&ap_tags=%s&client_mac=%s&client_ip=%s' % (
+            reverse('captive'), 
+            request.session['login_url'], 
+            request.session['continue_url'],
+            request.session['ap_mac'],
+            request.session['ap_name'],
+            request.session['ap_tags'],
+            request.session['client_mac'],
+            request.session['client_ip']
+            )
         
 def increment_data_balance(radcheck, package):
     radcheck.data_balance += Decimal(package.volume)
