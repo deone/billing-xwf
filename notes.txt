@@ -120,6 +120,7 @@ Better user experience
 - Make password reset with sms a separate app.
 - Users should not be able to authenticate with an expired package even if they have data balance.
 - Validate phone numbers extensively.
+- Unit-test extensively.
 - We have to use the same flow for all links on captive portal - when the action is completed, user should be able to click a link to open the captive portal and log in.
 
 - On master branch, return right error code for decorators. E.g. we shouldn't return 404 if user isn't group admin.

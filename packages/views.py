@@ -11,7 +11,7 @@ from billing.decorators import must_be_individual_user
 
 from accounts.models import Radcheck
 from accounts.helpers import md5_password
-from utils import save_subscription, check_subscription, get_captive_url_message
+from utils import save_subscription, check_subscription, get_package_purchase_success_message
 
 from .forms import PackageSubscriptionForm
 from .models import Package, InstantVoucher
@@ -82,7 +82,7 @@ def create_subscription(request, package_pk):
 
     subscription = save_subscription(radcheck, package, start, amount=None, balance=None, token=token)
     
-    messages.success(request, get_captive_url_message(request))
+    messages.success(request, get_package_purchase_success_message(request))
     return redirect('packages:buy')
 
 @login_required
@@ -94,7 +94,7 @@ def buy_package(request):
         form = PackageSubscriptionForm(request.POST, user=request.user, packages=packages)
         if form.is_valid():
             form.save()
-            messages.success(request, get_captive_url_message(request))
+            messages.success(request, get_package_purchase_success_message(request))
             return redirect('packages:buy')
     else:
         form = PackageSubscriptionForm(user=request.user, packages=packages)

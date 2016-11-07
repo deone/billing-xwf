@@ -10,8 +10,12 @@ from payments.models import IndividualPayment
 from decimal import Decimal
 from datetime import timedelta
 
-def get_captive_url_message(request):
-    captive_url = '%s?login_url=%s&continue_url=%s&ap_mac=%s&ap_name=%s&ap_tags=%s&client_mac=%s&client_ip=%s' % (
+def get_package_purchase_success_message(request):
+    captive_url = get_captive_url(request)
+    return "%s%s" % ('Package purchased successfully. You may ', "<strong><a href=" + captive_url + ">log in</a></strong> to browse.")
+
+def get_captive_url(request):
+    return '%s?login_url=%s&continue_url=%s&ap_mac=%s&ap_name=%s&ap_tags=%s&client_mac=%s&client_ip=%s' % (
         reverse('captive'), 
         request.session['login_url'], 
         request.session['continue_url'],
@@ -22,8 +26,6 @@ def get_captive_url_message(request):
         request.session['client_ip']
         )
         
-    return "%s%s" % ('Package purchased successfully. You may ', "<strong><a href=" + captive_url + ">log in</a></strong> to browse.")
-
 def increment_data_balance(radcheck, package):
     radcheck.data_balance += Decimal(package.volume)
     radcheck.save()
