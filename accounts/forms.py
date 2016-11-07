@@ -1,5 +1,5 @@
 from django import forms
-from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm, AuthenticationForm
+from django.contrib.auth.forms import SetPasswordForm, AuthenticationForm
 from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.utils import timezone
