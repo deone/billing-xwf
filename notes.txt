@@ -123,3 +123,4 @@ Better user experience
 - We have to use the same flow for all links on captive portal - when the action is completed, user should be able to click a link to open the captive portal and log in.
 
 - On master branch, return right error code for decorators. E.g. we shouldn't return 404 if user isn't group admin.
+- On vendor, check what happens when a vendor request more than the number of available vouchers.
