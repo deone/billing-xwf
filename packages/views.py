@@ -85,7 +85,7 @@ def create_subscription(request, package_pk):
     if message is None:
         return HttpResponse('Looks like your browser does not support cookies. Please disconnect and reconnect to the WiFi network to log in.')
     
-    messages.success(request, get_package_purchase_success_message(request))
+    messages.success(request, message)
     return redirect('packages:buy')
 
 @login_required
@@ -97,7 +97,10 @@ def buy_package(request):
         form = PackageSubscriptionForm(request.POST, user=request.user, packages=packages)
         if form.is_valid():
             form.save()
-            messages.success(request, get_package_purchase_success_message(request))
+            message = get_package_purchase_success_message(request)
+            if message is None:
+                return HttpResponse('Looks like your browser does not support cookies. Please disconnect and reconnect to the WiFi network to log in.')
+            messages.success(request, message)
             return redirect('packages:buy')
     else:
         form = PackageSubscriptionForm(user=request.user, packages=packages)
