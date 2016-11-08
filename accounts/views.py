@@ -154,6 +154,26 @@ def index(request):
 
     return render(request, 'accounts/index.html', context)
 
+def password_reset_complete(request,
+                            template_name='registration/password_reset_complete.html',
+                            current_app=None, extra_context=None):
+    context = {
+        'login_url': resolve_url(settings.LOGIN_URL),
+        'title': 'Password reset complete',
+    }
+
+    captive_url = get_captive_url(request.session)
+    if captive_url is not None:
+        context.update({'captive_url': captive_url})
+
+    if extra_context is not None:
+        context.update(extra_context)
+
+    if current_app is not None:
+        request.current_app = current_app
+
+    return TemplateResponse(request, template_name, context)
+
 @csrf_protect
 def password_reset(request, is_admin_site=False, extra_context=None, current_app=None, 
                         template_name=None, password_reset_form=None, post_reset_redirect=None):
