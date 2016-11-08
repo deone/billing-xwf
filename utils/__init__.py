@@ -10,23 +10,29 @@ from payments.models import IndividualPayment
 from decimal import Decimal
 from datetime import timedelta
 
-def get_package_purchase_success_message(request):
-    if not 'login_url' in request.session:
-        return None
-    captive_url = get_captive_url(request)
-    return "%s%s" % ('Package purchased successfully. You may ', "<strong><a href=" + captive_url + ">log in</a></strong> to browse.")
+def get_package_purchase_success_message(session):
+    captive_url = get_captive_url(session)
+    if captive_url:
+        message = "%s%s" % ('Package purchased successfully. You may ', "<strong><a href=" + captive_url + ">log in</a></strong> to browse.")
+    else:
+        message = 'Package purchased successfully. Please disconnect and reconnect to the WiFi network to log in.'
+    return message
 
-def get_captive_url(request):
-    return '%s?login_url=%s&continue_url=%s&ap_mac=%s&ap_name=%s&ap_tags=%s&client_mac=%s&client_ip=%s' % (
-        reverse('captive'), 
-        request.session['login_url'], 
-        request.session['continue_url'],
-        request.session['ap_mac'],
-        request.session['ap_name'],
-        request.session['ap_tags'],
-        request.session['client_mac'],
-        request.session['client_ip']
-        )
+def get_captive_url(session):
+    login_url = session.get('login_url', None)
+    if not login_url:
+        return None
+    else:
+        return '%s?login_url=%s&continue_url=%s&ap_mac=%s&ap_name=%s&ap_tags=%s&client_mac=%s&client_ip=%s' % (
+            reverse('captive'), 
+            login_url,
+            session['continue_url'],
+            session['ap_mac'],
+            session['ap_name'],
+            session['ap_tags'],
+            session['client_mac'],
+            session['client_ip']
+            )
         
 def increment_data_balance(radcheck, package):
     radcheck.data_balance += Decimal(package.volume)
