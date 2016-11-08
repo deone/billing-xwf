@@ -1,4 +1,4 @@
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse
 from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
