@@ -18,7 +18,7 @@ from twilio.rest import TwilioRestClient
 
 from billing.decorators import *
 
-from utils import get_subscriptions
+from utils import get_subscriptions, get_captive_url
 
 from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, RechargeAccountForm
 from .models import Subscriber
