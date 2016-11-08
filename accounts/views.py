@@ -163,8 +163,7 @@ def password_reset_complete(request,
     }
 
     captive_url = get_captive_url(request.session)
-    if captive_url is not None:
-        context.update({'captive_url': captive_url})
+    context.update({'captive_url': captive_url})
 
     if extra_context is not None:
         context.update(extra_context)
