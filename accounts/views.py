@@ -143,6 +143,12 @@ def index(request):
     if request.user.subscriber.email_verified:
         context.update({'verified': True})
 
+    # Open captive portal from dashboard.
+    captive_url = get_captive_url(request)
+    if captive_url is not None:
+        context.update({'captive_url': captive_url})
+
+    # End browsing session from dashboard.
     logout_url = request.session.get('logout_url', None)
     context.update({'logout_url': logout_url})
 

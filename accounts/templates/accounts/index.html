@@ -212,8 +212,11 @@
           </span>
         </div>
       {% endif %}
+      {% if captive_url %}
+	      <a class="btn btn-primary end-session" role="button" href="{{ captive_url }}">Log In To Browse</a>
+      {% endif %}
       {% if logout_url %}
-	<a class="btn btn-primary end-session" role="button" href="{{ logout_url }}">End Browsing Session</a>
+	      <a class="btn btn-primary end-session" role="button" href="{{ logout_url }}">End Browsing Session</a>
       {% endif %}
     </div>
   </div>
