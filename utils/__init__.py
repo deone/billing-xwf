@@ -19,6 +19,7 @@ def get_package_purchase_success_message(session):
     return message
 
 def get_captive_url(session):
+    print session
     login_url = session.get('login_url', None)
     if not login_url:
         return None
