@@ -124,3 +124,11 @@ Better user experience
 
 - On master branch, return right error code for decorators. E.g. we shouldn't return 404 if user isn't group admin.
 - On vendor, check what happens when a vendor request more than the number of available vouchers.
+- Disable buttons and display 'Wait...' message after user clicks.
+- Consider sending them a message when they create an account that contains a link to the dashboard.
+- Users are unable to end their browsing session on mobile phones except their phones provide a link to the success URL. e.g. Clement's phone.
+The 'End Browsing Session' feature on the dashboard too does not work on mobile phones because it depends on a session variable. Now this variable only displays if any link that is opened, opens in the captive portal. For instance, when a user clicks the password reset link from the SMS, it opens in another browser window.
+It may be wise to save the logout_url in the database after a user logs in so that we can retrieve and display it on the dashboard. The table should be such that it deletes all current entries for the user before adding a new entry. The key should be 'client_mac.'
+
+- Upon account creation, store Meraki parameters with associated username.
+- In captive view, update entry with logout url as NULL. In success view, update entry with logout url.
