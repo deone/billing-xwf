@@ -186,7 +186,7 @@ def index(request):
         context.update({'captive_url': captive_url})
 
     # End browsing session from dashboard.
-    np = NetworkParameter.objects.get(request.user.subscriber)
+    np = NetworkParameter.objects.get(subscriber=request.user.subscriber)
     context.update({'logout_url': np.logout_url})
 
     return render(request, 'accounts/index.html', context)
