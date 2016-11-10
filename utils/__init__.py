@@ -13,7 +13,7 @@ from datetime import timedelta
 def get_package_purchase_success_message(session):
     captive_url = get_captive_url(session)
     if captive_url:
-        message = "%s%s" % ('Package purchased successfully. You may ', "<strong><a href=" + captive_url + ">log in</a></strong> to browse.")
+        message = "%s%s" % ('Package purchased successfully. ', "<a class='btn btn-primary' href=" + captive_url + ">Log In To Browse</a>")
     else:
         message = 'Package purchased successfully. Please disconnect and reconnect to the WiFi network to log in.'
     return message
