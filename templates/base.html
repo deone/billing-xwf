@@ -54,6 +54,14 @@
     <footer class="footer">
       <p>&copy; 2016 Spectra Wireless.</p>
     </footer>
+    
+    <script>
+      $('form').submit(function() {
+        var btn = $(this).find('.btn');
+        btn.text('Wait...');
+        btn.prop('disabled', true);
+      });
+    </script>
 
   </body>
 </html>
