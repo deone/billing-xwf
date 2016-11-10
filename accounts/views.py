@@ -329,7 +329,7 @@ def recharge_account(request):
 
             if response['code'] == 200:
                 messages.success(request, 
-                    "%s%s" % ('Account recharged successfully. You may ', "<strong><a href=" + reverse('packages:buy') + ">purchase a package</a></strong> now."))
+                    "%s%s" % ('Account recharged successfully. ', "<a class='btn btn-primary' href=" + reverse('packages:buy') + ">Purchase a package</a>"))
                 return redirect('accounts:recharge_account')
     else:
         form = RechargeAccountForm(user=request.user)
