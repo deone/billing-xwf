@@ -135,7 +135,7 @@
                 <strong><a href="{% url 'packages:buy' %}">Buy Package</a></strong>.
               {% endif %}
             {% else %}
-              <strong><a href="{% url 'accounts:recharge_account' %}">Recharge Account</a></strong>.
+              <strong><a class="btn btn-primary" href="{% url 'accounts:recharge_account' %}">Recharge Account</a></strong>
             {% endif %}
           {% endwith %}
         </p>
