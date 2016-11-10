@@ -43,6 +43,9 @@ def captive(request):
     - If this fails, save GET params in session and set logout_key to None.
     - Else, update DB entry with GET params
     """
+    # Always save client_mac in session so that success() can use it to update NetworkParameter
+    request.session['client_mac'] = request.GET['client_mac']
+
     try:
         np = NetworkParameter.objects.get(client_mac=request.GET['client_mac'])
     except NetworkParameter.DoesNotExist:
@@ -53,7 +56,6 @@ def captive(request):
             request.session['ap_mac'] = request.GET['ap_mac']
             request.session['ap_name'] = request.GET['ap_name']
             request.session['ap_tags'] = request.GET['ap_tags']
-            request.session['client_mac'] = request.GET['client_mac']
             request.session['client_ip'] = request.GET['client_ip']
             request.session['logout_url'] = None
     else:
@@ -85,11 +87,11 @@ def captive(request):
     return render(request, 'captive.html', context)
 
 def success(request):
-    if 'logout_url' in request.GET:
-        request.session['logout_url'] = request.GET['logout_url']
-        context = {'logout_url': request.session.get('logout_url', None)}
-    else:
-        context = {}
+    np = NetworkParameter.objects.get(client_mac=request.session['client_mac'])
+    np.logout_url = request.GET['logout_url']
+    np.save()
+
+    context = {'logout_url': request.GET('logout_url', None)}
 
     return render(request, 'accounts/success.html', context)
 
@@ -184,8 +186,8 @@ def index(request):
         context.update({'captive_url': captive_url})
 
     # End browsing session from dashboard.
-    logout_url = request.session.get('logout_url', None)
-    context.update({'logout_url': logout_url})
+    np = NetworkParameter.objects.get(request.user.subscriber)
+    context.update({'logout_url': np.logout_url})
 
     return render(request, 'accounts/index.html', context)
 
