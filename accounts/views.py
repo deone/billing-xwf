@@ -179,7 +179,7 @@ def index(request):
         context.update({'verified': True})
 
     # Open captive portal from dashboard.
-    captive_url = get_captive_url(request.session)
+    captive_url = get_captive_url(request.user.subscriber)
     if captive_url is not None:
         context.update({'captive_url': captive_url})
 

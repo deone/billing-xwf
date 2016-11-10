@@ -81,7 +81,7 @@ def create_subscription(request, package_pk):
     start = check_subscription(radcheck=radcheck)
 
     subscription = save_subscription(radcheck, package, start, amount=None, balance=None, token=token)
-    message = get_package_purchase_success_message(request.session)
+    message = get_package_purchase_success_message(request.user.subscriber)
     messages.success(request, message)
     return redirect('packages:buy')
 
@@ -94,7 +94,7 @@ def buy_package(request):
         form = PackageSubscriptionForm(request.POST, user=request.user, packages=packages)
         if form.is_valid():
             form.save()
-            message = get_package_purchase_success_message(request.session)
+            message = get_package_purchase_success_message(request.user.subscriber)
             messages.success(request, message)
             return redirect('packages:buy')
     else:
