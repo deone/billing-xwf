@@ -198,7 +198,7 @@ class NetworkParameter(models.Model):
     ap_tags = models.CharField(max_length=50)
     ap_mac = models.CharField(max_length=20)
     ap_name = models.CharField(max_length=15)
-    client_mac = models.CharField(max_length=15)
+    client_mac = models.CharField(max_length=20)
     logout_url = models.CharField(max_length=255, default=None, null=True)
 
 class AccessPoint(models.Model):
