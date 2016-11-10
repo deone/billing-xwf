@@ -30,9 +30,11 @@ class CreateUserForm(forms.Form):
 
     def clean_username(self):
         cleaned_data = super(CreateUserForm, self).clean()
-        phone_number = cleaned_data.get('username')
-        if phone_number[:3] not in settings.PHONE_NUMBER_PREFIXES:
+        username = cleaned_data.get('username')
+        if username[:3] not in settings.PHONE_NUMBER_PREFIXES:
             raise forms.ValidationError('Provide a valid phone number.', code='number_invalid')
+
+        return username
 
     def clean(self):
         cleaned_data = super(CreateUserForm, self).clean()
