@@ -28,6 +28,12 @@ class CreateUserForm(forms.Form):
         self.user = kwargs.pop('user', None)
         super(CreateUserForm, self).__init__(*args, **kwargs)
 
+    def clean_username(self):
+        cleaned_data = super(CreateUserForm, self).clean()
+        phone_number = cleaned_data.get('username')
+        if phone_number[:3] not in settings.PHONE_NUMBER_PREFIXES:
+            raise forms.ValidationError('Provide a valid phone number.', code='number_invalid')
+
     def clean(self):
         cleaned_data = super(CreateUserForm, self).clean()
         password = cleaned_data.get("password")

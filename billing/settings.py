@@ -261,3 +261,5 @@ PAYMENT_MASTER_KEY = 'cef70167-7dec-458e-b5bf-1befb4196565'
 # - Test API
 PAYMENT_TEST_URL = 'https://app.mpowerpayments.com/sandbox-api/v1/checkout-invoice/create'
 PAYMENT_TEST_PRIVATE_KEY = 'test_private_-TBbZrbdchpR6RZ9aB6g9Hx6-wk'
+
+PHONE_NUMBER_PREFIXES = ['020', '023', '024', '026', '027', '028', '050', '052', '054', '055', '056', '057']
