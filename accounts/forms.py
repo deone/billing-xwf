@@ -259,13 +259,13 @@ class BulkUserUploadForm(forms.Form):
         return user_list
 
 class RechargeAccountForm(forms.Form):
-    pin = forms.CharField(label="PIN", max_length=14, widget=forms.NumberInput(attrs={'class': 'form-control'}))
+    pin = forms.CharField(label="PIN", max_length=14, widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super(RechargeAccountForm, self).__init__(*args, **kwargs)
 
-    def clean(self):
+    def clean_pin(self):
         cleaned_data = super(RechargeAccountForm, self).clean()
 
         pin = cleaned_data.get('pin')
@@ -282,11 +282,10 @@ class RechargeAccountForm(forms.Form):
         elif recharge['code'] == 404:
             raise forms.ValidationError(recharge['message'], code="invalid-pin")
 
-        return recharge
+        return pin
 
     def save(self):
-        voucher = self.cleaned_data
-
+        voucher = send_api_request(settings.VOUCHER_REDEEM_URL, self.cleaned_data)
         balance = get_balance(self.user.radcheck)
 
         amount = voucher['value']
