@@ -21,7 +21,7 @@ from billing.decorators import *
 from utils import get_subscriptions, get_captive_url
 
 from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, RechargeAccountForm
-from .models import Subscriber
+from .models import Subscriber, NetworkParameter
 from .helpers import *
 
 """ <QueryDict: {
@@ -34,19 +34,40 @@ u'ap_name': [u'Spectra-HQ-NOC'],
 u'client_mac': [u'4c:eb:42:ce:6c:3d']}> """
 
 def captive(request):
-    context = {'form': LoginForm()}
-    request.session['logout_url'] = None
-    
-    # Store request.GET parameters in session
-    if not 'login_url' in request.session:
-        request.session['login_url'] = request.GET['login_url']
-        request.session['continue_url'] = request.GET['continue_url']
-        request.session['ap_mac'] = request.GET['ap_mac']
-        request.session['ap_name'] = request.GET['ap_name']
-        request.session['ap_tags'] = request.GET['ap_tags']
-        request.session['client_mac'] = request.GET['client_mac']
-        request.session['client_ip'] = request.GET['client_ip']
+    """
+    We need users to _always_ be able to launch the captive portal from the dashboard
+    if they are not logged in to browse and end their browsing session if they are logged in to browse.
+    The only requirement is that the captive portal loads.
 
+    - Attempt fetching network parameter from DB with `client_mac`.
+    - If this fails, save GET params in session and set logout_key to None.
+    - Else, update DB entry with GET params
+    """
+    try:
+        np = NetworkParameter.objects.get(client_mac=request.GET['client_mac'])
+    except NetworkParameter.DoesNotExist:
+        # Store request.GET parameters in session
+        if not 'login_url' in request.session:
+            request.session['login_url'] = request.GET['login_url']
+            request.session['continue_url'] = request.GET['continue_url']
+            request.session['ap_mac'] = request.GET['ap_mac']
+            request.session['ap_name'] = request.GET['ap_name']
+            request.session['ap_tags'] = request.GET['ap_tags']
+            request.session['client_mac'] = request.GET['client_mac']
+            request.session['client_ip'] = request.GET['client_ip']
+            request.session['logout_url'] = None
+    else:
+        np.login_url = request.GET['login_url']
+        np.continue_url = request.GET['continue_url']
+        np.ap_mac = request.GET['ap_mac']
+        np.ap_name = request.GET['ap_name']
+        np.ap_tags = request.GET['ap_tags']
+        np.client_mac = request.GET['client_mac']
+        np.client_ip = request.GET['client_ip']
+        np.save()
+
+    context = {'form': LoginForm()}
+    
     if 'error_message' in request.GET:
         context.update({
             'error_message': request.GET['error_message']
@@ -87,6 +108,20 @@ def create(request):
             # phone_number = user.subscriber.phone_number
             # client = TwilioRestClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
             # client.messages.create(to=phone_number, from_=settings.TWILIO_NUMBER, body=settings.WELCOME_SMS)
+
+            # Let's save network parameters here
+            login_url = request.session.get('login_url', None)
+            if login_url:
+                NetworkParameter.objects.create(
+                    subscriber=user.subscriber,
+                    login_url=request.session['login_url'],
+                    continue_url=request.session['continue_url'],
+                    ap_mac=request.session['ap_mac'],
+                    ap_name=request.session['ap_name'],
+                    ap_tags=request.session['ap_tags'],
+                    client_mac=request.session['client_mac'],
+                    client_ip=request.session['client_ip'],
+                    )
 
             # We need to call login here so that our
             # dashboard can have user's details.
