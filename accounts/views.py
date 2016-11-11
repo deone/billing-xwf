@@ -44,7 +44,8 @@ def captive(request):
     - Else, update DB entry with GET params
     """
     # Always save client_mac in session so that success() can use it to update NetworkParameter
-    request.session['client_mac'] = request.GET['client_mac']
+    if 'client_mac' not in request.session:
+    	request.session['client_mac'] = request.GET['client_mac']
 
     try:
         np = NetworkParameter.objects.get(client_mac=request.GET['client_mac'])
@@ -63,9 +64,9 @@ def captive(request):
         np.continue_url = request.GET['continue_url']
         np.ap_mac = request.GET['ap_mac']
         np.ap_name = request.GET['ap_name']
-        np.ap_tags = request.GET['ap_tags']
         np.client_mac = request.GET['client_mac']
         np.client_ip = request.GET['client_ip']
+	np.logout_url = None
         np.save()
 
     context = {'form': LoginForm()}
@@ -78,7 +79,6 @@ def captive(request):
     if 'login_url' in request.GET:
         context.update({
           'login_url': request.GET['login_url'],
-          'logout_url': request.session['logout_url'],
           'success_url': settings.SUCCESS_URL,
         })
     else:
@@ -91,7 +91,7 @@ def success(request):
     np.logout_url = request.GET['logout_url']
     np.save()
 
-    context = {'logout_url': request.GET('logout_url', None)}
+    context = {'logout_url': request.GET.get('logout_url', None)}
 
     return render(request, 'accounts/success.html', context)
 
@@ -181,9 +181,10 @@ def index(request):
         context.update({'verified': True})
 
     # Open captive portal from dashboard.
-    captive_url = get_captive_url(request.user.subscriber)
-    if captive_url is not None:
-        context.update({'captive_url': captive_url})
+    # This should only happen if user isn't already logged in.
+    np = NetworkParameter.objects.get(subscriber=request.user.subscriber)
+    if np.logout_url is None:
+        context.update({'captive_url': get_captive_url(request.user.subscriber)})
 
     # End browsing session from dashboard.
     np = NetworkParameter.objects.get(subscriber=request.user.subscriber)

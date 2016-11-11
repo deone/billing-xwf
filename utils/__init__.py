@@ -20,13 +20,12 @@ def get_package_purchase_success_message(subscriber):
 
 def get_captive_url(subscriber):
     np = NetworkParameter.objects.get(subscriber=subscriber)
-    return '%s?login_url=%s&continue_url=%s&ap_mac=%s&ap_name=%s&ap_tags=%s&client_mac=%s&client_ip=%s' % (
+    return '%s?login_url=%s&continue_url=%s&ap_mac=%s&ap_name=%s&client_mac=%s&client_ip=%s' % (
             reverse('captive'),
             np.login_url,
             np.continue_url,
             np.ap_mac,
             np.ap_name,
-            np.ap_tags,
             np.client_mac,
             np.client_ip
             )
