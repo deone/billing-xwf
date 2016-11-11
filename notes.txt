@@ -132,3 +132,4 @@ It may be wise to save the logout_url in the database after a user logs in so th
 
 - Upon account creation, store Meraki parameters with associated username.
 - In captive view, update entry with logout url as NULL. In success view, update entry with logout url.
+- This feature - enabling user to launch captive portal and end browsing session from the dashboard is unstable. The latest issue is an error that's thrown because the system cannot find the client mac. This happens in the success() view when a user has previously authenticated on another device. The success view tries to find the new device client_mac and update the entry with the logout URL.
