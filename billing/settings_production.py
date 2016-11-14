@@ -2,7 +2,7 @@ from settings import *
 
 DEBUG = False
 
-IP = '154.117.8.18'
+IP = '154.117.8.20'
 ALLOWED_HOSTS = [IP]
 SUCCESS_URL = "http://" + IP + ":7700/success/"
 
