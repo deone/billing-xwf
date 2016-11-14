@@ -9,8 +9,6 @@ from django.utils.encoding import force_bytes
 from django.contrib.sites.shortcuts import get_current_site
 from django.template import loader
 
-from twilio.rest import TwilioRestClient
-
 from .models import *
 from .helpers import md5_password, send_api_request
 
