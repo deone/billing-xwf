@@ -14,7 +14,7 @@ from django.views.decorators.csrf import csrf_protect
 from django.template.response import TemplateResponse
 from django.utils.deprecation import RemovedInDjango20Warning
 
-from twilio.rest import TwilioRestClient
+import requests
 
 from billing.decorators import *
 
@@ -84,9 +84,10 @@ def create(request):
             user = form.save()
             
             # Send verification sms
-            # phone_number = user.subscriber.phone_number
-            # client = TwilioRestClient(settings.TWILIO_ACCOUNT_SID, settings.TWILIO_AUTH_TOKEN)
-            # client.messages.create(to=phone_number, from_=settings.TWILIO_NUMBER, body=settings.WELCOME_SMS)
+            phone_number = user.subscriber.phone_number
+            params = settings.SMS_PARAMS
+            params.update({'To': phone_number})
+            response = requests.get(settings.SMS_URL, params)
 
             # We need to call login here so that our
             # dashboard can have user's details.

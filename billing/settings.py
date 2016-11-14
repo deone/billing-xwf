@@ -135,23 +135,27 @@ EMAIL_HOST_PASSWORD = '@dune369'
 
 # VMS
 VMS_URL = "http://localhost:3000/vouchers/"
-
 VOUCHER_STUB_INSERT_URL = VMS_URL + "insert/"
-
 VOUCHER_STUB_DELETE_URL = VMS_URL + "delete/"
-
 VOUCHER_REDEEM_URL = VMS_URL + "redeem/"
-
 VOUCHER_INVALIDATE_URL = VMS_URL + "invalidate/"
-
 VOUCHER_SELL_URL = VMS_URL + "sell/"
 
 SUCCESS_URL = "http://localhost:8000/success/"
 
-TWILIO_ACCOUNT_SID = 'ACe0325806bc5842a1f96a115e8c21a384'
-TWILIO_AUTH_TOKEN = '90bd6b99b70d51d97d637a98e33ce8a7'
-WELCOME_SMS = 'Welcome to Spectra Xpress WiFi!'
-TWILIO_NUMBER = '+18177569348'
+# SMS settings - SMSGH
+SMS_URL = 'https://api.smsgh.com/v3/messages/send'
+SMS_PARAMS = {
+    'From': 'XWF',
+    'Content': 'Welcome to Spectra Xpress WiFi! You may log into your dashboard at xwf.spectrawireless.com.',
+    'ClientId': 'basjxmbe',
+    'ClientSecret': 'pngstytl',
+    'RegisteredDelivery': 'true'
+}
+
+# TWILIO_ACCOUNT_SID = 'ACe0325806bc5842a1f96a115e8c21a384'
+# TWILIO_AUTH_TOKEN = '90bd6b99b70d51d97d637a98e33ce8a7'
+# TWILIO_NUMBER = '+18177569348'
 
 # More settings
 
