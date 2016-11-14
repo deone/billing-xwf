@@ -148,8 +148,8 @@ SMS_URL = 'https://api.smsgh.com/v3/messages/send'
 SMS_PARAMS = {
     'From': 'XWF',
     'Content': 'Welcome to Spectra Xpress WiFi! You may log into your dashboard at xwf.spectrawireless.com.',
-    'ClientId': 'basjxmbe',
-    'ClientSecret': 'pngstytl',
+    'ClientId': 'qtrufcsm',
+    'ClientSecret': 'mgzqaxfe',
     'RegisteredDelivery': 'true'
 }
 

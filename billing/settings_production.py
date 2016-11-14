@@ -2,13 +2,14 @@ from settings import *
 
 DEBUG = False
 
-IP = '154.117.8.20'
-ALLOWED_HOSTS = [IP]
-SUCCESS_URL = "http://" + IP + ":7700/success/"
+URL = 'xwf.spectrawireless.com'
+ALLOWED_HOSTS = [URL]
+SUCCESS_URL = "http://" + URL + "/success/"
 
 DEFAULT_FROM_EMAIL = 'info@spectrawireless.com'
 
 # VMS
+IP = '154.117.8.18'
 VMS_URL = "http://" + IP + ":8090/vouchers/"
 VOUCHER_STUB_INSERT_URL = VMS_URL + "insert/"
 VOUCHER_STUB_DELETE_URL = VMS_URL + "delete/"
