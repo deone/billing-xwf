@@ -12,12 +12,12 @@ class ViewsTests(TestCase):
         self.c = Client()
         self.factory = RequestFactory()
         self.session = SessionMiddleware()
-        username = 'z@z.com'
+        username = '0542751610'
         password = '12345'
         self.user = User.objects.create_user(username, username, password)
         country = 'GHA'
         self.subscriber = Subscriber.objects.create(user=self.user,
-            country=country, phone_number=Subscriber.COUNTRY_CODES_MAP[country] + '555223345',
+            country=country, phone_number=Subscriber.COUNTRY_CODES_MAP[country] + '542751610',
             email_verified=True, date_verified=timezone.now())
         self.radcheck = Radcheck.objects.create(user=self.user,
                                 username=username,

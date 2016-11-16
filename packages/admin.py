@@ -5,7 +5,6 @@ from django.utils.translation import ugettext_lazy as _
 
 from .forms import update_cleaned_data
 from .models import *
-from .helpers import *
 
 from accounts.models import GroupAccount
 

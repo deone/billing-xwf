@@ -150,6 +150,10 @@ table form {
   margin-right: 1em;
 }
 
+.btn {
+  font-weight: bold;
+}
+
 /* Balance Panes */
 .balance-pane {
   padding-top: .5em;

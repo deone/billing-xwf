@@ -141,6 +141,7 @@ class GroupAccountAdmin(admin.ModelAdmin):
 
 admin.site.unregister(User)
 admin.site.unregister(Group)
+admin.site.register(Radcheck)
 admin.site.register(User, AccountsUserAdmin)
 admin.site.register(GroupAccount, GroupAccountAdmin)
 admin.site.register(AccessPoint, AccessPointAdmin)

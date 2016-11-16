@@ -1,2 +1,2 @@
-create database radius;
-grant all on radius.* to 'radius'@'localhost' identified by 'radpass';
+create database radius_xwf;
+grant all on radius_xwf.* to 'radius_xwf'@'localhost' identified by 'radpass';

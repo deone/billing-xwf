@@ -18,7 +18,7 @@ class SearchTests(GroupAdminViewsTests):
         Subscriber.objects.create(user=self.group_member, country='NGA', phone_number='+233542751610', group=self.group)
 
     def test_index(self):
-        self.c.post(reverse('accounts:login'), {'username': 'z@z.com', 'password': '12345'})
+        self.c.post(reverse('accounts:login'), {'username': '0542751610', 'password': '12345'})
         response = self.c.get(reverse('search:index'), {'q': 'ooo ade'})
         user = response.context['users'][0]
 

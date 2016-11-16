@@ -83,8 +83,8 @@ WSGI_APPLICATION = 'billing.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'radius',
-        'USER': 'radius',
+        'NAME': 'radius_xwf',
+        'USER': 'radius_xwf',
         'PASSWORD': 'radpass',
         'HOST': '127.0.0.1',
         'PORT': '3306'
@@ -135,18 +135,27 @@ EMAIL_HOST_PASSWORD = '@dune369'
 
 # VMS
 VMS_URL = "http://localhost:3000/vouchers/"
-
 VOUCHER_STUB_INSERT_URL = VMS_URL + "insert/"
-
 VOUCHER_STUB_DELETE_URL = VMS_URL + "delete/"
-
 VOUCHER_REDEEM_URL = VMS_URL + "redeem/"
-
 VOUCHER_INVALIDATE_URL = VMS_URL + "invalidate/"
-
 VOUCHER_SELL_URL = VMS_URL + "sell/"
 
 SUCCESS_URL = "http://localhost:8000/success/"
+
+# SMS settings - SMSGH
+SMS_URL = 'https://api.smsgh.com/v3/messages/send'
+SMS_PARAMS = {
+    'From': 'XWF',
+    'Content': 'Welcome to Spectra WiFi! You may log into your dashboard at xwf.spectrawireless.com.',
+    'ClientId': 'qtrufcsm',
+    'ClientSecret': 'mgzqaxfe',
+    'RegisteredDelivery': 'true'
+}
+
+# TWILIO_ACCOUNT_SID = 'ACe0325806bc5842a1f96a115e8c21a384'
+# TWILIO_AUTH_TOKEN = '90bd6b99b70d51d97d637a98e33ce8a7'
+# TWILIO_NUMBER = '+18177569348'
 
 # More settings
 
@@ -184,7 +193,7 @@ SPEED_CHOICES = (
 )
 
 # Volume variants
-TEST = '0.01'
+TEST_VOLUME = '0.05'
 ONE = '1'
 THREE = '3'
 FIVE = '5'
@@ -198,7 +207,7 @@ UNLTD = 'Unlimited'
 
 # Volume names
 VOLUME_NAME_MAP = {
-    TEST: '0.01GB',
+    TEST_VOLUME: '0.05GB',
     ONE: '1GB',
     THREE: '3GB',
     FIVE: '5GB',
@@ -212,7 +221,7 @@ VOLUME_NAME_MAP = {
 }
 
 VOLUME_CHOICES = (
-    (TEST, VOLUME_NAME_MAP[TEST]),
+    (TEST_VOLUME, VOLUME_NAME_MAP[TEST_VOLUME]),
     (ONE, VOLUME_NAME_MAP[ONE]),
     (THREE, VOLUME_NAME_MAP[THREE]),
     (FIVE, VOLUME_NAME_MAP[FIVE]),
@@ -225,17 +234,20 @@ VOLUME_CHOICES = (
     (UNLTD, VOLUME_NAME_MAP[UNLTD]),
 )
 
+TEST_PERIOD = 'Twenty'
 DAILY = 'Daily'
 WEEKLY = 'Weekly'
 MONTHLY = 'Monthly'
 
 PACKAGE_TYPES = (
+    (TEST_PERIOD, 'Twenty'),
     (DAILY, 'Daily'),
     (WEEKLY, 'Weekly'),
     (MONTHLY, 'Monthly'),
 )
 
 PACKAGE_TYPES_HOURS_MAP = {
+    TEST_PERIOD: 0.33,
     DAILY: 1 * 24,
     WEEKLY: 7 * 24,
     MONTHLY: 30 * 24
@@ -256,3 +268,5 @@ PAYMENT_MASTER_KEY = 'cef70167-7dec-458e-b5bf-1befb4196565'
 # - Test API
 PAYMENT_TEST_URL = 'https://app.mpowerpayments.com/sandbox-api/v1/checkout-invoice/create'
 PAYMENT_TEST_PRIVATE_KEY = 'test_private_-TBbZrbdchpR6RZ9aB6g9Hx6-wk'
+
+PHONE_NUMBER_PREFIXES = ['020', '023', '024', '026', '027', '028', '050', '052', '054', '055', '056', '057']

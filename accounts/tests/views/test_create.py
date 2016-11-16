@@ -17,13 +17,9 @@ class CreateTests(ViewsTests):
     def test_create_post(self):
         request = self.factory.post(reverse('accounts:create'),
             data={
-              'username': 'b@b.com',
+              'username': '0231802940',
               'password': '12345',
-              'first_name': 'Ola',
-              'last_name': 'Ade',
               'confirm_password': '12345',
-              'country': 'GHA',
-              'phone_number': '0542751610'
               })
         request.user = AnonymousUser
         self.session.process_request(request)
