@@ -193,7 +193,7 @@ SPEED_CHOICES = (
 )
 
 # Volume variants
-TEST = '0.01'
+TEST_VOLUME = '0.05'
 ONE = '1'
 THREE = '3'
 FIVE = '5'
@@ -207,7 +207,7 @@ UNLTD = 'Unlimited'
 
 # Volume names
 VOLUME_NAME_MAP = {
-    TEST: '0.01GB',
+    TEST_VOLUME: '0.05GB',
     ONE: '1GB',
     THREE: '3GB',
     FIVE: '5GB',
@@ -221,7 +221,7 @@ VOLUME_NAME_MAP = {
 }
 
 VOLUME_CHOICES = (
-    (TEST, VOLUME_NAME_MAP[TEST]),
+    (TEST_VOLUME, VOLUME_NAME_MAP[TEST_VOLUME]),
     (ONE, VOLUME_NAME_MAP[ONE]),
     (THREE, VOLUME_NAME_MAP[THREE]),
     (FIVE, VOLUME_NAME_MAP[FIVE]),
@@ -234,17 +234,20 @@ VOLUME_CHOICES = (
     (UNLTD, VOLUME_NAME_MAP[UNLTD]),
 )
 
+TEST_PERIOD = 'Twenty'
 DAILY = 'Daily'
 WEEKLY = 'Weekly'
 MONTHLY = 'Monthly'
 
 PACKAGE_TYPES = (
+    (TEST_PERIOD, 'Twenty'),
     (DAILY, 'Daily'),
     (WEEKLY, 'Weekly'),
     (MONTHLY, 'Monthly'),
 )
 
 PACKAGE_TYPES_HOURS_MAP = {
+    TEST_PERIOD: 0.33,
     DAILY: 1 * 24,
     WEEKLY: 7 * 24,
     MONTHLY: 30 * 24
