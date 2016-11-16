@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
@@ -10,7 +11,7 @@ from billing.decorators import must_be_individual_user
 
 from accounts.models import Radcheck
 from accounts.helpers import md5_password
-from utils import save_subscription, check_subscription
+from utils import save_subscription, check_subscription, get_package_purchase_success_message
 
 from .forms import PackageSubscriptionForm
 from .models import Package, InstantVoucher
@@ -80,8 +81,8 @@ def create_subscription(request, package_pk):
     start = check_subscription(radcheck=radcheck)
 
     subscription = save_subscription(radcheck, package, start, amount=None, balance=None, token=token)
-
-    messages.success(request, 'Package purchased successfully.')
+    message = get_package_purchase_success_message(request.session)
+    messages.success(request, message)
     return redirect('packages:buy')
 
 @login_required
@@ -93,7 +94,8 @@ def buy_package(request):
         form = PackageSubscriptionForm(request.POST, user=request.user, packages=packages)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Package purchased successfully.')
+            message = get_package_purchase_success_message(request.session)
+            messages.success(request, message)
             return redirect('packages:buy')
     else:
         form = PackageSubscriptionForm(user=request.user, packages=packages)

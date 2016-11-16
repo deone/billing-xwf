@@ -13,7 +13,7 @@ from . import ViewsTests
 class EditUserTests(ViewsTests):
 
     def test_edit_user_get(self):
-        self.c.post(reverse('accounts:login'), {'username': 'z@z.com', 'password': '12345'})
+        self.c.post(reverse('accounts:login'), {'username': '0542751610', 'password': '12345'})
 
         user = User.objects.create(email='c@c.com', username='c@c.com', password='12345', is_active=False)
         subscriber = Subscriber.objects.create(user=user, country='GHA')

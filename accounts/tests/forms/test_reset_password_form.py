@@ -15,12 +15,12 @@ class ResetPasswordFormTest(FormsTestCase):
         )
 
     def test_save(self):
-        old_password = Radcheck.objects.get(username='e@e.com').value
+        old_password = Radcheck.objects.get(username='0555223345').value
 
         data = {'new_password1': '54321', 'new_password2': '54321'}
         form = ResetPasswordForm(self.user, data)
         form.is_valid()
         form.save()
 
-        new_password = Radcheck.objects.get(username='e@e.com').value
+        new_password = Radcheck.objects.get(username='0555223345').value
         self.assertNotEqual(old_password, new_password)
