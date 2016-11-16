@@ -137,7 +137,6 @@ class GroupAccount(models.Model):
         """ Check whether group max. no. of users has been reached. """
         return self.active_users_count() == int(self.max_no_of_users)
 
-
 phone_regex = RegexValidator(regex=r'^\+?1?\d{9,15}$', message="Phone number must be entered in the format: '+999999999'. Up to 15 digits allowed.")
 
 class Subscriber(models.Model):
@@ -181,6 +180,26 @@ class Subscriber(models.Model):
 
     def __str__(self):
         return self.user.username
+
+class NetworkParameter(models.Model):
+    """
+    u'client_ip': [u'10.8.0.78'], 
+    u'login_url': [u'https://n110.network-auth.com/splash/login?mauth=MMNsInqn8ksWBR7PgbfBkWG8PawzJm1wi4PE9pDEUdU1qFuHtYczZmRJFJ3dD7AJvl9DRppZnJAZOTA7L3KbzaX4WgwU74t5ibpIJBwHJ-eg5RnL4Hct5hs7i1UIRBH6kbeL9X4hlcFLZKvkaV2mpeP_hX9hxs5jGl_C0N6oWtoQtUjskrMcnBaA&continue_url=http%3A%2F%2Fgoogle.com%2F'], 
+    u'continue_url': [u'http://google.com/'], 
+    u'ap_tags': [u'office-accra recently-added'], 
+    u'ap_mac': [u'00:18:0a:f2:de:20'], 
+    u'ap_name': [u'Spectra-HQ-NOC'], 
+    u'client_mac': [u'4c:eb:42:ce:6c:3d']}>
+    """
+    subscriber = models.OneToOneField(Subscriber)
+    client_ip = models.CharField(max_length=10)
+    login_url = models.CharField(max_length=600)
+    continue_url = models.CharField(max_length=50)
+    ap_tags = models.CharField(max_length=50)
+    ap_mac = models.CharField(max_length=20)
+    ap_name = models.CharField(max_length=15)
+    client_mac = models.CharField(max_length=20)
+    logout_url = models.CharField(max_length=255, default=None, null=True)
 
 class AccessPoint(models.Model):
     PRIVATE = 'PRV'
