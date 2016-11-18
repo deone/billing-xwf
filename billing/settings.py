@@ -234,20 +234,20 @@ VOLUME_CHOICES = (
     (UNLTD, VOLUME_NAME_MAP[UNLTD]),
 )
 
-TEST_PERIOD = 'Twenty'
+TEST_PERIOD = 'Ten'
 DAILY = 'Daily'
 WEEKLY = 'Weekly'
 MONTHLY = 'Monthly'
 
 PACKAGE_TYPES = (
-    (TEST_PERIOD, 'Twenty'),
+    (TEST_PERIOD, 'Ten'),
     (DAILY, 'Daily'),
     (WEEKLY, 'Weekly'),
     (MONTHLY, 'Monthly'),
 )
 
 PACKAGE_TYPES_HOURS_MAP = {
-    TEST_PERIOD: 0.33,
+    TEST_PERIOD: 0.17,
     DAILY: 1 * 24,
     WEEKLY: 7 * 24,
     MONTHLY: 30 * 24

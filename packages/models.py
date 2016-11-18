@@ -41,14 +41,8 @@ class AbstractPackageSubscription(models.Model):
     class Meta:
         abstract = True
 
-    def is_valid(self, now=timezone.now()):
-        package_stop_time_in_seconds = time.mktime(self.stop.timetuple())
-        now_in_seconds = time.mktime(now.timetuple())
-        
-        stop_date_in_future = package_stop_time_in_seconds > now_in_seconds
-        has_data_left = check_data_balance(self)
-
-        return stop_date_in_future and has_data_left
+    def has_data_left(self):
+	return check_data_balance(self)
 
 class PackageSubscription(AbstractPackageSubscription):
     radcheck = models.ForeignKey(Radcheck)
