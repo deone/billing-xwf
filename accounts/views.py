@@ -6,13 +6,14 @@ from django.contrib.auth import logout as auth_logout
 from django.contrib import messages
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import Http404, HttpResponseRedirect
+from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.utils import timezone
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from django.views.decorators.csrf import csrf_protect
 from django.template.response import TemplateResponse
 from django.utils.deprecation import RemovedInDjango20Warning
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 import requests
 
@@ -315,6 +316,13 @@ def upload_user_list(request):
       'file_length': settings.MAX_FILE_LENGTH
     })
     return render(request, 'accounts/upload_user_list.html', context)
+
+@ensure_csrf_cookie
+def topup(request):
+    if request.method == 'POST':
+        pass
+
+    return JsonResponse({'status': 'ok'})
 
 @login_required
 @must_be_individual_user
