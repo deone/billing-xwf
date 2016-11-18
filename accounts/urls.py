@@ -26,7 +26,7 @@ urlpatterns = [
     url(r'^edit_user/(?P<pk>\d+)/$', views.edit_user, name='edit_user'),
     url(r'^create/$', views.create, name='create'),
     url(r'^upload_user_list/$', views.upload_user_list, name='upload_user_list'),
-    url(r'^recharge/$', views.recharge_account, name='recharge_account'),
+    # url(r'^recharge/$', views.recharge_account, name='recharge_account'),
     url(r'^users/$', views.view_users, name='users'),
     url(r'^users/add/$', views.add_user, name='add_user'),
 ]
