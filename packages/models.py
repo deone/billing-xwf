@@ -4,6 +4,8 @@ from django.utils import timezone
 
 from accounts.models import (Subscriber, GroupAccount, Radcheck)
 
+import time
+
 def check_data_balance(subscription):
     if hasattr(subscription, 'group'):
         data_balance = subscription.group.data_balance
@@ -40,7 +42,10 @@ class AbstractPackageSubscription(models.Model):
         abstract = True
 
     def is_valid(self, now=timezone.now()):
-        stop_date_in_future = self.stop > now
+        package_stop_time_in_seconds = time.mktime(self.stop.timetuple())
+        now_in_seconds = time.mktime(now.timetuple())
+        
+        stop_date_in_future = package_stop_time_in_seconds > now_in_seconds
         has_data_left = check_data_balance(self)
 
         return stop_date_in_future and has_data_left
