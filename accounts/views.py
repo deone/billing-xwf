@@ -19,10 +19,10 @@ import requests
 
 from billing.decorators import *
 
-from utils import get_subscriptions, get_captive_url
+from utils import get_subscriptions, get_captive_url, get_balance
 
 from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, RechargeAccountForm
-from .models import Subscriber
+from .models import Subscriber, RechargeAndUsage, Radcheck
 from .helpers import *
 
 """ <QueryDict: {
@@ -319,10 +319,38 @@ def upload_user_list(request):
 
 @ensure_csrf_cookie
 def topup(request):
+    response = {}
     if request.method == 'POST':
-        pass
+        phone_number = request.POST['phone_number']
+        amount = request.POST['amount']
+        serial_no = request.POST['serial_no']
 
-    return JsonResponse({'status': 'ok'})
+        # Check whether account exists and return error if it doesn't
+        try:
+            radcheck = Radcheck.objects.get(username=phone_number)
+        except Radcheck.DoesNotExist:
+            # return error
+            return JsonResponse({'code': 500, 'message': 'Account does not exist.'})
+
+        balance = get_balance(radcheck)
+
+        amount = amount
+        balance = balance + amount
+        activity_id = serial_no
+
+        RechargeAndUsage.objects.create(
+            radcheck=radcheck,
+            amount=amount,
+            balance=balance,
+            action='REC',
+            activity_id=activity_id
+        )
+
+        response.update({'code': 200, 'message': 'Account recharge successful.'})
+    else:
+        response.update({'status': 'ok'})
+
+    return JsonResponse(response)
 
 @login_required
 @must_be_individual_user
