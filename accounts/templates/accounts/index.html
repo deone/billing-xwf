@@ -15,21 +15,6 @@
       </a>
     </li>
     {% if user.subscriber.group == None %}
-      <!-- <li>
-        <a href="#">
-          <span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span>
-          Payment Options 
-        </a>
-      </li>
-      <li {% if urlname == 'recharge_account' %}class="active"{% endif %}>
-        <a href="{% url 'accounts:recharge_account' %}">
-          <span class="glyphicon glyphicon-download" aria-hidden="true"></span>
-          Topup Account 
-          {% if urlname == 'recharge_account' %}
-            <span class="sr-only">(current)</span></a>
-          {% endif %}
-        </a>
-      </li> -->
       <li {% if urlname == 'buy' %}class="active"{% endif %}>
         <a href="{% url 'packages:buy' %}">
           <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span>
