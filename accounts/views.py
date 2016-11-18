@@ -16,6 +16,7 @@ from django.utils.deprecation import RemovedInDjango20Warning
 from django.views.decorators.csrf import ensure_csrf_cookie
 
 import requests
+from decimal import Decimal
 
 from billing.decorators import *
 
@@ -335,7 +336,7 @@ def topup(request):
         balance = get_balance(radcheck)
 
         amount = amount
-        balance = balance + amount
+        balance = balance + Decimal(amount)
         activity_id = serial_no
 
         RechargeAndUsage.objects.create(
