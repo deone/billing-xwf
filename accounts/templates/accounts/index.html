@@ -213,7 +213,7 @@
         </div>
       {% endif %}
       {% if active_subscription %}
-        {% if captive_url %}
+        {% if not logout_url %}
   	      <a class="btn btn-primary end-session" role="button" href="{{ captive_url }}">Log In To Browse</a>
         {% endif %}
       {% endif %}
