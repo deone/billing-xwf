@@ -15,7 +15,7 @@ class MustBeGroupAdmin404Test(ViewsTests):
 
 class MustBeIndividualUser404Test(GroupAdminViewsTests):
 
-    def test_recharge_account_get(self):
+    """ def test_recharge_account_get(self):
         self.c.post(reverse('accounts:login'), {'username': '0542751610', 'password': '12345'})
         response = self.c.get(reverse('accounts:recharge_account'))
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 404) """

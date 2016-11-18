@@ -44,4 +44,4 @@ class PackagesModelsTests(TestCase):
         self.assertEqual(self.ps.__str__(), string)
 
     def test_gps_is_valid(self):
-        self.assertEqual(self.gps.is_valid(), True)
+        self.assertEqual(self.gps.has_data_left() and (self.gps.stop > timezone.now()), True)

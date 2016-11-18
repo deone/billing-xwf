@@ -8,7 +8,7 @@ from ...helpers import send_api_request
 
 from . import ViewsTests
 
-class RechargeAccountTests(ViewsTests):
+""" class RechargeAccountTests(ViewsTests):
 
     def test_recharge_account_get(self):
         self.c.post(reverse('accounts:login'), {'username': '0542751610', 'password': '12345'})
@@ -48,4 +48,4 @@ class RechargeAccountTests(ViewsTests):
 
         # Delete stub recharge card
         data.update({'voucher_id': voucher['id']})
-        send_api_request(settings.VOUCHER_STUB_DELETE_URL, data)
+        send_api_request(settings.VOUCHER_STUB_DELETE_URL, data) """
