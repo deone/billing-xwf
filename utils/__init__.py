@@ -81,7 +81,7 @@ def check_subscription(radcheck=None, group=None):
     except IndexError:
         start = now
     else:
-        if existing_subscription.is_valid():
+        if existing_subscription.has_data_left() and existing_subscription.stop > now:
             start = existing_subscription.stop
         else:
             start = now
