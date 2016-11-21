@@ -158,7 +158,6 @@ class PasswordResetSMSForm(forms.Form):
             username__iexact=username, is_active=True)
         return (u for u in active_users if u.has_usable_password())
 
-    # def save(self, domain_override=None, use_https=False, request=None):
     def save(self, domain_override=None,
              subject_template_name=None,
              email_template_name=None,
@@ -264,7 +263,7 @@ class BulkUserUploadForm(forms.Form):
 
         return user_list
 
-class RechargeAccountForm(forms.Form):
+""" class RechargeAccountForm(forms.Form):
     pin = forms.CharField(label="PIN", max_length=14, widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
@@ -306,4 +305,4 @@ class RechargeAccountForm(forms.Form):
             activity_id=activity_id
         )
 
-        return voucher
+        return voucher """
