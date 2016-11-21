@@ -3,7 +3,7 @@ from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.messages import get_messages
 from django.conf import settings
 
-from ...views import recharge_account
+# from ...views import recharge_account
 from ...helpers import send_api_request
 
 from . import ViewsTests
