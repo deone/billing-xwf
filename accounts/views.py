@@ -21,7 +21,7 @@ from billing.decorators import *
 
 from utils import get_subscriptions, get_captive_url, get_balance
 
-from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, RechargeAccountForm
+from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm
 from .models import Subscriber, RechargeAndUsage, Radcheck
 from .helpers import *
 
