@@ -282,7 +282,11 @@ def upload_user_list(request):
 @ensure_csrf_cookie
 def create_test(request):
     if request.method == 'POST':
-        Radcheck.objects.create(username=request.POST['username'],
+        username = request.POST['username']
+        try:
+            radcheck = Radcheck.objects.get(username=username)
+        except Radcheck.DoesNotExist:
+            Radcheck.objects.create(username=username,
                                     attribute='MD5-Password',
                                     op=':=',
                                     value=md5_password('12345'))
