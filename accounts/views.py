@@ -280,6 +280,16 @@ def upload_user_list(request):
     return render(request, 'accounts/upload_user_list.html', context)
 
 @ensure_csrf_cookie
+def create_test(request):
+    if request.method == 'POST':
+        Radcheck.objects.create(username=request.POST['username'],
+                                    attribute='MD5-Password',
+                                    op=':=',
+                                    value=md5_password('12345'))
+
+    return JsonResponse({'status': 'ok'})
+
+@ensure_csrf_cookie
 def topup(request):
     response = {}
     if request.method == 'POST':
