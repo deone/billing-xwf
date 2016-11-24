@@ -137,7 +137,6 @@ class PasswordResetSMSForm(forms.Form):
 
     def clean(self):
         cleaned_data = super(PasswordResetSMSForm, self).clean()
-        print cleaned_data
         username = cleaned_data.get('username')
 
         model = get_user_model()
@@ -153,6 +152,7 @@ class PasswordResetSMSForm(forms.Form):
         params = settings.SMS_PARAMS
         params.update({'To': phone_number, 'Content': message})
         response = requests.get(settings.SMS_URL, params)
+        return response
         
     def get_users(self, username):
         active_users = get_user_model()._default_manager.filter(
@@ -183,7 +183,7 @@ class PasswordResetSMSForm(forms.Form):
                 'protocol': 'https' if use_https else 'http',
             }
             
-            self.send_sms(context)
+            return self.send_sms(context)
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex], widget=forms.TextInput(attrs={'class': 'form-control'}))
