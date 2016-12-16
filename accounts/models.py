@@ -118,6 +118,7 @@ class GroupAccount(models.Model):
     # For customer support, admins should be able to see these values but unable to edit it.
     data_balance = models.DecimalField(editable=False, default=0.0, max_digits=8, decimal_places=2)
     data_usage = models.DecimalField(editable=False, default=0.0, max_digits=8, decimal_places=2)
+    bill_group_member = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = "Group Account"
