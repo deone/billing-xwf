@@ -3,6 +3,7 @@ from django.contrib.auth.models import User, AnonymousUser
 from django.core.urlresolvers import reverse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import logout as auth_logout
+from django.contrib.auth.forms import SetPasswordForm
 from django.contrib import messages
 from django.conf import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
@@ -103,8 +104,15 @@ def create(request):
 
     return render(request, 'accounts/create.html', context)
 
-def set_password(request):
-    print 'me'
+def set_password(request, pk):
+    user = User.objects.get(pk=pk)
+    if request.method == 'POST':
+        form = SetPasswordForm(request.POST, user=user)
+    else:
+        form = SetPasswordForm(user=user)
+
+    context = {'form': form}
+    return render(request, 'accounts/set_password.html', context)
 
 @login_required
 def index(request):
