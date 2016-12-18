@@ -103,6 +103,9 @@ def create(request):
 
     return render(request, 'accounts/create.html', context)
 
+def set_password(request):
+    print 'me'
+
 @login_required
 def index(request):
     # Let's remember to use User methods here and in the template, instead of attributes.
