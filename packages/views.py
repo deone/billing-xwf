@@ -89,7 +89,7 @@ def create_subscription(request, package_pk):
 @must_be_individual_user
 def buy_package(request):
     context = {}
-    packages = [(p.id, p) for p in Package.objects.all()]
+    packages = [(p.id, p) for p in Package.objects.filter(is_public=True)]
     if request.method == "POST":
         form = PackageSubscriptionForm(request.POST, user=request.user, packages=packages)
         if form.is_valid():
