@@ -21,6 +21,7 @@ class Package(models.Model):
     volume = models.CharField(max_length=9, choices=settings.VOLUME_CHOICES)
     speed = models.CharField(max_length=5, choices=settings.SPEED_CHOICES, default='1.5')
     price = models.DecimalField(max_digits=4, decimal_places=2)
+    is_public = models.BooleanField(default=False)
 
     def __str__(self):
         if self.volume != 'Unlimited':
@@ -49,7 +50,7 @@ class PackageSubscription(AbstractPackageSubscription):
 
     class Meta:
         verbose_name = "Package Subscription"
-        ordering = ['-stop'] 
+        ordering = ['-stop']
 
     def __str__(self):
         return "%s %s %s" % (self.radcheck.username, self.package.package_type, self.stop.strftime('%B %d %Y, %I:%M%p'))
