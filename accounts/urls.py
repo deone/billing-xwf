@@ -7,9 +7,8 @@ from .forms import ResetPasswordForm, PasswordResetSMSForm, LoginForm
 urlpatterns = [
     url(r'^login/$', auth_views.login, {'template_name': 'accounts/login.html', 'authentication_form': LoginForm}, name='login'),
     url(r'^logout/$', auth_views.logout, {'next_page': '/accounts/login/'}, name='logout'),
-    url(r'^set_password/(?P<pk>\d+)/$', views.set_password, name='set_password'),
-    url(r'^password_change/$', auth_views.password_change, name='password_change'),
-    url(r'^password_change/done/$', auth_views.password_change_done, name='password_change_done'),
+    # url(r'^password_change/$', auth_views.password_change, name='password_change'),
+    # url(r'^password_change/done/$', auth_views.password_change_done, name='password_change_done'),
     url(r'^password_reset/$', auth_views.password_reset, {
       'template_name': 'accounts/password_reset.html',
       'post_reset_redirect': '/accounts/password_reset/done/',
