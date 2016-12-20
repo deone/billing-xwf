@@ -21,6 +21,7 @@ from accounts.models import Subscriber, Radcheck
 
 key = sys.argv[1]
 now = timezone.now()
+password = 'xxx'
 
 # Get or create packages (12GB and 15GB)
 # For students
@@ -53,17 +54,32 @@ lst = []
 for line in lines:
     number = line.rstrip()
     phone_number = '+233' + number[1:]
-    # Create user,
-    user = User.objects.create_user(number, number, None)
-    # Create subscriber,
-    subscriber = Subscriber.objects.create(user=user, country='GHA', phone_number=phone_number)
-    # Create radcheck
-    radcheck = Radcheck.objects.create(user=user,
-                                username=number,
-                                attribute='MD5-Password',
-                                op=':=',
-                                value=md5_password('xxx'))
-    
+
+    # Get or create user - investigate why get_or_create is throwing IntegrityError here.
+    try:
+        user = User.objects.get(username=number)
+    except User.DoesNotExist:
+        user = User.objects.create_user(number, number, password)
+        created = True
+    else:
+        created = False
+
+    # Get or create subscriber,
+    subscriber, created = Subscriber.objects.get_or_create(user=user, country='GHA', phone_number=phone_number)
+
+    # Get or create radcheck - use get_or_create here too.
+    try:
+        radcheck = Radcheck.objects.get(user=user)
+    except Radcheck.DoesNotExist:
+        radcheck = Radcheck.objects.create(user=user,
+                                    username=number,
+                                    attribute='MD5-Password',
+                                    op=':=',
+                                    value=md5_password(password))
+        created = True
+    else:
+        created = False
+
     # Purchase package subscription
     packages = [(p.id, p) for p in Package.objects.filter(is_public=False)]
     form = PackageSubscriptionForm({'package_choice': package.pk}, user=user, packages=packages)
@@ -73,7 +89,8 @@ for line in lines:
     lst.append(number)
 
 # For first run, send link to user phone numbers to change their password
-for number in lst:
-    form = PasswordResetSMSForm({'username': number})
-    if form.is_valid():
-        form.save(sms_template='accounts/sms_create_password.txt')
+if created:
+    for number in lst:
+        form = PasswordResetSMSForm({'username': number})
+        if form.is_valid():
+            form.save(sms_template='accounts/sms_create_password.txt')
