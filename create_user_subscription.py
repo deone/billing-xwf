@@ -1,6 +1,7 @@
 #! /usr/bin/env python
 
 import os
+import sys
 from datetime import timedelta
 
 import django
@@ -18,6 +19,7 @@ from accounts.helpers import md5_password
 from accounts.forms import PasswordResetSMSForm
 from accounts.models import Subscriber, Radcheck
 
+key = sys.argv[1]
 now = timezone.now()
 
 # Get or create packages (12GB and 15GB)
@@ -37,10 +39,13 @@ staff_package, created = Package.objects.get_or_create(
     price=0,
 )
 
-# file_name_map = {'student': 'students.csv', 'staff': 'staff.csv'}
-# package_map = {'student': student_package, 'staff': staff_package}
+file_dict = {'students': 'students.csv', 'staff': 'staff.csv'}
+package_dict = {'students': student_package, 'staff': staff_package}
 
-with open('staff_test.csv') as f:
+file = file_dict[key]
+package = package_dict[key]
+
+with open(file) as f:
     lines = f.readlines()
 
 # For each user entry,
@@ -61,7 +66,7 @@ for line in lines:
     
     # Purchase package subscription
     packages = [(p.id, p) for p in Package.objects.filter(is_public=False)]
-    form = PackageSubscriptionForm({'package_choice': student_package.pk}, user=user, packages=packages)
+    form = PackageSubscriptionForm({'package_choice': package.pk}, user=user, packages=packages)
     form.is_valid()
     form.save()
 
