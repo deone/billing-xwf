@@ -154,9 +154,11 @@ class PasswordResetSMSForm(forms.Form):
         response = requests.get(settings.SMS_URL, params)
         return response
         
-    def get_users(self, username):
+    def get_users(self, username, action=None):
         active_users = get_user_model()._default_manager.filter(
             username__iexact=username, is_active=True)
+        if action is not None:
+            return (u for u in active_users)
         return (u for u in active_users if u.has_usable_password())
 
     def save(self, domain_override=None,
@@ -165,11 +167,15 @@ class PasswordResetSMSForm(forms.Form):
              use_https=False, token_generator=default_token_generator,
              from_email=None, request=None, html_email_template_name=None, sms_template=None):
 
+        username = self.cleaned_data["username"]
+
         if sms_template is None:
             sms_template = 'accounts/sms_reset_password.txt'
+            users = self.get_users(username)
+        else:
+            users = self.get_users(username, action='create')
 
-        username = self.cleaned_data["username"]
-        for user in self.get_users(username):
+        for user in users:
             if not domain_override:
                 current_site = get_current_site(request)
                 site_name = current_site.name
