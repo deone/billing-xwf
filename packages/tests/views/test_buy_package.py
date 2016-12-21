@@ -25,7 +25,7 @@ class BuyPackageTests(ViewsTests):
             action='REC',
             activity_id=20
         )
-        package = Package.objects.create(package_type='Daily', volume='3', speed='1.5', price=4)
+        package = Package.objects.create(package_type='Daily', volume='3', speed='1.5', price=4, is_public=True)
         request = self.factory.post(reverse('packages:buy'),
             data={
               'package_choice': str(package.pk)
