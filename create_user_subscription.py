@@ -52,14 +52,25 @@ with open(file) as f:
 # For each user entry,
 lst = []
 for line in lines:
-    number = line.rstrip()
+    parts = line.split(',')
+
+    first_name = parts[0].strip()
+    last_name = parts[1].strip()
+    number = parts[2].strip()
     phone_number = '+233' + number[1:]
+    email = parts[3].strip()
 
     # Get or create user - investigate why get_or_create is throwing IntegrityError here.
     try:
         user = User.objects.get(username=number)
     except User.DoesNotExist:
-        user = User.objects.create_user(number, number, password)
+        user = User.objects.create(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            username=number,
+            password=password
+            )
         created = True
     else:
         created = False
