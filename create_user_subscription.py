@@ -91,10 +91,6 @@ for line in lines:
     else:
         created = False
 
-    # Don't roll-over data
-    radcheck.data_balance = 0
-    radcheck.save()
-
     # Purchase package subscription
     packages = [(p.id, p) for p in Package.objects.filter(is_public=False)]
     form = PackageSubscriptionForm({'package_choice': package.pk}, user=user, packages=packages)
