@@ -145,7 +145,7 @@ SUCCESS_URL = "http://billing-deone.c9users.io/success/"
 SMS_URL = 'https://api.smsgh.com/v3/messages/send'
 SMS_PARAMS = {
     'From': 'XWF',
-    'Content': 'Welcome to Spectra WiFi! You may log into your dashboard at xwf.spectrawireless.com.',
+    'Content': 'Welcome to Spectra WiFi! You may log into your dashboard at xwf.spectrawireless.com. Our customer care line is 055 324 2528.',
     'ClientId': 'qtrufcsm',
     'ClientSecret': 'mgzqaxfe',
     'RegisteredDelivery': 'true'

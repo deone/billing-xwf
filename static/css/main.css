@@ -26,7 +26,8 @@ body > .container-fluid {
 }
 .header,
 .balance-pane,
-.footer {
+.footer,
+.footer div {
   background: #3b3a36;
 }
 .header .navbar-brand {
@@ -175,8 +176,6 @@ table form {
 /* Footer */
 .footer {
   color: #fff;
-  padding-top: 30px;
-  padding-bottom: 30px;
-  padding-left: 20px;
   position: relative;
+  padding-top: 10px;
 }
