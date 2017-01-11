@@ -22,10 +22,12 @@ SUPREME = '4'
 
 # Speed names
 SPEED_NAME_MAP = {
+    DELUXE: '1.5Mbps Deluxe',
     SUPREME: '4Mbps Supreme'
 }
 
 SPEED_CHOICES = (
+    (DELUXE, SPEED_NAME_MAP[DELUXE]),
     (SUPREME, SPEED_NAME_MAP[SUPREME]),
 )
 
@@ -36,6 +38,8 @@ ONE = '1'
 TWO = '2'
 TWO_POINT_FIVE = '2.5'
 SIX = '6'
+TWELVE = '12'
+FIFTEEN = '15'
 
 # Volume names
 VOLUME_NAME_MAP = {
@@ -44,7 +48,9 @@ VOLUME_NAME_MAP = {
     ONE: '1GB',
     TWO: '2GB',
     TWO_POINT_FIVE: '2.5GB',
-    SIX: '6GB'
+    SIX: '6GB',
+    TWELVE: '12GB',
+    FIFTEEN: '15GB',
 }
 
 VOLUME_CHOICES = (
@@ -54,4 +60,6 @@ VOLUME_CHOICES = (
     (TWO, VOLUME_NAME_MAP[TWO]),
     (TWO_POINT_FIVE, VOLUME_NAME_MAP[TWO_POINT_FIVE]),
     (SIX, VOLUME_NAME_MAP[SIX]),
+    (TWELVE, VOLUME_NAME_MAP[TWELVE]),
+    (FIFTEEN, VOLUME_NAME_MAP[FIFTEEN]),
 )
