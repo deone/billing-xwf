@@ -25,20 +25,10 @@ password = 'xxx'
 
 # Get or create packages (12GB and 15GB)
 # For students
-student_package, created = Package.objects.get_or_create(
-    package_type='Monthly',
-    volume='12',
-    speed='4',
-    price=0,
-)
+student_package = Package.objects.get(volume='12')
 
 # For staff
-staff_package, created = Package.objects.get_or_create(
-    package_type='Monthly',
-    volume='15',
-    speed='4',
-    price=0,
-)
+staff = Package.objects.get(volume='15')
 
 file_dict = {'students': 'students.csv', 'staff': 'staff.csv'}
 package_dict = {'students': student_package, 'staff': staff_package}
@@ -76,7 +66,10 @@ for line in lines:
         created = False
 
     # Get or create subscriber,
-    subscriber, created = Subscriber.objects.get_or_create(user=user, country='GHA', phone_number=phone_number)
+    try:
+        subscriber = Subscriber.objects.get(user=user)
+    except Subscriber.DoesNotExist:
+        subscriber = Subscriber.objects.create(user=user, country='GHA', phone_number=phone_number)
 
     # Get or create radcheck - use get_or_create here too.
     try:
@@ -87,9 +80,6 @@ for line in lines:
                                     attribute='MD5-Password',
                                     op=':=',
                                     value=md5_password(password))
-        created = True
-    else:
-        created = False
 
     # Purchase package subscription
     packages = [(p.id, p) for p in Package.objects.filter(is_public=False)]
