@@ -28,7 +28,7 @@ password = 'xxx'
 student_package, created = Package.objects.get_or_create(
     package_type='Monthly',
     volume='12',
-    speed='1.5',
+    speed='4',
     price=0,
 )
 
@@ -36,7 +36,7 @@ student_package, created = Package.objects.get_or_create(
 staff_package, created = Package.objects.get_or_create(
     package_type='Monthly',
     volume='15',
-    speed='1.5',
+    speed='4',
     price=0,
 )
 
