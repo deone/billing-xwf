@@ -238,3 +238,5 @@ PAYMENT_TEST_URL = 'https://app.mpowerpayments.com/sandbox-api/v1/checkout-invoi
 PAYMENT_TEST_PRIVATE_KEY = 'test_private_-TBbZrbdchpR6RZ9aB6g9Hx6-wk'
 
 PHONE_NUMBER_PREFIXES = ['020', '023', '024', '026', '027', '028', '050', '052', '054', '055', '056', '057']
+
+PASSWORD_RESET_TIMEOUT_DAYS = 30
