@@ -28,7 +28,7 @@ password = 'xxx'
 student_package = Package.objects.get(volume='12')
 
 # For staff
-staff = Package.objects.get(volume='15')
+staff_package = Package.objects.get(volume='15')
 
 file_dict = {'students': 'students.csv', 'staff': 'staff.csv'}
 package_dict = {'students': student_package, 'staff': staff_package}
@@ -94,4 +94,4 @@ if created:
     for number in lst:
         form = PasswordResetSMSForm({'username': number})
         if form.is_valid():
-            form.save(sms_template='accounts/sms_create_password.txt')
+            form.save(sms_template='accounts/sms_create_password.txt', custom_sms_sender='Spectra')

@@ -146,11 +146,15 @@ class PasswordResetSMSForm(forms.Form):
         except model.DoesNotExist:
             raise forms.ValidationError("Phone number does not exist.")
 
-    def send_sms(self, sms_template, context):
+    def send_sms(self, sms_template, custom_sms_sender, context):
         phone_number = '+233' + context['username'][1:]
         message = loader.render_to_string(sms_template, context)
         params = settings.SMS_PARAMS
+
         params.update({'To': phone_number, 'Content': message})
+        if custom_sms_sender:
+            params.update({'From': custom_sms_sender})
+
         response = requests.get(settings.SMS_URL, params)
         return response
         
@@ -165,7 +169,8 @@ class PasswordResetSMSForm(forms.Form):
              subject_template_name=None,
              email_template_name=None,
              use_https=False, token_generator=default_token_generator,
-             from_email=None, request=None, html_email_template_name=None, sms_template=None):
+             from_email=None, request=None, html_email_template_name=None,
+             sms_template=None, custom_sms_sender=None):
 
         username = self.cleaned_data["username"]
 
@@ -192,7 +197,7 @@ class PasswordResetSMSForm(forms.Form):
                 'protocol': 'https' if use_https else 'http',
             }
             
-            return self.send_sms(sms_template, context)
+            return self.send_sms(sms_template, custom_sms_sender, context)
 
 class LoginForm(AuthenticationForm):
     username = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex], widget=forms.TextInput(attrs={'class': 'form-control'}))
