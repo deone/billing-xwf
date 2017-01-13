@@ -94,4 +94,4 @@ if created:
     for number in lst:
         form = PasswordResetSMSForm({'username': number})
         if form.is_valid():
-            form.save(sms_template='accounts/sms_create_password.txt', custom_sms_sender='Spectra')
+            form.save(sms_template='accounts/sms_create_password.txt', custom_sms_sender='Spectra-XWF')
