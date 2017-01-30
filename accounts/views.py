@@ -25,17 +25,33 @@ from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, 
 from .models import Subscriber, RechargeAndUsage, Radcheck
 from .helpers import *
 
-""" <QueryDict: {
+"""
+Meraki
+<QueryDict: {
 u'client_ip': [u'10.8.0.78'], 
 u'login_url': [u'https://n110.network-auth.com/splash/login?mauth=MMNsInqn8ksWBR7PgbfBkWG8PawzJm1wi4PE9pDEUdU1qFuHtYczZmRJFJ3dD7AJvl9DRppZnJAZOTA7L3KbzaX4WgwU74t5ibpIJBwHJ-eg5RnL4Hct5hs7i1UIRBH6kbeL9X4hlcFLZKvkaV2mpeP_hX9hxs5jGl_C0N6oWtoQtUjskrMcnBaA&continue_url=http%3A%2F%2Fgoogle.com%2F'], 
 u'continue_url': [u'http://google.com/'], 
 u'ap_tags': [u'office-accra recently-added'], 
 u'ap_mac': [u'00:18:0a:f2:de:20'], 
 u'ap_name': [u'Spectra-HQ-NOC'], 
-u'client_mac': [u'4c:eb:42:ce:6c:3d']}> """
+u'client_mac': [u'4c:eb:42:ce:6c:3d']
+}>
+
+Cambium
+<QueryDict: {
+u'ga_cmac': [u'30-F7-C5-C6-4E-3B'],
+u'ga_nas_id': [u'Office Test AP'],
+u'ga_ap_mac': [u'00-04-56-CA-C1-5C'],
+u'ga_srvr': [u'10.8.0.40'],
+u'ga_ssid': [u'Express_WF'],
+u'ga_Qv': [u'yDN%05%1F%3A%1C%18%00%181%04V%04%00%1B%0E%14Y%15%02%00%26%152%01O7%5EY%2AV_S%22F%5C-EV%0FYCRK%06%13%143%0C']
+}>
+"""
 
 def captive(request):
-    context = {'form': LoginForm()}
+    context = {}
+    """ context = {'form': LoginForm()}
+
     request.session['logout_url'] = None
     
     # Store request.GET parameters in session
@@ -60,9 +76,9 @@ def captive(request):
           'success_url': settings.SUCCESS_URL,
         })
     else:
-        raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.")
+        raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.") """
 
-    return render(request, 'captive.html', context)
+    return render(request, 'captive_cambium.html', context)
 
 def success(request):
     if 'logout_url' in request.GET:
