@@ -199,8 +199,15 @@ class PasswordResetSMSForm(forms.Form):
             
             return self.send_sms(sms_template, custom_sms_sender, context)
 
+class CambiumLoginForm(AuthenticationForm):
+    ga_user = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex], 
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
+    ga_pass = forms.CharField(label='Password',
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}))
+
 class LoginForm(AuthenticationForm):
-    username = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex], widget=forms.TextInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex], 
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 

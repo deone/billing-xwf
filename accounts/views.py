@@ -21,7 +21,7 @@ from billing.decorators import *
 
 from utils import get_subscriptions, get_captive_url, get_balance
 
-from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, ResetPasswordForm
+from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, ResetPasswordForm, CambiumLoginForm
 from .models import Subscriber, RechargeAndUsage, Radcheck
 from .helpers import *
 
@@ -46,13 +46,13 @@ u'ga_srvr': [u'10.8.0.40'],
 u'ga_ssid': [u'Express_WF'],
 u'ga_Qv': [u'yDN%05%1F%3A%1C%18%00%181%04V%04%00%1B%0E%14Y%15%02%00%26%152%01O7%5EY%2AV_S%22F%5C-EV%0FYCRK%06%13%143%0C']
 }>
+<QueryDict: {
+u'ga_Qv': [u'yDN\x05\x1f:\x1c\x18\x00\x181\x04V\x04\x00\x1b\x0e\x14Y\x15\x02\x00&\x152\x01O1^Y,T_ "F[ZE#\x0cY0UK\x06\x13\x143\x0c']
+}>
 """
 
 def captive(request):
-    context = {}
-    """ context = {'form': LoginForm()}
-
-    request.session['logout_url'] = None
+    """ request.session['logout_url'] = None
     
     # Store request.GET parameters in session
     if not 'login_url' in request.session:
@@ -78,7 +78,15 @@ def captive(request):
     else:
         raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.") """
 
-    return render(request, 'captive_cambium.html', context)
+    context = {'form': CambiumLoginForm()}
+    url = request.GET.urlencode().replace('&amp;', '&').replace('+', '%20')
+
+    context.update({
+        'login_url': 'http://10.8.0.40:880/cgi-bin/hotspot_login.cgi?%s' % url
+    })
+    return render(request, 'captive.html', context)
+
+    # return render(request, 'captive_cambium.html', context)
 
 def success(request):
     if 'logout_url' in request.GET:
