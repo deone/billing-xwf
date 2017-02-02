@@ -205,7 +205,23 @@ class CambiumLoginForm(AuthenticationForm):
     ga_pass = forms.CharField(label='Password',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
+FIELD_NAME_MAPPING = {
+    'username': 'ga_user',
+    'password': 'ga_pass'
+}
+
 class LoginForm(AuthenticationForm):
+
+    def __init__(self, *args, **kwargs):
+        self.is_cambium = kwargs.pop('is_cambium', False)
+        super(LoginForm, self).__init__(*args, **kwargs)
+
+    def add_prefix(self, field_name):
+        # look up field name; return original if not found
+        if self.is_cambium:
+            field_name = FIELD_NAME_MAPPING.get(field_name, field_name)
+        return super(LoginForm, self).add_prefix(field_name)
+
     username = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex], 
         widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password',

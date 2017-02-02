@@ -78,7 +78,7 @@ def captive(request):
     else:
         raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.") """
 
-    context = {'form': CambiumLoginForm()}
+    context = {'form': LoginForm(label_suffix='', is_cambium=True)}
     url = request.GET.urlencode().replace('&amp;', '&').replace('+', '%20')
 
     context.update({
