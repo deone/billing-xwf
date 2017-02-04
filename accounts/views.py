@@ -85,7 +85,7 @@ def captive(request):
     error_message = ''
     if 'ga_error_code' in request.GET:
         qs = Radpostauth.objects.filter(client_mac=request.GET['ga_cmac'], reply='Access-Reject').order_by('pk')
-        error_message = qs.reverse()[1].message
+        error_message = qs.reverse()[0].message
 
     context.update({
         'login_url': 'http://%s:880/cgi-bin/hotspot_login.cgi?%s' % (ap_ip, url),
