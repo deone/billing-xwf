@@ -74,6 +74,7 @@ class Radpostauth(models.Model):
     reply = models.CharField(max_length=32)
     authdate = models.DateTimeField(default=timezone.now)
     message = models.CharField(max_length=255)
+    client_mac = models.CharField(max_length=17)
 
     class Meta:
         db_table = 'radpostauth'
