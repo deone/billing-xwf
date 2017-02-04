@@ -73,6 +73,7 @@ class Radpostauth(models.Model):
     pass_field = models.CharField(db_column='pass', max_length=64)  # Field renamed because it was a Python reserved word.
     reply = models.CharField(max_length=32)
     authdate = models.DateTimeField()
+    message = models.CharField(max_length=255)
 
     class Meta:
         db_table = 'radpostauth'
