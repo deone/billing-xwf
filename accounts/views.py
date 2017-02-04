@@ -84,7 +84,7 @@ def captive(request):
 
     error_message = ''
     if 'ga_error_code' in request.GET:
-        qs = Radpostauth.objects.filter(client_mac=request.GET['ga_cmac'], reply='Access-Reject')
+        qs = Radpostauth.objects.filter(client_mac=request.GET['ga_cmac'], reply='Access-Reject').order_by('pk')
         error_message = qs.reverse()[1].message
 
     context.update({
