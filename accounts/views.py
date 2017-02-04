@@ -79,14 +79,13 @@ def captive(request):
         raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.") """
 
     context = {'form': LoginForm(label_suffix='', is_cambium=True)}
+    ap_ip = request.GET['ga_srvr']
     url = request.GET.urlencode().replace('&amp;', '&').replace('+', '%20')
 
     context.update({
-        'login_url': 'http://10.8.0.40:880/cgi-bin/hotspot_login.cgi?%s' % url
+        'login_url': 'http://%s:880/cgi-bin/hotspot_login.cgi?%s' % (ap_ip, url)
     })
     return render(request, 'captive.html', context)
-
-    # return render(request, 'captive_cambium.html', context)
 
 def success(request):
     if 'logout_url' in request.GET:
