@@ -72,7 +72,7 @@ class Radpostauth(models.Model):
     username = models.CharField(max_length=64)
     pass_field = models.CharField(db_column='pass', max_length=64)  # Field renamed because it was a Python reserved word.
     reply = models.CharField(max_length=32)
-    authdate = models.DateTimeField()
+    authdate = models.DateTimeField(default=timezone.now)
     message = models.CharField(max_length=255)
 
     class Meta:
