@@ -82,6 +82,7 @@ for line in lines:
                                     value=md5_password(password))
     else:
         radcheck.data_balance = 0
+        radcheck.data_usage = 0
         radcheck.save()
 
     # Purchase package subscription
