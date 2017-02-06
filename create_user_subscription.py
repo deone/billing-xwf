@@ -80,6 +80,9 @@ for line in lines:
                                     attribute='MD5-Password',
                                     op=':=',
                                     value=md5_password(password))
+    else:
+        radcheck.data_balance = 0
+        radcheck.save()
 
     # Purchase package subscription
     packages = [(p.id, p) for p in Package.objects.filter(is_public=False)]
