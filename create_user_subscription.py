@@ -93,7 +93,7 @@ for line in lines:
     form.save()
 
 # For first run, send link to user phone numbers to change their password
-if created:
+if lst:
     for number in lst:
         form = PasswordResetSMSForm({'username': number})
         if form.is_valid():
