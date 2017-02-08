@@ -80,6 +80,7 @@ for line in lines:
                                     attribute='MD5-Password',
                                     op=':=',
                                     value=md5_password(password))
+        lst.append(number)
     else:
         radcheck.data_balance = 0
         radcheck.data_usage = 0
@@ -90,8 +91,6 @@ for line in lines:
     form = PackageSubscriptionForm({'package_choice': package.pk}, user=user, packages=packages)
     form.is_valid()
     form.save()
-
-    lst.append(number)
 
 # For first run, send link to user phone numbers to change their password
 if created:
