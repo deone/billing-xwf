@@ -21,7 +21,7 @@ from billing.decorators import *
 
 from utils import get_subscriptions, get_captive_url, get_balance
 
-from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, ResetPasswordForm, CambiumLoginForm
+from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, ResetPasswordForm
 from .models import Subscriber, RechargeAndUsage, Radcheck, Radpostauth
 from .helpers import *
 
@@ -50,47 +50,49 @@ u'ga_Qv': [u'yDN%05%1F%3A%1C%18%00%181%04V%04%00%1B%0E%14Y%15%02%00%26%152%01O7%
 u'ga_Qv': [u'yDN\x05\x1f:\x1c\x18\x00\x181\x04V\x04\x00\x1b\x0e\x14Y\x15\x02\x00&\x152\x01O1^Y,T_ "F[ZE#\x0cY0UK\x06\x13\x143\x0c']
 }>
 """
-
 def captive(request):
-    """ request.session['logout_url'] = None
-    
-    # Store request.GET parameters in session
-    if not 'login_url' in request.session:
-        request.session['login_url'] = request.GET['login_url']
-        request.session['continue_url'] = request.GET['continue_url']
-        request.session['ap_mac'] = request.GET['ap_mac']
-        request.session['ap_name'] = request.GET['ap_name']
-        request.session['ap_tags'] = request.GET['ap_tags']
-        request.session['client_mac'] = request.GET['client_mac']
-        request.session['client_ip'] = request.GET['client_ip']
+    ap_ip = request.GET.get('ga_srvr', None)
+    login_url = request.GET.get('login_url', None)
 
-    if 'error_message' in request.GET:
+    if ap_ip:
+        context = {'form': LoginForm(label_suffix='', is_cambium=True)}
+        url = request.GET.urlencode().replace('&amp;', '&').replace('+', '%20')
+
+        error_message = ''
+        if 'ga_error_code' in request.GET:
+            qs = Radpostauth.objects.filter(client_mac=request.GET['ga_cmac'], reply='Access-Reject').order_by('pk')
+            error_message = qs.reverse()[0].message
+    
         context.update({
-            'error_message': request.GET['error_message']
+            'login_url': 'http://%s:880/cgi-bin/hotspot_login.cgi?%s' % (ap_ip, url),
+            'error_message': error_message
         })
 
-    if 'login_url' in request.GET:
+    elif login_url:
+        context = {'form': LoginForm(label_suffix='')}
+        request.session['logout_url'] = None
+
+        # Store request.GET parameters in session
+        if not 'login_url' in request.session:
+            request.session['login_url'] = request.GET['login_url']
+            request.session['continue_url'] = request.GET['continue_url']
+            request.session['ap_mac'] = request.GET['ap_mac']
+            request.session['ap_name'] = request.GET['ap_name']
+            request.session['ap_tags'] = request.GET['ap_tags']
+            request.session['client_mac'] = request.GET['client_mac']
+            request.session['client_ip'] = request.GET['client_ip']
+
+        if 'error_message' in request.GET:
+            context.update({
+                'error_message': request.GET['error_message']
+            })
+
         context.update({
-          'login_url': request.GET['login_url'],
-          'logout_url': request.session['logout_url'],
+          'login_url': login_url,
           'success_url': settings.SUCCESS_URL,
         })
     else:
-        raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.") """
-
-    context = {'form': LoginForm(label_suffix='', is_cambium=True)}
-    ap_ip = request.GET['ga_srvr']
-    url = request.GET.urlencode().replace('&amp;', '&').replace('+', '%20')
-
-    error_message = ''
-    if 'ga_error_code' in request.GET:
-        qs = Radpostauth.objects.filter(client_mac=request.GET['ga_cmac'], reply='Access-Reject').order_by('pk')
-        error_message = qs.reverse()[0].message
-
-    context.update({
-        'login_url': 'http://%s:880/cgi-bin/hotspot_login.cgi?%s' % (ap_ip, url),
-        'error_message': error_message
-    })
+        raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.")
 
     return render(request, 'captive.html', context)
 
