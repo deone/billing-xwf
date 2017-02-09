@@ -43,12 +43,25 @@ with open(file) as f:
 lst = []
 for line in lines:
     parts = line.split(',')
+    length = len(parts)
 
-    first_name = parts[0].strip()
-    last_name = parts[1].strip()
-    number = parts[2].strip()
+    if length == 4:
+        first_name = parts[0].strip()
+        last_name = parts[1].strip()
+        number = parts[2].strip()
+        email = parts[3].strip()
+    elif length == 3 or length == 2:
+        name = parts[0].split(' ')
+        name.reverse()
+        first_name = name[1]
+        last_name = name[0]
+        number = parts[1].strip()
+        try:
+            email = parts[2].strip()
+        except IndexError:
+            email = ''
+
     phone_number = '+233' + number[1:]
-    email = parts[3].strip()
 
     # Get or create user - investigate why get_or_create is throwing IntegrityError here.
     try:
