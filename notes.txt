@@ -1,5 +1,6 @@
 TODO
 ====
+- List only subscriptions with stop date in the future and with radchecks that have data left under Unused subscriptions header in dashboard. To do this, seems data_balance has to be a component of subscription instead of radcheck.
 - Plan to phase out Subscriber model. Start by storing all extra info like phone_number in Radcheck.
 - Remove the user_list variable from BulkUserUploadForm.save() if we don't need it.
 - Add instructions to captive portal to aid standard and instant users, Windows and Mac users.
@@ -12,7 +13,6 @@ TODO
 - Move helper functions in all apps to a central utils package.
 
 - Set package volume to 100000 for unlimited plans (get_volume in utils/__init__.py)
-- Display 'Cash Balance' on dashboard.
 - Email verification pane should span page width.
 - Catch 'SMTPClientsRefused. Not a real domain error' in user creation parts e.g Add user. Roll back user creation if this error is thrown.
 - User is_logged_in status is not set to False on stop. Investigate this.

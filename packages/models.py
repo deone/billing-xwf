@@ -2,7 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.utils import timezone
 
-from accounts.models import (Subscriber, GroupAccount, Radcheck)
+from accounts.models import GroupAccount, Radcheck
 
 import time
 
