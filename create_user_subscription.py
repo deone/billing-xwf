@@ -17,31 +17,118 @@ from packages.models import Package
 from packages.forms import PackageSubscriptionForm
 from accounts.helpers import md5_password
 from accounts.forms import PasswordResetSMSForm
-from accounts.models import Subscriber, Radcheck
+from accounts.models import Radcheck, Subscriber
+
+# Flow
+
+# New account
+# - Create account
+# - Get package
+# - Create subscription
+# - Send sms
+
+# Existing account
+# - Get account
+# - Get package
+# - Check whether existing subscription is valid
+# - If subscription is invalid, renew subscription
 
 key = sys.argv[1]
 now = timezone.now()
 password = 'xxx'
 
-# Get or create packages (12GB and 15GB)
-# For students
-student_package = Package.objects.get(volume='12')
+def main():
+    if key == 'students':
+        package = Package.objects.get(volume='12')
+        file = 'students.csv'
+    elif key == 'staff':
+        package = Package.objects.get(volume='15')
+        file = 'staff.csv'
 
-# For staff
-staff_package = Package.objects.get(volume='15')
+    sms_recipients = []
+    with open(file) as f:
+        lines = f.readlines()
 
-file_dict = {'students': 'students.csv', 'staff': 'staff.csv'}
-package_dict = {'students': student_package, 'staff': staff_package}
+    for line in lines:
+        first_name, last_name, number, email = parse_line(line)
+        user = get_or_create_user(number, first_name, last_name, email)
+        subscriber = get_or_create_subscriber(user)
+        radcheck, created = get_or_create_radcheck(user)
+        subscription = get_subscription(user)
 
-file = file_dict[key]
-package = package_dict[key]
+        if created:
+            sms_recipients.append(number)
 
-with open(file) as f:
-    lines = f.readlines()
+        subscription_is_valid = False
+        if subscription:
+            subscription_is_valid = subscription.stop > now and subscription.has_data_left()
 
-# For each user entry,
-lst = []
-for line in lines:
+        if created or not subscription_is_valid:
+            purchase_subscription(user, package)
+
+        if sms_recipients:
+            for number in sms_recipients:
+                form = PasswordResetSMSForm({'username': number})
+                if form.is_valid():
+                    form.save(sms_template='accounts/sms_create_password.txt', custom_sms_sender='Spectra-XWF')
+
+def get_subscription(user):
+    try:
+        return user.radcheck.packagesubscription_set.all()[0]
+    except:
+        return None
+
+def purchase_subscription(user, package):
+    # Zero data balance and data usage
+    radcheck = user.radcheck
+    radcheck.data_balance = 0
+    radcheck.data_usage = 0
+    radcheck.save()
+
+    # Purchase package
+    packages = [(p.id, p) for p in Package.objects.filter(is_public=False)]
+    form = PackageSubscriptionForm({'package_choice': package.pk}, user=user, packages=packages)
+    form.is_valid()
+    form.save()
+
+def get_or_create_subscriber(user):
+    try:
+        subscriber = Subscriber.objects.get(user=user)
+    except Subscriber.DoesNotExist:
+        subscriber = Subscriber.objects.create(user=user, country='GHA', phone_number='+233' + user.username[1:])
+
+    return subscriber
+
+def get_or_create_radcheck(user):
+    try:
+        radcheck = Radcheck.objects.get(user=user)
+    except Radcheck.DoesNotExist:
+        radcheck = Radcheck.objects.create(user=user,
+                                    username=user.username,
+                                    attribute='MD5-Password',
+                                    op=':=',
+                                    value=md5_password(password))
+        created = True
+    else:
+        created = False
+
+    return radcheck, created
+
+def get_or_create_user(username, first_name, last_name, email):
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        user = User.objects.create(
+            first_name=first_name,
+            last_name=last_name,
+            email=email,
+            username=username,
+            password=password
+        )
+
+    return user
+
+def parse_line(line):
     parts = line.split(',')
     length = len(parts)
 
@@ -61,53 +148,7 @@ for line in lines:
         except IndexError:
             email = ''
 
-    phone_number = '+233' + number[1:]
+    return [first_name, last_name, number, email]
 
-    # Get or create user - investigate why get_or_create is throwing IntegrityError here.
-    try:
-        user = User.objects.get(username=number)
-    except User.DoesNotExist:
-        user = User.objects.create(
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            username=number,
-            password=password
-            )
-        created = True
-    else:
-        created = False
-
-    # Get or create subscriber,
-    try:
-        subscriber = Subscriber.objects.get(user=user)
-    except Subscriber.DoesNotExist:
-        subscriber = Subscriber.objects.create(user=user, country='GHA', phone_number=phone_number)
-
-    # Get or create radcheck - use get_or_create here too.
-    try:
-        radcheck = Radcheck.objects.get(user=user)
-    except Radcheck.DoesNotExist:
-        radcheck = Radcheck.objects.create(user=user,
-                                    username=number,
-                                    attribute='MD5-Password',
-                                    op=':=',
-                                    value=md5_password(password))
-        lst.append(number)
-    else:
-        radcheck.data_balance = 0
-        radcheck.data_usage = 0
-        radcheck.save()
-
-    # Purchase package subscription
-    packages = [(p.id, p) for p in Package.objects.filter(is_public=False)]
-    form = PackageSubscriptionForm({'package_choice': package.pk}, user=user, packages=packages)
-    form.is_valid()
-    form.save()
-
-# For first run, send link to user phone numbers to change their password
-if lst:
-    for number in lst:
-        form = PasswordResetSMSForm({'username': number})
-        if form.is_valid():
-            form.save(sms_template='accounts/sms_create_password.txt', custom_sms_sender='Spectra-XWF')
+if __name__ == '__main__':
+    main()
