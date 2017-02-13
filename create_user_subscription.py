@@ -51,20 +51,48 @@ def main():
 
     for line in lines:
         first_name, last_name, number, email = parse_line(line)
-        user = get_or_create_user(number, first_name, last_name, email)
-        subscriber = get_or_create_subscriber(user)
-        radcheck, created = get_or_create_radcheck(user)
-        subscription = get_subscription(user)
+        user, user_created = User.objects.get_or_create(
+            username=number,
+            defaults={
+                'first_name': first_name,
+                'last_name': last_name,
+                'email': email
+            }
+        )
+        subscriber, subscriber_created = Subscriber.objects.get_or_create(
+            user=user,
+            defaults={
+                'country': 'GHA',
+                'phone_number': '%s%s' % ('+233', user.username[1:])
+            }
+        )
+        radcheck, radcheck_created = Radcheck.objects.get_or_create(
+            user=user,
+            defaults={
+                'username': user.username,
+                'attribute': 'MD5-Password',
+                'op': ':=',
+                'value': md5_password(password)
+            }
+        )
 
-        if created:
+        current_subscription = get_current_subscription(user)
+
+        if radcheck_created:
             sms_recipients.append(number)
-
-        subscription_is_valid = False
-        if subscription:
-            subscription_is_valid = subscription.stop > now and subscription.has_data_left()
-
-        if created or not subscription_is_valid:
             purchase_subscription(user, package)
+        else:
+            # This script should run in a cron job, maybe every day.
+            # Purchase new subscription if:
+            # - the last free subscription's stop time is in the past.
+            # - Zero data balances (before purchasing a subscription) except where
+            # current subscription's package is public.
+            last_free_subscription = get_last_free_subscription(user)
+            if last_free_subscription:
+                if last_free_subscription.stop < now:
+                    if not current_subscription.package.is_public:
+                        zero_data_balance(user)
+                    purchase_subscription(user, package)
 
         if sms_recipients:
             for number in sms_recipients:
@@ -72,61 +100,31 @@ def main():
                 if form.is_valid():
                     form.save(sms_template='accounts/sms_create_password.txt', custom_sms_sender='Spectra-XWF')
 
-def get_subscription(user):
+def get_current_subscription(user):
     try:
         return user.radcheck.packagesubscription_set.all()[0]
     except:
         return None
 
-def purchase_subscription(user, package):
-    # Zero data balance and data usage
+def get_last_free_subscription(user):
+    try:
+        return user.radcheck.packagesubscription_set.filter(package__is_public=False)[0]
+    except:
+        return None
+
+def zero_data_balance(user):
+    # Zero data balance and data usage if current subscription is a non-public subscription
     radcheck = user.radcheck
     radcheck.data_balance = 0
     radcheck.data_usage = 0
     radcheck.save()
 
+def purchase_subscription(user, package):
     # Purchase package
     packages = [(p.id, p) for p in Package.objects.filter(is_public=False)]
     form = PackageSubscriptionForm({'package_choice': package.pk}, user=user, packages=packages)
     form.is_valid()
     form.save()
-
-def get_or_create_subscriber(user):
-    try:
-        subscriber = Subscriber.objects.get(user=user)
-    except Subscriber.DoesNotExist:
-        subscriber = Subscriber.objects.create(user=user, country='GHA', phone_number='+233' + user.username[1:])
-
-    return subscriber
-
-def get_or_create_radcheck(user):
-    try:
-        radcheck = Radcheck.objects.get(user=user)
-    except Radcheck.DoesNotExist:
-        radcheck = Radcheck.objects.create(user=user,
-                                    username=user.username,
-                                    attribute='MD5-Password',
-                                    op=':=',
-                                    value=md5_password(password))
-        created = True
-    else:
-        created = False
-
-    return radcheck, created
-
-def get_or_create_user(username, first_name, last_name, email):
-    try:
-        user = User.objects.get(username=username)
-    except User.DoesNotExist:
-        user = User.objects.create(
-            first_name=first_name,
-            last_name=last_name,
-            email=email,
-            username=username,
-            password=password
-        )
-
-    return user
 
 def parse_line(line):
     parts = line.split(',')
