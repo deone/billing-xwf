@@ -94,11 +94,11 @@ def main():
                         zero_data_balance(user)
                     purchase_subscription(user, package)
 
-        if sms_recipients:
-            for number in sms_recipients:
-                form = PasswordResetSMSForm({'username': number})
-                if form.is_valid():
-                    form.save(sms_template='accounts/sms_create_password.txt', custom_sms_sender='Spectra-XWF')
+    if sms_recipients:
+        for number in sms_recipients:
+            form = PasswordResetSMSForm({'username': number})
+            if form.is_valid():
+                form.save(sms_template='accounts/sms_create_password.txt', custom_sms_sender='Spectra-XWF')
 
 def get_current_subscription(user):
     try:
