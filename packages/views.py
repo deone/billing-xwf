@@ -47,7 +47,7 @@ def delete_stub(request):
 def packages(request):
     response = {}
     packages = []
-    for p in Package.objects.all():
+    for p in Package.objects.filter(is_public=True):
         string = p.package_type + ' ' + p.speed + ' Mbps ' + str(p.price) + ' GHS'
         tup = (p.pk, string)
         packages.append(tup)
