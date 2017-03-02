@@ -19,21 +19,8 @@ def get_package_purchase_success_message(session):
     return message
 
 def get_captive_url(session):
-    login_url = session.get('login_url', None)
-    if not login_url:
-        return None
-    else:
-        return '%s?login_url=%s&continue_url=%s&ap_mac=%s&ap_name=%s&ap_tags=%s&client_mac=%s&client_ip=%s' % (
-            reverse('captive'), 
-            login_url,
-            session['continue_url'],
-            session['ap_mac'],
-            session['ap_name'],
-            session['ap_tags'],
-            session['client_mac'],
-            session['client_ip']
-            )
-        
+    return '%s?%s' % (reverse('captive'), session['params'])
+
 def increment_data_balance(radcheck, package):
     radcheck.data_balance += Decimal(package.volume)
     radcheck.save()
