@@ -98,11 +98,15 @@ def captive(request):
 
 def success(request):
     if 'logout_url' in request.GET:
-        request.session['logout_url'] = request.GET['logout_url']
-        context = {'logout_url': request.session.get('logout_url', None)}
+        logout_url = request.GET['logout_url']
+        request.session['logout_url'] = logout_url
     else:
-        context = {}
+        ap_ip = request.GET.get('ga_srvr', None)
+        url = request.GET.urlencode().replace('&amp;', '&').replace('+', '%20')
 
+        logout_url = 'http://%s:880/cgi-bin/hotspot_logout.cgi?%s' % (ap_ip, url)
+
+    context = {'logout_url': logout_url}
     return render(request, 'accounts/success.html', context)
 
 def create(request):
