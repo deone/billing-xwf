@@ -19,7 +19,11 @@ def get_package_purchase_success_message(session):
     return message
 
 def get_captive_url(session):
-    return '%s?%s' % (reverse('captive'), session['params'])
+    params = session.get('params', None)
+    if params:
+        return '%s?%s' % (reverse('captive'), params)
+    else:
+        return None
 
 def increment_data_balance(radcheck, package):
     radcheck.data_balance += Decimal(package.volume)
