@@ -51,12 +51,24 @@ u'ga_Qv': [u'yDN\x05\x1f:\x1c\x18\x00\x181\x04V\x04\x00\x1b\x0e\x14Y\x15\x02\x00
 }>
 """
 def captive(request):
+    params = request.GET.urlencode().replace('&amp;', '&').replace('+', '%20')
     ap_ip = request.GET.get('ga_srvr', None)
-    login_url = request.GET.get('login_url', None)
 
     if ap_ip:
-        context = {'form': LoginForm(label_suffix='', is_cambium=True)}
-        url = request.GET.urlencode().replace('&amp;', '&').replace('+', '%20')
+        login_url = 'http://%s:880/cgi-bin/hotspot_login.cgi?%s' % (ap_ip, params)
+    else:
+        login_url = request.GET.get('login_url', None)
+
+    request.session['params'] = params
+    request.session['logout_url'] = None
+    request.session['login_url'] = login_url
+
+    context = ({
+        'login_url': request.session['login_url'],
+    })
+
+    if ap_ip:
+        context.update({'form': LoginForm(label_suffix='', is_cambium=True)})
 
         error_message = ''
         if 'ga_error_code' in request.GET:
@@ -64,17 +76,13 @@ def captive(request):
             error_message = qs.reverse()[0].message
     
         context.update({
-            'login_url': 'http://%s:880/cgi-bin/hotspot_login.cgi?%s' % (ap_ip, url),
             'error_message': error_message
         })
-
-    elif login_url:
-        context = {'form': LoginForm(label_suffix='')}
-        request.session['logout_url'] = None
+    else:
+        context.update({'form': LoginForm(label_suffix='')})
 
         # Store request.GET parameters in session
-        if not 'login_url' in request.session:
-            request.session['login_url'] = request.GET['login_url']
+        if not 'continue_url' in request.session:
             request.session['continue_url'] = request.GET['continue_url']
             request.session['ap_mac'] = request.GET['ap_mac']
             request.session['ap_name'] = request.GET['ap_name']
@@ -88,11 +96,8 @@ def captive(request):
             })
 
         context.update({
-          'login_url': login_url,
           'success_url': settings.SUCCESS_URL,
         })
-    else:
-        raise Http404("Login URL is incorrect. Please disconnect and reconnect to the WiFi network to get an accurate URL.")
 
     return render(request, 'captive.html', context)
 
@@ -101,9 +106,9 @@ def success(request):
         logout_url = request.GET['logout_url']
     else:
         ap_ip = request.GET.get('ga_srvr', None)
-        url = request.GET.urlencode().replace('&amp;', '&').replace('+', '%20')
+        params = request.GET.urlencode().replace('&amp;', '&').replace('+', '%20')
 
-        logout_url = 'http://%s:880/cgi-bin/hotspot_logout.cgi?%s' % (ap_ip, url)
+        logout_url = 'http://%s:880/cgi-bin/hotspot_logout.cgi?%s' % (ap_ip, params)
 
     request.session['logout_url'] = logout_url
     context = {'logout_url': logout_url}
@@ -141,14 +146,6 @@ def create(request):
 
 @login_required
 def index(request):
-    # Let's remember to use User methods here and in the template, instead of attributes.
-    """
-    if new_user:
-        welcome_msg = ""
-        context = {'message': welcome_msg}
-    else:
-        context = {}"""
-
     context = {}
 
     # Get subscriptions.
