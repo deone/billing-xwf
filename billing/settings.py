@@ -157,15 +157,18 @@ SMS_PARAMS = {
 
 # More settings
 
-# Speed variants 
+# Speed variants
+DELUXE = '2'
 SUPREME = '4'
 
 # Speed names
 SPEED_NAME_MAP = {
-    SUPREME: '4Mbps Supreme'
+    DELUXE: '2Mbps Deluxe',
+    SUPREME: '4Mbps Supreme',
 }
 
 SPEED_CHOICES = (
+    (DELUXE, SPEED_NAME_MAP[DELUXE]),
     (SUPREME, SPEED_NAME_MAP[SUPREME]),
 )
 
