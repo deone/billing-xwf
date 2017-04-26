@@ -327,19 +327,38 @@ def create_test(request):
     return JsonResponse({'status': 'ok'})
 
 @ensure_csrf_cookie
-def topup(request):
-    response = {}
+def get(request):
     if request.method == 'POST':
-        phone_number = request.POST['phone_number']
+        username = request.POST['phone_number']
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return JsonResponse({'message': 'User account does not exist.', 'code': 'user-not-found'}, status=404)
+        else:
+            return JsonResponse({'user_id': user.pk, 'username': user.username})
+
+    return JsonResponse({'status': 'ok'})
+
+@ensure_csrf_cookie
+def recharge(request):
+    ### Receive username, amount and voucher serial number. Recharge user account with voucher value.
+    ### Return 500 status and error message if recharge is unsuccessful.
+
+    # Parameters:
+    # - username: string e.g '0231802940'
+    # - amount: string e.g '1', '2'
+    # - serial_no: string e.g '1', '2'
+    # Return success
+    # - {'message': 'Account recharge successful.'}
+    # or error:
+    # - {'message': 'Account recharge failed.', 'code': 'recharge-failed'}, status=500
+
+    if request.method == 'POST':
+        username = request.POST['username']
         amount = request.POST['amount']
         serial_no = request.POST['serial_no']
 
-        # Check whether account exists and return error if it doesn't
-        try:
-            radcheck = Radcheck.objects.get(username=phone_number)
-        except Radcheck.DoesNotExist:
-            # return error
-            return JsonResponse({'code': 500, 'message': 'Account does not exist.'})
+        radcheck = Radcheck.objects.get(username=username)
 
         balance = get_balance(radcheck)
 
@@ -347,19 +366,20 @@ def topup(request):
         balance = balance + Decimal(amount)
         activity_id = serial_no
 
-        RechargeAndUsage.objects.create(
-            radcheck=radcheck,
-            amount=amount,
-            balance=balance,
-            action='REC',
-            activity_id=activity_id
-        )
+        try:
+            RechargeAndUsage.objects.create(
+                radcheck=radcheck,
+                amount=amount,
+                balance=balance,
+                action='REC',
+                activity_id=activity_id
+            )
+        except:
+            return JsonResponse({'message': 'Account recharge failed.', 'code': 'recharge-failed'}, status=500)
+        else:
+            return JsonResponse({'message': 'Account recharge successful.'})
 
-        response.update({'code': 200, 'message': 'Account recharge successful.'})
-    else:
-        response.update({'status': 'ok'})
-
-    return JsonResponse(response)
+    return JsonResponse({'status': 'ok'})
 
 """ @login_required
 @must_be_individual_user
