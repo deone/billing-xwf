@@ -1,2 +1,1 @@
-<p>You are logged in. <a href="{{ logout_url }}">Logout</a></p>
-<!-- <p>{{ logout_url }}</p> -->
+<p>You are logged in. <a href="{% url 'accounts:login' %}">Manage Account</a> &#8226; <a href="{{ logout_url }}">Logout</a></p>

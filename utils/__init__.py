@@ -1,6 +1,7 @@
 from django.utils import timezone
 from django.forms import ValidationError
 from django.conf import settings
+from django.core.urlresolvers import reverse
 
 from accounts.models import RechargeAndUsage
 from packages.models import PackageSubscription
@@ -8,6 +9,21 @@ from payments.models import IndividualPayment
 
 from decimal import Decimal
 from datetime import timedelta
+
+def get_package_purchase_success_message(session):
+    captive_url = get_captive_url(session)
+    if captive_url:
+        message = "%s%s" % ('Package purchased successfully. ', "<a class='btn btn-primary' href=" + captive_url + ">Log In To Browse</a>")
+    else:
+        message = 'Package purchased successfully. Please disconnect and reconnect to the WiFi network to log in.'
+    return message
+
+def get_captive_url(session):
+    params = session.get('params', None)
+    if params:
+        return '%s?%s' % (reverse('captive'), params)
+    else:
+        return None
 
 def increment_data_balance(radcheck, package):
     radcheck.data_balance += Decimal(package.volume)
@@ -56,7 +72,7 @@ def check_subscription(radcheck=None, group=None):
     except IndexError:
         start = now
     else:
-        if existing_subscription.is_valid():
+        if existing_subscription.has_data_left() and existing_subscription.stop > now:
             start = existing_subscription.stop
         else:
             start = now

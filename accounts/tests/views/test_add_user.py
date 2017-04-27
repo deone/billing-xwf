@@ -10,7 +10,7 @@ from . import GroupAdminViewsTests
 class AddUserTests(GroupAdminViewsTests):
 
     def test_add_user_get(self):
-        self.c.post(reverse('accounts:login'), {'username': 'z@z.com', 'password': '12345'})
+        self.c.post(reverse('accounts:login'), {'username': '0542751610', 'password': '12345'})
         response = self.c.get(reverse('accounts:add_user'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue('form' in response.context)
@@ -20,13 +20,9 @@ class AddUserTests(GroupAdminViewsTests):
     def test_add_user_post(self):
         request = self.factory.post(reverse('accounts:add_user'),
             data={
-              'username': 'b@b.com',
+              'username': '0554433221',
               'password': '12345',
-              'first_name': 'Ola',
-              'last_name': 'Ade',
               'confirm_password': '12345',
-              'country': 'GHA',
-              'phone_number': '0542751610'
               })
         request.user = self.user
 

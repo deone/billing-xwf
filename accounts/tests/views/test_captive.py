@@ -1,4 +1,5 @@
 from django.core.urlresolvers import reverse
+from django.utils.datastructures import MultiValueDictKeyError
 
 from ...forms import LoginForm
 from . import ViewsTests
@@ -21,8 +22,8 @@ class CaptiveTests(ViewsTests):
         self.assertTrue('error_message' in response.context)
 
     def test_captive_without_get_params(self):
-        response = self.c.get(reverse('captive'))
-        self.assertEqual(response.status_code, 404)
+        with self.assertRaises(MultiValueDictKeyError):
+            self.c.get(reverse('captive'))
 
     def test_success(self):
         get_params = "?logout_url=https%3A%2F%2Fn110.network-auth.com%2Fsplash%2Flogout%3Fkey%3DMM7n9oxmBMVzgXgqkvAbLsLTh2cP7lcZdnhrqPRdHlIqzFHCNSRkxoiKzMGmTDQw7dGd092BdPfUs"

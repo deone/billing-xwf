@@ -13,7 +13,7 @@ class IndexTests(ViewsTests):
         ))
 
     def test_index_with_valid_verified_user(self):
-        self.c.post(reverse('accounts:login'), {'username': 'z@z.com', 'password': '12345'})
+        self.c.post(reverse('accounts:login'), {'username': '0542751610', 'password': '12345'})
         response = self.c.get(reverse('index'))
         self.assertEqual(response.status_code, 200)
         self.assertTrue('verified' in response.context)

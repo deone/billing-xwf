@@ -1,32 +1,40 @@
 from django import forms
-from django.contrib.auth.forms import SetPasswordForm, PasswordResetForm, AuthenticationForm
+from django.contrib.auth.forms import SetPasswordForm, AuthenticationForm
+from django.contrib.auth import get_user_model
 from django.conf import settings
 from django.utils import timezone
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.sites.shortcuts import get_current_site
+from django.template import loader
 
 from .models import *
 from .helpers import md5_password, send_api_request
 
 from utils import get_balance
 
+import requests
+
 class CreateUserForm(forms.Form):
-    username = forms.EmailField(label='Email Address', max_length=254,
-        widget=forms.EmailInput(attrs={'class': 'form-control'}))
+    username = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex],
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    first_name = forms.CharField(label='First Name', max_length=20, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
-    last_name = forms.CharField(label='Last Name', max_length=20, 
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
     confirm_password = forms.CharField(label='Confirm Password', max_length=20, 
       widget=forms.PasswordInput(attrs={'class': 'form-control'}))
-    country = forms.ChoiceField(label='Country', choices=Subscriber.COUNTRY_CHOICES,
-        widget=forms.Select(attrs={'class': 'form-control'}))
-    phone_number = forms.CharField(label='Phone Number', validators=[phone_regex],
-        widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super(CreateUserForm, self).__init__(*args, **kwargs)
+
+    def clean_username(self):
+        cleaned_data = super(CreateUserForm, self).clean()
+        username = cleaned_data.get('username')
+        if username[:3] not in settings.PHONE_NUMBER_PREFIXES:
+            raise forms.ValidationError('Provide a valid phone number.', code='number_invalid')
+
+        return username
 
     def clean(self):
         cleaned_data = super(CreateUserForm, self).clean()
@@ -44,28 +52,23 @@ class CreateUserForm(forms.Form):
         if password and confirm_password:
             if password != confirm_password:
                 raise forms.ValidationError("Passwords do not match", code="password_mismatch")
-            
+
         if not self.user.is_anonymous() and self.user.subscriber.group is not None:
             group = self.user.subscriber.group
+            # Refactor this. It is repeated in BulkUserUploadForm
             if group.max_user_count_reached():
                 if not settings.EXCEED_MAX_USER_COUNT:
                     raise forms.ValidationError(
                         "You are not allowed to create more users than your group threshold. Your group threshold is set to %s."
                       % str(group.max_no_of_users))
-
+            
     def save(self):
         username = self.cleaned_data['username']
         password = self.cleaned_data['password']
-        first_name = self.cleaned_data['first_name']
-        last_name = self.cleaned_data['last_name']
-        country = self.cleaned_data['country']
-        country_code = Subscriber.COUNTRY_CODES_MAP[country]
-        phone_number = country_code + self.cleaned_data['phone_number'][1:]
+        country = 'GHA'
+        phone_number = Subscriber.COUNTRY_CODES_MAP[country] + self.cleaned_data['username'][1:]
 
         user = User.objects.create_user(username, username, password)
-        user.first_name = first_name
-        user.last_name = last_name
-        user.save()
 
         if not self.user.is_anonymous():
             if self.user.subscriber and self.user.subscriber.is_group_admin:
@@ -128,22 +131,93 @@ class ResetPasswordForm(SetPasswordForm):
         subscriber.value = md5_password(self.cleaned_data['new_password1'])
         subscriber.save()
 
-class PasswordResetEmailForm(PasswordResetForm):
-    email = forms.EmailField(label='Email Address', max_length=50, widget=forms.EmailInput(attrs={'class': 'form-control'}))
+class PasswordResetSMSForm(forms.Form):
+    username = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex],
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     def clean(self):
-        cleaned_data = super(PasswordResetForm, self).clean()
-        email = cleaned_data.get('email')
+        cleaned_data = super(PasswordResetSMSForm, self).clean()
+        username = cleaned_data.get('username')
 
+        model = get_user_model()
         try:
-            if email is not None:
-                user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            raise forms.ValidationError("Email does not exist.")
+            if username is not None:
+                user = model._default_manager.get(username__iexact=username)
+        except model.DoesNotExist:
+            raise forms.ValidationError("Phone number does not exist.")
+
+    def send_sms(self, sms_template, custom_sms_sender, context):
+        phone_number = '+233' + context['username'][1:]
+        message = loader.render_to_string(sms_template, context)
+        params = settings.SMS_PARAMS
+
+        params.update({'To': phone_number, 'Content': message})
+        if custom_sms_sender:
+            params.update({'From': custom_sms_sender})
+
+        response = requests.get(settings.SMS_URL, params)
+        return response
+        
+    def get_users(self, username, action=None):
+        active_users = get_user_model()._default_manager.filter(
+            username__iexact=username, is_active=True)
+        if action is not None:
+            return (u for u in active_users)
+        return (u for u in active_users if u.has_usable_password())
+
+    def save(self, domain_override=None,
+             subject_template_name=None,
+             email_template_name=None,
+             use_https=False, token_generator=default_token_generator,
+             from_email=None, request=None, html_email_template_name=None,
+             sms_template=None, custom_sms_sender=None):
+
+        username = self.cleaned_data["username"]
+
+        if sms_template is None:
+            sms_template = 'accounts/sms_reset_password.txt'
+            users = self.get_users(username)
+        else:
+            users = self.get_users(username, action='create')
+
+        for user in users:
+            if not domain_override:
+                current_site = get_current_site(request)
+                site_name = current_site.name
+                domain = current_site.domain
+            else:
+                site_name = domain = domain_override
+            context = {
+                'username': user.username,
+                'domain': domain,
+                'site_name': site_name,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'user': user,
+                'token': default_token_generator.make_token(user),
+                'protocol': 'https' if use_https else 'http',
+            }
+            
+            return self.send_sms(sms_template, custom_sms_sender, context)
+
+FIELD_NAME_MAPPING = {
+    'username': 'ga_user',
+    'password': 'ga_pass'
+}
 
 class LoginForm(AuthenticationForm):
-    username = forms.EmailField(label='Email Address', max_length=254,
-        widget=forms.EmailInput(attrs={'class': 'form-control'}))
+
+    def __init__(self, *args, **kwargs):
+        self.is_cambium = kwargs.pop('is_cambium', False)
+        super(LoginForm, self).__init__(*args, **kwargs)
+
+    def add_prefix(self, field_name):
+        # look up field name; return original if not found
+        if self.is_cambium:
+            field_name = FIELD_NAME_MAPPING.get(field_name, field_name)
+        return super(LoginForm, self).add_prefix(field_name)
+
+    username = forms.CharField(label='Phone Number', max_length=10, validators=[phone_regex], 
+        widget=forms.TextInput(attrs={'class': 'form-control'}))
     password = forms.CharField(label='Password',
         widget=forms.PasswordInput(attrs={'class': 'form-control'}))
 
@@ -221,14 +295,14 @@ class BulkUserUploadForm(forms.Form):
 
         return user_list
 
-class RechargeAccountForm(forms.Form):
-    pin = forms.CharField(label="PIN", max_length=14, widget=forms.NumberInput(attrs={'class': 'form-control'}))
+""" class RechargeAccountForm(forms.Form):
+    pin = forms.CharField(label="PIN", max_length=14, widget=forms.TextInput(attrs={'class': 'form-control'}))
 
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user', None)
         super(RechargeAccountForm, self).__init__(*args, **kwargs)
 
-    def clean(self):
+    def clean_pin(self):
         cleaned_data = super(RechargeAccountForm, self).clean()
 
         pin = cleaned_data.get('pin')
@@ -245,11 +319,10 @@ class RechargeAccountForm(forms.Form):
         elif recharge['code'] == 404:
             raise forms.ValidationError(recharge['message'], code="invalid-pin")
 
-        return recharge
+        return pin
 
     def save(self):
-        voucher = self.cleaned_data
-
+        voucher = send_api_request(settings.VOUCHER_REDEEM_URL, self.cleaned_data)
         balance = get_balance(self.user.radcheck)
 
         amount = voucher['value']
@@ -264,4 +337,4 @@ class RechargeAccountForm(forms.Form):
             activity_id=activity_id
         )
 
-        return voucher
+        return voucher """

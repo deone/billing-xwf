@@ -83,8 +83,8 @@ WSGI_APPLICATION = 'billing.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'radius',
-        'USER': 'radius',
+        'NAME': 'radius_xwf',
+        'USER': 'radius_xwf',
         'PASSWORD': 'radpass',
         'HOST': '127.0.0.1',
         'PORT': '3306'
@@ -125,104 +125,84 @@ DEFAULT_FROM_EMAIL = 'test@example.com'
 
 SITE_ID = 1
 
+# Email settings
 EMAIL_HOST = '74.55.86.74'
-
 EMAIL_PORT = 25
-
 EMAIL_HOST_USER = 'deone'
-
 EMAIL_HOST_PASSWORD = '@dune369'
 
 # VMS
-VMS_URL = "http://localhost:3000/vouchers/"
-
+VMS_URL = "http://vms-deone.c9users.io/vouchers/"
 VOUCHER_STUB_INSERT_URL = VMS_URL + "insert/"
-
 VOUCHER_STUB_DELETE_URL = VMS_URL + "delete/"
-
 VOUCHER_REDEEM_URL = VMS_URL + "redeem/"
-
 VOUCHER_INVALIDATE_URL = VMS_URL + "invalidate/"
-
 VOUCHER_SELL_URL = VMS_URL + "sell/"
 
-SUCCESS_URL = "http://localhost:8000/success/"
+SUCCESS_URL = "http://billing-deone.c9users.io/success/"
+
+# SMS settings - SMSGH
+SMS_URL = 'https://api.smsgh.com/v3/messages/send'
+SMS_PARAMS = {
+    'From': 'XWF',
+    'Content': 'Welcome to Spectra WiFi! You may log into your dashboard at xwf.spectrawireless.com. Our customer care line is 055 324 2528.',
+    'ClientId': 'qtrufcsm',
+    'ClientSecret': 'mgzqaxfe',
+    'RegisteredDelivery': 'true'
+}
+
+# TWILIO_ACCOUNT_SID = 'ACe0325806bc5842a1f96a115e8c21a384'
+# TWILIO_AUTH_TOKEN = '90bd6b99b70d51d97d637a98e33ce8a7'
+# TWILIO_NUMBER = '+18177569348'
 
 # More settings
 
-# Speed variants 
-STARTER = '0.128'
-BASIC = '0.256'
-REGULAR = '0.512'
-LITE = '1'
-DELUXE = '1.5'
-PREMIERE = '2'
-ULTRA = '3'
+# Speed variants
+DELUXE = '2'
 SUPREME = '4'
 
 # Speed names
 SPEED_NAME_MAP = {
-    STARTER: '128Kbps Starter',
-    BASIC: '256Kbps Basic',
-    REGULAR: '512Kbps Regular',
-    LITE: '1Mbps Lite',
-    DELUXE: '1.5Mbps Deluxe',
-    PREMIERE: '2Mbps Premiere',
-    ULTRA: '3Mbps Ultra',
-    SUPREME: '4Mbps Supreme'
+    DELUXE: '2Mbps Deluxe',
+    SUPREME: '4Mbps Supreme',
 }
 
 SPEED_CHOICES = (
-    (STARTER, SPEED_NAME_MAP[STARTER]),
-    (BASIC, SPEED_NAME_MAP[BASIC]),
-    (REGULAR, SPEED_NAME_MAP[REGULAR]),
-    (LITE, SPEED_NAME_MAP[LITE]),
     (DELUXE, SPEED_NAME_MAP[DELUXE]),
-    (PREMIERE, SPEED_NAME_MAP[PREMIERE]),
-    (ULTRA, SPEED_NAME_MAP[ULTRA]),
     (SUPREME, SPEED_NAME_MAP[SUPREME]),
 )
 
 # Volume variants
-TEST = '0.01'
+HUNDRED_MB = '0.1'
+THREE_HUNDRED_MB = '0.3'
 ONE = '1'
-THREE = '3'
-FIVE = '5'
-EIGHT = '8'
-TEN = '10'
+TWO = '2'
+TWO_POINT_FIVE = '2.5'
+SIX = '6'
 TWELVE = '12'
 FIFTEEN = '15'
-TWENTY = '20'
-TWENTY_FIVE = '25'
-UNLTD = 'Unlimited'
 
 # Volume names
 VOLUME_NAME_MAP = {
-    TEST: '0.01GB',
+    HUNDRED_MB: '0.1GB',
+    THREE_HUNDRED_MB: '0.3GB',
     ONE: '1GB',
-    THREE: '3GB',
-    FIVE: '5GB',
-    EIGHT: '8GB',
-    TEN: '10GB',
+    TWO: '2GB',
+    TWO_POINT_FIVE: '2.5GB',
+    SIX: '6GB',
     TWELVE: '12GB',
     FIFTEEN: '15GB',
-    TWENTY: '20GB',
-    TWENTY_FIVE: '25GB',
-    UNLTD: 'Unlimited'
 }
 
 VOLUME_CHOICES = (
-    (TEST, VOLUME_NAME_MAP[TEST]),
+    (HUNDRED_MB, VOLUME_NAME_MAP[HUNDRED_MB]),
+    (THREE_HUNDRED_MB, VOLUME_NAME_MAP[THREE_HUNDRED_MB]),
     (ONE, VOLUME_NAME_MAP[ONE]),
-    (THREE, VOLUME_NAME_MAP[THREE]),
-    (FIVE, VOLUME_NAME_MAP[FIVE]),
-    (EIGHT, VOLUME_NAME_MAP[EIGHT]),
-    (TEN, VOLUME_NAME_MAP[TEN]),
+    (TWO, VOLUME_NAME_MAP[TWO]),
+    (TWO_POINT_FIVE, VOLUME_NAME_MAP[TWO_POINT_FIVE]),
+    (SIX, VOLUME_NAME_MAP[SIX]),
     (TWELVE, VOLUME_NAME_MAP[TWELVE]),
     (FIFTEEN, VOLUME_NAME_MAP[FIFTEEN]),
-    (TWENTY, VOLUME_NAME_MAP[TWENTY]),
-    (TWENTY_FIVE, VOLUME_NAME_MAP[TWENTY_FIVE]),
-    (UNLTD, VOLUME_NAME_MAP[UNLTD]),
 )
 
 TEST_PERIOD = 'Ten'
@@ -259,3 +239,7 @@ PAYMENT_MASTER_KEY = 'cef70167-7dec-458e-b5bf-1befb4196565'
 # - Test API
 PAYMENT_TEST_URL = 'https://app.mpowerpayments.com/sandbox-api/v1/checkout-invoice/create'
 PAYMENT_TEST_PRIVATE_KEY = 'test_private_-TBbZrbdchpR6RZ9aB6g9Hx6-wk'
+
+PHONE_NUMBER_PREFIXES = ['020', '023', '024', '026', '027', '028', '050', '052', '054', '055', '056', '057']
+
+PASSWORD_RESET_TIMEOUT_DAYS = 90

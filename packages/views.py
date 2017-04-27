@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.core.urlresolvers import reverse
 from django.shortcuts import redirect
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.contrib.auth.decorators import login_required
@@ -10,7 +11,7 @@ from billing.decorators import must_be_individual_user
 
 from accounts.models import Radcheck
 from accounts.helpers import md5_password
-from utils import save_subscription, check_subscription
+from utils import save_subscription, check_subscription, get_package_purchase_success_message
 
 from .forms import PackageSubscriptionForm
 from .models import Package, InstantVoucher
@@ -46,7 +47,7 @@ def delete_stub(request):
 def packages(request):
     response = {}
     packages = []
-    for p in Package.objects.all():
+    for p in Package.objects.filter(is_public=True):
         string = p.package_type + ' ' + p.speed + ' Mbps ' + str(p.price) + ' GHS'
         tup = (p.pk, string)
         packages.append(tup)
@@ -80,20 +81,21 @@ def create_subscription(request, package_pk):
     start = check_subscription(radcheck=radcheck)
 
     subscription = save_subscription(radcheck, package, start, amount=None, balance=None, token=token)
-
-    messages.success(request, 'Package purchased successfully.')
+    message = get_package_purchase_success_message(request.session)
+    messages.success(request, message)
     return redirect('packages:buy')
 
 @login_required
 @must_be_individual_user
 def buy_package(request):
     context = {}
-    packages = [(p.id, p) for p in Package.objects.all()]
+    packages = [(p.id, p) for p in Package.objects.filter(is_public=True)]
     if request.method == "POST":
         form = PackageSubscriptionForm(request.POST, user=request.user, packages=packages)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Package purchased successfully.')
+            message = get_package_purchase_success_message(request.session)
+            messages.success(request, message)
             return redirect('packages:buy')
     else:
         form = PackageSubscriptionForm(user=request.user, packages=packages)

@@ -41,7 +41,7 @@
     {% if messages %}
     <ul class="messages">
       {% for message in messages %}
-      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+      <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message | safe }}</li>
       {% endfor %}
     </ul>
     {% endif %}
@@ -52,8 +52,21 @@
     </div>
 
     <footer class="footer">
-      <p>&copy; 2016 Spectra Wireless.</p>
+      <div class="col-md-6">
+        <p>&copy; 2016 Spectra Wireless.</p>
+      </div>
+      <div class="col-md-6">
+        <p class="pull-right">Customer Care Line: <strong>055 324 2528</strong></p>
+      </div>
     </footer>
+    
+    <script>
+      $('form').submit(function() {
+        var btn = $(this).find('.btn');
+        btn.text('Wait...');
+        btn.prop('disabled', true);
+      });
+    </script>
 
   </body>
 </html>
