@@ -135,9 +135,7 @@ EMAIL_HOST_PASSWORD = '@dune369'
 VMS_URL = "http://vms-deone.c9users.io/vouchers/"
 VOUCHER_STUB_INSERT_URL = VMS_URL + "insert/"
 VOUCHER_STUB_DELETE_URL = VMS_URL + "delete/"
-VOUCHER_REDEEM_URL = VMS_URL + "redeem/"
-VOUCHER_INVALIDATE_URL = VMS_URL + "invalidate/"
-VOUCHER_SELL_URL = VMS_URL + "sell/"
+VOUCHER_INVALIDATE_URL = VMS_URL + "invalidate"
 
 SUCCESS_URL = "http://billing-deone.c9users.io/success/"
 
