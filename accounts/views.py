@@ -375,7 +375,8 @@ def recharge(request):
                 activity_id=activity_id
             )
         except:
-            return JsonResponse({'message': 'Account recharge failed.', 'code': 'recharge-failed'}, status=500)
+            import sys
+            return JsonResponse({'message': sys.exc_info()[0], 'code': 'recharge-failed'}, status=500)
         else:
             return JsonResponse({'message': 'Account recharge successful.'})
 
