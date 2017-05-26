@@ -38,9 +38,10 @@ urlpatterns = [
     url(r'^create/$', views.create, name='create'),
     url(r'^upload_user_list/$', views.upload_user_list, name='upload_user_list'),
     # url(r'^recharge/$', views.recharge_account, name='recharge_account'),
-    url(r'^get$', views.get, name='get_account'),
-    url(r'^recharge$', views.recharge, name='recharge'),
-    url(r'^create_test/$', views.create_test, name='create_test'),
+    url(r'^get$', views.get),
+    url(r'^recharge$', views.recharge),
+    url(r'^create_test_account$', views.create_test_account),
+    url(r'^delete_test_account$', views.delete_test_account),
     url(r'^users/$', views.view_users, name='users'),
     url(r'^users/add/$', views.add_user, name='add_user'),
 ]

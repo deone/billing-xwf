@@ -313,16 +313,29 @@ def upload_user_list(request):
     return render(request, 'accounts/upload_user_list.html', context)
 
 @ensure_csrf_cookie
-def create_test(request):
+def create_test_account(request):
     if request.method == 'POST':
         username = request.POST['username']
-        try:
-            radcheck = Radcheck.objects.get(username=username)
-        except Radcheck.DoesNotExist:
-            Radcheck.objects.create(username=username,
-                                    attribute='MD5-Password',
-                                    op=':=',
-                                    value=md5_password('12345'))
+        password = request.POST['password']
+
+        user = User.objects.create_user(username, username, password)
+        Radcheck.objects.create(user=user,
+                                username=username,
+                                attribute='MD5-Password',
+                                op=':=',
+                                value=md5_password(password))
+
+        return JsonResponse({'username': user.username})
+
+    return JsonResponse({'status': 'ok'})
+
+@ensure_csrf_cookie
+def delete_test_account(request):
+    if request.method == 'POST':
+        username = request.POST['username']
+        user = User.objects.get(username=username)
+        user.delete()
+        return JsonResponse({'message': 'Account deleted.'})
 
     return JsonResponse({'status': 'ok'})
 
