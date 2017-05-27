@@ -1,18 +1,18 @@
-from django.shortcuts import render, redirect, resolve_url
-from django.contrib.auth.models import User, AnonymousUser
-from django.core.urlresolvers import reverse
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth import logout as auth_logout
-from django.contrib import messages
+from django.http import Http404
 from django.conf import settings
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.http import Http404, HttpResponseRedirect, JsonResponse
 from django.utils import timezone
+from django.contrib import messages
+from django.core.urlresolvers import reverse
 from django.utils.encoding import force_text
 from django.utils.http import urlsafe_base64_decode
 from django.template.response import TemplateResponse
-from django.utils.deprecation import RemovedInDjango20Warning
-from django.views.decorators.csrf import ensure_csrf_cookie
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import render, redirect, resolve_url
+from django.contrib.auth.models import User, AnonymousUser
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
 
 import requests
 from decimal import Decimal
@@ -21,9 +21,9 @@ from billing.decorators import *
 
 from utils import get_subscriptions, get_captive_url, get_balance
 
-from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, ResetPasswordForm
-from .models import Subscriber, RechargeAndUsage, Radcheck, Radpostauth
 from .helpers import *
+from .models import Subscriber, RechargeAndUsage, Radcheck, Radpostauth
+from .forms import CreateUserForm, LoginForm, BulkUserUploadForm, EditUserForm, ResetPasswordForm
 
 """
 Meraki
@@ -312,47 +312,38 @@ def upload_user_list(request):
     })
     return render(request, 'accounts/upload_user_list.html', context)
 
-@ensure_csrf_cookie
+@api_view(['POST'])
 def create_test_account(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
+    username = request.POST['username']
+    password = request.POST['password']
 
-        user = User.objects.create_user(username, username, password)
-        Radcheck.objects.create(user=user,
-                                username=username,
-                                attribute='MD5-Password',
-                                op=':=',
-                                value=md5_password(password))
+    user = User.objects.create_user(username, username, password)
+    Radcheck.objects.create(user=user,
+                            username=username,
+                            attribute='MD5-Password',
+                            op=':=',
+                            value=md5_password(password))
 
-        return JsonResponse({'username': user.username})
+    return Response({'username': user.username})
 
-    return JsonResponse({'status': 'ok'})
-
-@ensure_csrf_cookie
+@api_view(['POST'])
 def delete_test_account(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        user = User.objects.get(username=username)
-        user.delete()
-        return JsonResponse({'message': 'Account deleted.'})
+    username = request.POST['username']
+    user = User.objects.get(username=username)
+    user.delete()
+    return Response({'message': 'Account deleted.'})
 
-    return JsonResponse({'status': 'ok'})
-
-@ensure_csrf_cookie
+@api_view(['POST'])
 def get(request):
-    if request.method == 'POST':
-        username = request.POST['phone_number']
-        try:
-            user = User.objects.get(username=username)
-        except User.DoesNotExist:
-            return JsonResponse({'message': 'User account does not exist.', 'code': 'user-not-found'}, status=404)
-        else:
-            return JsonResponse({'user_id': user.pk, 'username': user.username})
+    username = request.POST['phone_number']
+    try:
+        user = User.objects.get(username=username)
+    except User.DoesNotExist:
+        return Response({'message': 'User account does not exist.', 'code': 'user-not-found'}, status=404)
+    else:
+        return Response({'user_id': user.pk, 'username': user.username})
 
-    return JsonResponse({'status': 'ok'})
-
-@ensure_csrf_cookie
+@api_view(['POST'])
 def recharge(request):
     ### Receive username, amount and voucher serial number. Recharge user account with voucher value.
     ### Return 500 status and error message if recharge is unsuccessful.
@@ -366,56 +357,31 @@ def recharge(request):
     # or error:
     # - {'message': 'Account recharge failed.', 'code': 'recharge-failed'}, status=500
 
-    if request.method == 'POST':
-        username = request.POST['username']
-        amount = request.POST['amount']
-        serial_no = request.POST['serial_no']
+    username = request.POST['username']
+    amount = request.POST['amount']
+    serial_no = request.POST['serial_no']
 
-        radcheck = Radcheck.objects.get(username=username)
+    radcheck = Radcheck.objects.get(username=username)
 
-        balance = get_balance(radcheck)
+    balance = get_balance(radcheck)
 
-        amount = amount
-        balance = balance + Decimal(amount)
-        activity_id = serial_no
+    amount = amount
+    balance = balance + Decimal(amount)
+    activity_id = serial_no
 
-        try:
-            RechargeAndUsage.objects.create(
-                radcheck=radcheck,
-                amount=amount,
-                balance=balance,
-                action='REC',
-                activity_id=activity_id
-            )
-        except:
-            import sys
-            return JsonResponse({'message': sys.exc_info()[0], 'code': 'recharge-failed'}, status=500)
-        else:
-            return JsonResponse({'message': 'Account recharge successful.'})
-
-    return JsonResponse({'status': 'ok'})
-
-""" @login_required
-@must_be_individual_user
-def recharge_account(request):
-    context = {}
-
-    if request.method == 'POST':
-        form = RechargeAccountForm(request.POST, user=request.user)
-        if form.is_valid():
-            voucher = form.save()
-            url = settings.VOUCHER_INVALIDATE_URL
-            response = send_api_request(url, {'id': voucher['serial_number']})
-
-            if response['code'] == 200:
-                messages.success(request, 
-                    "%s%s" % ('Account recharged successfully. ', "<a class='btn btn-primary' href=" + reverse('packages:buy') + ">Purchase a package</a>"))
-                return redirect('accounts:recharge_account')
+    try:
+        RechargeAndUsage.objects.create(
+            radcheck=radcheck,
+            amount=amount,
+            balance=balance,
+            action='REC',
+            activity_id=activity_id
+        )
+    except:
+        import sys
+        return Response({'message': sys.exc_info()[0], 'code': 'recharge-failed'}, status=500)
     else:
-        form = RechargeAccountForm(user=request.user)
-
-    context.update({'form': form})
-    return render(request, 'accounts/recharge_account.html', context) """
+        return Response({'message': 'Account recharge successful.'})
 
 @login_required
 @must_be_group_admin
