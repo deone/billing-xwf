@@ -43,6 +43,7 @@ INSTALLED_APPS = (
     'packages',
     'payments',
     'search',
+    'rest_framework',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -241,3 +242,9 @@ PAYMENT_TEST_PRIVATE_KEY = 'test_private_-TBbZrbdchpR6RZ9aB6g9Hx6-wk'
 PHONE_NUMBER_PREFIXES = ['020', '023', '024', '026', '027', '028', '050', '052', '054', '055', '056', '057']
 
 PASSWORD_RESET_TIMEOUT_DAYS = 90
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny'
+    ]
+}
