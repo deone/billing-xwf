@@ -36,7 +36,7 @@
               <th>Select</th>
               <th>Package</th>
               <th>Price</th>
-              <!-- <th>Pay With</th> -->
+              <th>Pay With</th>
             </tr>
           </thead>
           <tbody>
@@ -55,10 +55,10 @@
                 {{ v.price }} GHS
               </td>
               {% endwith %}
-              <!-- <td>
+              <td>
                 <a href="{% url 'pay:index' k %}" class="btn btn-xs btn-primary">MPower</a>
                 <button type="submit" class="disabled btn btn-xs btn-primary">SlydePay</button>
-              </td> -->
+              </td>
             </tr>
           {% endfor %}
           </tbody>
