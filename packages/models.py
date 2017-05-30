@@ -20,7 +20,7 @@ class Package(models.Model):
     package_type = models.CharField(max_length=7, choices=settings.PACKAGE_TYPES)
     volume = models.CharField(max_length=9, choices=settings.VOLUME_CHOICES)
     speed = models.CharField(max_length=5, choices=settings.SPEED_CHOICES, default='1.5')
-    price = models.DecimalField(max_digits=4, decimal_places=2)
+    price = models.DecimalField(max_digits=8, decimal_places=2)
     is_public = models.BooleanField(default=False)
 
     def __str__(self):
