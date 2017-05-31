@@ -18,15 +18,11 @@ def index(request, package_pk):
 
     headers = {
         'Content-Type': 'application/json',
-        'MP-Master-Key': settings.PAYMENT_MASTER_KEY,
-        'MP-Private-Key': settings.PAYMENT_TEST_PRIVATE_KEY,
-        'MP-Token': '84ca940ca8ad14a592d4',
+        'Authorization': 'Basic cnNrd3R3dWw6ZmVsd3NrZHU=',
     }
 
     return_url = 'http://%s%s' % (current_site.domain, reverse('packages:create_subscription', kwargs={'package_pk': package_pk}))
+    data = '{"invoice": {"total_amount": 0.1, "description": "Internet Service"}, "store": {"name": "' + settings.STORE_NAME + '"}, "actions": {"return_url": "' + return_url + '"}}'
 
-    data = '{"invoice": {"total_amount": "' + str(package.price) + '", "description": "' + settings.PAYMENT_DESCRIPTION + '"}, "store": {"name": "' + settings.STORE_NAME + '"}, "actions": {"return_url": "' + return_url + '"}}'
-
-    response = requests.post(settings.PAYMENT_TEST_URL, headers=headers, data=data)
-    obj = json.loads(response.content)
-    return redirect(obj['response_text'])
+    response = requests.post(settings.CHECKOUT_URL, headers=headers, data=data)
+    return redirect(response.json()['response_text'])

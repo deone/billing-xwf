@@ -229,15 +229,9 @@ MAX_FILE_LENGTH = 30
 # EXCEED_MAX_USER_COUNT = True
 EXCEED_MAX_USER_COUNT = False
 
-# Payments
+# Payment
 STORE_NAME = 'Spectra Wireless'
-
-PAYMENT_DESCRIPTION = 'Package Purchase'
-PAYMENT_MASTER_KEY = 'cef70167-7dec-458e-b5bf-1befb4196565'
-
-# - Test API
-PAYMENT_TEST_URL = 'https://app.mpowerpayments.com/sandbox-api/v1/checkout-invoice/create'
-PAYMENT_TEST_PRIVATE_KEY = 'test_private_-TBbZrbdchpR6RZ9aB6g9Hx6-wk'
+CHECKOUT_URL = 'https://api.hubtel.com/v1/merchantaccount/onlinecheckout/invoice/create'
 
 PHONE_NUMBER_PREFIXES = ['020', '023', '024', '026', '027', '028', '050', '052', '054', '055', '056', '057']
 

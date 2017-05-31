@@ -36,7 +36,7 @@
               <th>Select</th>
               <th>Package</th>
               <th>Price</th>
-              <th>Pay With Mobile Money</th>
+              <th>Pay</th>
             </tr>
           </thead>
           <tbody>
@@ -56,10 +56,7 @@
               </td>
               {% endwith %}
               <td>
-                <a href="{% url 'pay:index' k %}" class="btn btn-xs btn-primary">MTN</a>
-                <button type="submit" class="disabled btn btn-xs btn-primary">Airtel</button>
-                <button type="submit" class="disabled btn btn-xs btn-primary">Vodafone</button>
-                <button type="submit" class="disabled btn btn-xs btn-primary">Tigo</button>
+                <a href="{% url 'pay:index' k %}" class="btn btn-xs btn-primary">Checkout</a>
               </td>
             </tr>
           {% endfor %}
