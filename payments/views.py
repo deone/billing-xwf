@@ -22,7 +22,7 @@ def index(request, package_pk):
     }
 
     return_url = 'http://%s%s' % (current_site.domain, reverse('packages:create_subscription', kwargs={'package_pk': package_pk}))
-    data = '{"invoice": {"total_amount": 0.1, "description": "Internet Service"}, "store": {"name": "' + settings.STORE_NAME + '"}, "actions": {"return_url": "' + return_url + '"}}'
+    data = '{"invoice": {"items": {"item_0": {"name": "Spectra Internet Package - ' + str(package) + '", "quantity": 1, "unit_price": "' + str(package.price) + '", "total_price": "' + str(package.price) + '"}}, "total_amount":' + str(package.price) + ', "description": "Internet Service"}, "store": {"name": "' + settings.STORE_NAME + '"}, "actions": {"return_url": "' + return_url + '"}}'
 
     response = requests.post(settings.CHECKOUT_URL, headers=headers, data=data)
     return redirect(response.json()['response_text'])
