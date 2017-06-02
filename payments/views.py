@@ -25,4 +25,7 @@ def index(request, package_pk):
     data = '{"invoice": {"items": {"item_0": {"name": "Spectra Internet Package - ' + str(package) + '", "quantity": 1, "unit_price": "' + str(package.price) + '", "total_price": "' + str(package.price) + '"}}, "total_amount":' + str(package.price) + ', "description": "Internet Service"}, "store": {"name": "' + settings.STORE_NAME + '"}, "actions": {"return_url": "' + return_url + '"}}'
 
     response = requests.post(settings.CHECKOUT_URL, headers=headers, data=data)
+    # Sample response
+    # {u'response_text': u'https://checkout.hubtel.com/checkout/invoice/fd33e60d84064764', u'response_code': u'00', u'description': u'Checkout Invoice Created', u'token': u'fd33e60d84064764'}
+    # Store token to query payment status later
     return redirect(response.json()['response_text'])
