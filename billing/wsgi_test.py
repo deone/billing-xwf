@@ -14,7 +14,7 @@ env = socket.gethostname()
 
 from django.core.wsgi import get_wsgi_application
 
-settings_file = "billing.settings_production"
+settings_file = "billing.settings_test"
 
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", settings_file)
 
