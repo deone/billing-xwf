@@ -3,7 +3,6 @@ from settings import *
 DEBUG = False
 
 IP = 'xwf.spectrawireless.com'
-
 ALLOWED_HOSTS = [IP]
 SUCCESS_URL = "http://" + IP + "/success/"
 DEFAULT_FROM_EMAIL = 'info@spectrawireless.com'
