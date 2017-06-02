@@ -2,7 +2,7 @@ from settings import *
 
 DEBUG = False
 
-IP = '154.117.8.22'
+IP = 'xwf.spectrawireless.com'
 
 ALLOWED_HOSTS = [IP]
 SUCCESS_URL = "http://" + IP + "/success/"
