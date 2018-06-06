@@ -130,6 +130,7 @@ SITE_ID = 1
 EMAIL_HOST = 'smtp.webfaction.com'
 EMAIL_HOST_USER = 'deone'
 EMAIL_HOST_PASSWORD = '@dune369'
+SERVER_EMAIL = "Cloud Biller<info@cloudbiller.com>"
 
 # VMS
 VMS_URL = "http://vms-deone.c9users.io/vouchers/"
