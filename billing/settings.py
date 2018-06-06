@@ -127,8 +127,7 @@ DEFAULT_FROM_EMAIL = 'test@example.com'
 SITE_ID = 1
 
 # Email settings
-EMAIL_HOST = '74.55.86.74'
-EMAIL_PORT = 25
+EMAIL_HOST = 'smtp.webfaction.com'
 EMAIL_HOST_USER = 'deone'
 EMAIL_HOST_PASSWORD = '@dune369'
 

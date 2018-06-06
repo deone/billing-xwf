@@ -184,6 +184,12 @@ def index(request):
         context.update({'captive_url': captive_url})
 
     # End browsing session from dashboard.
+    # http://10.8.0.40:880/cgi-bin/hotspot_logout.cgi?
+    # ga_cmac=4C-EB-42-CE-6C-3D&c_timeout=86175
+    # &ga_nas_id=000456CB4187&ga_ap_mac=00-04-56-CB-41-87
+    # &ga_srvr=10.8.0.40&ga_ssid=XWF
+    # &ga_Qv=eEROBR86HBgAGDEEVgQAGw4UWRUCACYVMgFPMV5ZLFRfICJGW1pFIwxZMFVLBhMUMww.
+
     logout_url = request.session.get('logout_url', None)
     context.update({'logout_url': logout_url})
 
