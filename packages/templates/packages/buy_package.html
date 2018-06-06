@@ -36,7 +36,7 @@
               <th>Select</th>
               <th>Package</th>
               <th>Price</th>
-              <!-- <th>Pay</th> -->
+              <th>Pay</th>
             </tr>
           </thead>
           <tbody>
@@ -55,9 +55,9 @@
                 {{ v.price }} GHS
               </td>
               {% endwith %}
-              <!-- <td>
+              <td>
                 <a href="{% url 'pay:index' k %}" class="btn btn-xs btn-primary">Checkout</a>
-              </td> -->
+              </td>
             </tr>
           {% endfor %}
           </tbody>
